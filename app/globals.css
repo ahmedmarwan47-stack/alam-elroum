@@ -1,0 +1,215 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Design tokens — Alam Al Roum
+   Values mirror the production site exactly, with every size and spacing value
+   snapped to the 4px grid (14 and 18 permitted as documented exceptions).
+   Letter-spacing keeps the site's literal px values: it is sub-pixel
+   typographic tracking, not layout spacing, so the 4px grid does not apply.
+--------------------------------------------------------------------------- */
+@theme {
+  /* Typefaces ------------------------------------------------------------ */
+  --font-sans: var(--font-haas), "Helvetica Neue", Arial, sans-serif;
+  --font-serif: var(--font-immortel), "Cormorant Garamond", Georgia, serif;
+
+  /* Palette -------------------------------------------------------------- */
+  --color-ink: #1c2b3a;
+  --color-cream: #f0ede6;
+  --color-rust: #8b2a1a;
+  --color-dark-rust: #6b1f0e;
+  --color-teal: #1a6b72;
+
+  /* Type scale — 4px grid, 14 & 18 as exceptions ------------------------- */
+  --text-8: 8px;
+  --text-12: 12px;
+  --text-14: 14px;
+  --text-16: 16px;
+  --text-18: 18px;
+  --text-20: 20px;
+  --text-24: 24px;
+  --text-28: 28px;
+  --text-32: 32px;
+  --text-36: 36px;
+  --text-40: 40px;
+  --text-44: 44px;
+  --text-48: 48px;
+
+  /* Leading — px like the site, rounded to the 4px grid ------------------ */
+  --leading-12: 12px;
+  --leading-16: 16px;
+  --leading-20: 20px;
+  --leading-24: 24px;
+  --leading-28: 28px;
+  --leading-32: 32px;
+  --leading-36: 36px;
+  --leading-40: 40px;
+  --leading-44: 44px;
+  --leading-48: 48px;
+  --leading-52: 52px;
+  --leading-56: 56px;
+
+  /* Tracking — the site's exact values, kept off the grid by design ------ */
+  --tracking-stat: -0.8px;
+  --tracking-display: -0.46px;
+  --tracking-heading: -0.34px;
+  --tracking-label: 0.8px;
+  --tracking-sub: 1.1px;
+  --tracking-link: 1.32px;
+  --tracking-section: 1.54px;
+  --tracking-unit: 1.8px;
+  --tracking-nav: 1.92px;
+  --tracking-tag: 1.98px;
+  --tracking-wide: 2.2px;
+  --tracking-menu: 2.24px;
+}
+
+/* Base ---------------------------------------------------------------------
+   Tailwind's default spacing ramp is already 4px-based (--spacing: 0.25rem),
+   so p-19 = 76px, p-20 = 80px, p-30 = 120px. No custom spacing scale needed.
+--------------------------------------------------------------------------- */
+html {
+  /* Lenis drives scrolling; native smooth scrolling would fight it. */
+  scroll-behavior: auto;
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Lenis requires these to manage scroll itself. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Scroll lock while the preloader or the menu own the screen ---------------- */
+html.scroll-locked {
+  overflow: hidden;
+}
+
+/* Typewriter caret --------------------------------------------------------- */
+@keyframes caret-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+.type-caret::after {
+  content: "|";
+  display: inline-block;
+  margin-left: 3px;
+  font-weight: 300;
+  animation: caret-blink 0.8s step-end infinite;
+}
+
+/* Preloader blobs bob gently while the frames cycle ------------------------- */
+@keyframes pre-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+.pre-bob {
+  animation: pre-bob 5s ease-in-out infinite;
+}
+
+/* Custom cursor ------------------------------------------------------------ */
+.site-cursor-dot,
+.site-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  border-radius: 50%;
+  opacity: 0;
+  will-change: transform;
+}
+.site-cursor-dot {
+  z-index: 99999;
+  width: 8px;
+  height: 8px;
+  background: var(--color-ink);
+  transition:
+    width 0.3s ease,
+    height 0.3s ease,
+    background-color 0.3s ease,
+    opacity 0.3s ease;
+}
+.site-cursor-ring {
+  z-index: 99998;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(28, 43, 58, 0.4);
+  transition:
+    width 0.3s ease,
+    height 0.3s ease,
+    border-color 0.3s ease,
+    opacity 0.3s ease;
+}
+html[data-cursor-hover="true"] .site-cursor-dot {
+  width: 12px;
+  height: 12px;
+}
+html[data-cursor-hover="true"] .site-cursor-ring {
+  width: 56px;
+  height: 56px;
+}
+html[data-cursor-down="true"] .site-cursor-ring {
+  transform: scale(0.8);
+  transition: transform 0.15s ease;
+}
+html[data-cursor-dark="true"] .site-cursor-dot {
+  background: #ffffff;
+}
+html[data-cursor-dark="true"] .site-cursor-ring {
+  border-color: rgba(255, 255, 255, 0.45);
+}
+html.has-cursor,
+html.has-cursor :where(*:not(input):not(textarea):not(select)) {
+  cursor: none !important;
+}
+@media (max-width: 768px), (pointer: coarse) {
+  .site-cursor-dot,
+  .site-cursor-ring {
+    display: none !important;
+  }
+}
+
+/* Gallery caption swap ------------------------------------------------------ */
+@keyframes caption-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
