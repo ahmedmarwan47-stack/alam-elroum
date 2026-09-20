@@ -14,9 +14,13 @@ type Props = {
 /**
  * Fixed header.
  *
- * Transparent over the hero with white marks. Once the page scrolls it sits on
- * a single translucent cream bar with ink marks — one state, no flipping as
- * sections change. Presentational: menu state is owned by <SiteChrome>.
+ * Transparent over the hero with white marks, backed by a black scrim — a
+ * top-down gradient plus a blur, both masked to fade out before the bar's own
+ * bottom edge so nothing spills past the header — which keeps the marks
+ * readable over whatever the hero is playing underneath. Once the page scrolls
+ * it sits on a single translucent cream bar with ink marks — one state, no
+ * flipping as sections change. Presentational: menu state is owned by
+ * <SiteChrome>.
  */
 export default function Nav({ menuOpen, onToggleMenu }: Props) {
   const [scrolled, setScrolled] = useState(false);
@@ -36,7 +40,6 @@ export default function Nav({ menuOpen, onToggleMenu }: Props) {
   }, []);
 
   const light = !scrolled && !menuOpen;
-  const bar = menuOpen ? "bg-cream/95" : scrolled ? "bg-cream/88" : "bg-transparent";
 
   const markColor = light ? "text-white" : "text-ink";
   const contactLink = `hidden items-center gap-2 font-serif text-16 leading-none
@@ -47,10 +50,49 @@ export default function Nav({ menuOpen, onToggleMenu }: Props) {
     <nav
       data-dark={light ? "" : undefined}
       className={`fixed inset-x-0 top-0 z-1000 flex items-center justify-between px-4 py-3
-                  transition-[background-color,transform,opacity] duration-500 ease-out
-                  md:px-15 md:py-[18px] ${bar}
+                  transition-[transform,opacity] duration-500 ease-out
+                  md:px-15 md:py-[18px]
                   ${entered ? "translate-y-0 opacity-100 delay-[600ms]" : "-translate-y-3 opacity-0"}`}
     >
+      {/* The cream bar, as its own layer rather than the nav's background: on
+          its own it can leave faster (300ms) than the scrim arrives (500ms),
+          so the swap never settles on a half-cream, half-black blend — which
+          is what read as a washed-out grey band on the way back up. */}
+      <div
+        aria-hidden
+        className={`pointer-events-none absolute inset-0 -z-10 transition-opacity duration-300 ease-out
+                    ${menuOpen ? "bg-cream/95" : "bg-cream/88"}
+                    ${light ? "opacity-0" : "opacity-100"}`}
+      />
+
+      {/* Scrim for the transparent state — two layers, deliberately.
+          Chromium promotes an element that has both `backdrop-filter` and an
+          animated `opacity` to its own layer, where it loses its real backdrop
+          and paints as a flat pale haze; the bug only shows once the opacity
+          transition has run, i.e. on the way back up to the hero. So the blur
+          animates its own filter and never its opacity, and the gradient — which
+          does fade — carries no filter. Both are `absolute inset-0`, which ties
+          them to the bar's exact height, and `-z-10` keeps them under the marks
+          but over the (transparent) bar. The mask ends them softly just inside
+          the bottom edge instead of on a visible seam. */}
+      <div
+        aria-hidden
+        className={`pointer-events-none absolute inset-0 -z-10
+                    transition-[backdrop-filter,-webkit-backdrop-filter] duration-500 ease-out
+                    [mask-image:linear-gradient(to_bottom,black_0%,black_55%,transparent_100%)]
+                    [-webkit-mask-image:linear-gradient(to_bottom,black_0%,black_55%,transparent_100%)]
+                    ${light ? "backdrop-blur-[6px]" : "backdrop-blur-none"}`}
+      />
+      <div
+        aria-hidden
+        className={`pointer-events-none absolute inset-0 -z-10
+                    bg-gradient-to-b from-black/65 via-black/35 to-transparent
+                    transition-opacity duration-500 ease-out
+                    [mask-image:linear-gradient(to_bottom,black_0%,black_55%,transparent_100%)]
+                    [-webkit-mask-image:linear-gradient(to_bottom,black_0%,black_55%,transparent_100%)]
+                    ${light ? "opacity-100" : "opacity-0"}`}
+      />
+
       <a href="#" aria-label="Alam Al Roum" className="flex items-center">
         <Image
           src="/images/logo-wordmark.png"

@@ -5,9 +5,9 @@ import { ScrollTrigger, clamp01, reducedMotion } from "@/lib/gsap";
 import { coinBeats } from "@/lib/coinStory";
 
 /**
- * The coin's chapter. A 300vh track pins an ink stage for two viewports of
+ * The coin's chapter. A 200vh track pins an ink stage for one viewport of
  * scroll; the coin (owned by <LeadCoin>, positioned in page space) holds the
- * centre while three beats of copy cross-fade around it.
+ * centre while two beats of copy cross-fade around it.
  *
  * Desktop: headline left, coin centre, body right.
  * Phone: headline top-left, coin middle, body bottom-right — the reference's
@@ -34,11 +34,13 @@ export default function CoinStory() {
       beats.forEach((b) => {
         const i = Number(b.dataset.beat);
         const centre = (i + 0.5) / n;
-        // Fully on within ±0.09 of its centre, gone by ±0.18; the first beat
+        // Fully on within ±0.27/n of its centre, gone by twice that — so the
+        // cross-fade keeps its shape whatever the beat count. The first beat
         // is on from the start and the last stays on to the end.
+        const win = 0.27 / n;
         let d = Math.abs(p - centre);
         if ((i === 0 && p < centre) || (i === n - 1 && p > centre)) d = 0;
-        const v = clamp01(1 - (d - 0.09) / 0.09) * arrival * (phone.matches ? 1 - departure : 1);
+        const v = clamp01(1 - (d - win) / win) * arrival * (phone.matches ? 1 - departure : 1);
         b.style.opacity = String(v);
         b.style.transform = `translate3d(0, ${((1 - v) * 24 * (p < centre ? 1 : -1)).toFixed(1)}px, 0)`;
         b.style.filter = v < 0.999 && !reduced ? `blur(${((1 - v) * 8).toFixed(2)}px)` : "";
@@ -68,7 +70,7 @@ export default function CoinStory() {
   }, []);
 
   return (
-    <section ref={root} id="coin-story" data-dark className="relative h-[300vh] bg-ink">
+    <section ref={root} id="coin-story" data-dark className="relative h-[200vh] bg-ink">
       <div className="sticky top-0 h-screen overflow-hidden">
         <div
           className="relative mx-auto grid h-full w-full max-w-[1400px] px-6
