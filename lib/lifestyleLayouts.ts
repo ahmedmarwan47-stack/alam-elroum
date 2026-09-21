@@ -22,7 +22,7 @@ export const lifestyleLayouts: LifestyleLayoutOption[] = [
     id: "stack",
     label: "Stack",
     cost: "12 screens",
-    note: "Today's build. One card per screen — and you only ever see 1 of 11.",
+    note: "The original. One card per screen — and you only ever see 1 of 11.",
   },
   {
     id: "index",

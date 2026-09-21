@@ -11,6 +11,12 @@ import RailLayout from "./RailLayout";
 
 const STORE_KEY = "alam:lifestyle-layout";
 
+/**
+ * What a first-time visitor gets. The stack is still in the toggle as the
+ * thing being argued against, but it is no longer what the page opens on.
+ */
+const DEFAULT_LAYOUT: LifestyleLayoutId = "rail";
+
 const LAYOUTS: Record<LifestyleLayoutId, ComponentType> = {
   stack: StackLayout,
   index: IndexLayout,
@@ -26,8 +32,8 @@ const isLayoutId = (v: string | null): v is LifestyleLayoutId =>
    It has to survive a reload — a refresh mid-presentation dropping back to
    the layout you were arguing against would be a bad look — and the server
    cannot know what is in localStorage. `useSyncExternalStore` is the honest
-   way to say that: render the default on the server, read the real value on
-   the client, with no effect writing state behind React's back.
+   way to say that: render DEFAULT_LAYOUT on the server, read the real value
+   on the client, with no effect writing state behind React's back.
 --------------------------------------------------------------------------- */
 let chosen: LifestyleLayoutId | null = null;
 let listeners: Array<() => void> = [];
@@ -40,7 +46,7 @@ const readStored = (): LifestyleLayoutId => {
   } catch {
     /* private mode, blocked storage — the default is fine */
   }
-  return chosen ?? "stack";
+  return chosen ?? DEFAULT_LAYOUT;
 };
 
 const subscribe = (notify: () => void) => {
@@ -53,7 +59,7 @@ const subscribe = (notify: () => void) => {
 const store = {
   subscribe,
   get: readStored,
-  server: (): LifestyleLayoutId => "stack",
+  server: (): LifestyleLayoutId => DEFAULT_LAYOUT,
   set(next: LifestyleLayoutId) {
     chosen = next;
     try {
