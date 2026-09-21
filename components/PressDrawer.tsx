@@ -40,6 +40,7 @@ export default function PressDrawer({ article, open, onClose }: Props) {
   return (
     <div
       aria-hidden={!open}
+      data-fixed-layer
       className={`fixed inset-0 z-[1100] ${open ? "pointer-events-auto" : "pointer-events-none"}`}
     >
       {/* Dim */}
@@ -65,7 +66,7 @@ export default function PressDrawer({ article, open, onClose }: Props) {
       >
         <div className="flex items-center justify-between border-b border-ink/12 px-6 py-4 md:px-10">
           <span className="font-sans text-12 text-ink/45 md:text-16">
-            Press
+            Press Release
           </span>
           <button
             ref={closeBtn}

@@ -9,9 +9,9 @@ const ITEMS = [
   { n: "02", label: "The Vision", href: "#s4-trigger" },
   { n: "03", label: "The Masterplan", href: "#s6" },
   { n: "04", label: "Lifestyle & Experiences", href: "#ls-outer" },
-  { n: "05", label: "Location", href: "#connectSection" },
-  { n: "06", label: "Gallery", href: "#gallery" },
-  { n: "07", label: "Press", href: "#press" },
+  { n: "05", label: "Gallery", href: "#gallery" },
+  { n: "06", label: "Location", href: "#connectSection" },
+  { n: "07", label: "Press Release", href: "#press" },
 ];
 
 /**
@@ -43,6 +43,7 @@ export default function MenuOverlay({
     <div
       id="menuOverlay"
       aria-hidden={!open}
+      data-fixed-layer
       className={`fixed inset-0 z-900 flex
                   ${open ? "pointer-events-auto" : "pointer-events-none"}`}
     >

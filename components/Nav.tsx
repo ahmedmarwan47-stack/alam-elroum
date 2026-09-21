@@ -49,6 +49,7 @@ export default function Nav({ menuOpen, onToggleMenu }: Props) {
   return (
     <nav
       data-dark={light ? "" : undefined}
+      data-fixed-layer
       className={`fixed inset-x-0 top-0 z-1000 flex items-center justify-between px-4 py-3
                   transition-[transform,opacity] duration-500 ease-out
                   md:px-15 md:py-[18px]
@@ -143,26 +144,30 @@ export default function Nav({ menuOpen, onToggleMenu }: Props) {
           />
         </div>
 
-        {/* "+" that rotates into "×" when open, as on the original */}
+        {/* "+" that rotates into "×" when open. The two bars are a fixed
+            cross inside a box that rotates as a whole, so the change of icon is
+            one continuous spin rather than two marks swapping. Tailwind v4 maps
+            `rotate-*` onto the standalone `rotate` property, so that — not
+            `transform` — is what has to be in the transition. */}
         <button
           type="button"
-          aria-label="Toggle menu"
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
           aria-expanded={menuOpen}
           onClick={onToggleMenu}
           className="relative ml-1 flex h-7 w-7 shrink-0 items-center justify-center"
         >
-          <span className="relative block h-[22px] w-[22px]">
+          <span
+            className={`relative block h-[22px] w-[22px] transition-[rotate] duration-500
+                        ease-[cubic-bezier(0.76,0,0.24,1)]
+                        ${menuOpen ? "rotate-[135deg]" : "rotate-0"}`}
+          >
             <span
               className={`absolute top-1/2 left-1/2 h-px w-[18px] -translate-x-1/2 -translate-y-1/2
-                          transition-[transform,background-color] duration-400
-                          ease-[cubic-bezier(0.76,0,0.24,1)]
-                          ${light ? "bg-white" : "bg-ink"} ${menuOpen ? "rotate-45" : ""}`}
+                          transition-colors duration-500 ${light ? "bg-white" : "bg-ink"}`}
             />
             <span
               className={`absolute top-1/2 left-1/2 h-[18px] w-px -translate-x-1/2 -translate-y-1/2
-                          transition-[transform,background-color] duration-400
-                          ease-[cubic-bezier(0.76,0,0.24,1)]
-                          ${light ? "bg-white" : "bg-ink"} ${menuOpen ? "rotate-45" : ""}`}
+                          transition-colors duration-500 ${light ? "bg-white" : "bg-ink"}`}
             />
           </span>
         </button>

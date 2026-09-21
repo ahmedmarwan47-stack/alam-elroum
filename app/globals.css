@@ -103,9 +103,24 @@ html.lenis body {
   }
 }
 
-/* Scroll lock while the preloader or the menu own the screen ---------------- */
+/* Scroll lock while the preloader or the menu own the screen ----------------
+   On platforms with classic, space-taking scrollbars (Windows, Linux, and any
+   Mac set to "always show"), `overflow: hidden` takes the scrollbar away and
+   the viewport grows by its width — which slides the page and every fixed
+   layer sideways as the menu opens, most visibly the header's wordmark,
+   centred seal and "+". `lockScroll()` measures that width into
+   --scrollbar-gutter, and it is given back here: as padding to the page, and
+   as a right margin to the fixed layers, which html's padding cannot reach
+   because they are sized by the viewport. Everything then stays exactly where
+   it was, both ways. Where scrollbars are overlays the width is 0 and none of
+   this does anything. */
 html.scroll-locked {
   overflow: hidden;
+  padding-right: var(--scrollbar-gutter, 0px);
+}
+
+html.scroll-locked [data-fixed-layer] {
+  margin-right: var(--scrollbar-gutter, 0px);
 }
 
 /* Typewriter caret --------------------------------------------------------- */

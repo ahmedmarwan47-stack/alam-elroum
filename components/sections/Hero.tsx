@@ -120,13 +120,13 @@ export default function Hero() {
             </h1>
           </div>
 
-          {/* Location — sits clear of the register card that peeks 28px over
-              the bottom edge on phones, plus its shadow */}
+          {/* Location — sits clear of the register card that peeks over the
+              bottom edge (28px on phones, 36px from md up) plus its shadow */}
           <div
             ref={location}
             className="absolute bottom-14 left-6 z-20
                        font-sans text-12 text-white
-                       md:bottom-10 md:left-[clamp(40px,5vw,76px)] md:text-16"
+                       md:bottom-20 md:left-[clamp(40px,5vw,76px)] md:text-16"
           >
             Mediterranean , Egypt
           </div>

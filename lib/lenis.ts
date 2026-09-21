@@ -21,15 +21,26 @@ export const isNavigating = () => navigating;
 /** Reference-counted so the menu closing never unlocks a drawer that is still open. */
 export const lockScroll = () => {
   locks += 1;
+  const root = document.documentElement;
+  // Measured first of all — while the scrollbar is still there, before either
+  // Lenis's own `lenis-stopped` or our `scroll-locked` hides it: the width the
+  // lock is about to reclaim. `globals.css` hands it back so nothing — page or
+  // fixed layer — moves sideways. Zero with overlay scrollbars.
+  if (locks === 1) {
+    const gutter = window.innerWidth - root.clientWidth;
+    root.style.setProperty("--scrollbar-gutter", `${gutter}px`);
+  }
   instance?.stop();
-  document.documentElement.classList.add("scroll-locked");
+  root.classList.add("scroll-locked");
 };
 
 export const unlockScroll = () => {
   locks = Math.max(0, locks - 1);
   if (locks > 0) return;
   instance?.start();
-  document.documentElement.classList.remove("scroll-locked");
+  const root = document.documentElement;
+  root.classList.remove("scroll-locked");
+  root.style.removeProperty("--scrollbar-gutter");
 };
 
 /**

@@ -8,7 +8,7 @@ import PressDrawer from "@/components/PressDrawer";
 import { ArrowRightIcon } from "@/components/icons";
 
 /**
- * Press — the three latest pieces of coverage in one row, in the site's editorial voice.
+ * Press Release — the three latest pieces of coverage in one row, in the site's editorial voice.
  * Each card opens its article in a side drawer rather than leaving the page.
  */
 export default function Press() {
@@ -54,13 +54,13 @@ export default function Press() {
           data-tag
           className="font-sans text-12 text-ink/40 md:text-16"
         >
-          Press
+          Press Release
         </span>
         <h2
           data-heading
           className="font-serif text-[clamp(28px,3.4vw,48px)] leading-[1.1] text-ink"
         >
-          In the Press
+          Latest Press Releases
         </h2>
       </div>
       <div data-rule className="mt-8 h-px w-full bg-ink/15" />

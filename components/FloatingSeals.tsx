@@ -73,6 +73,7 @@ export default function FloatingSeals() {
     <div
       ref={ref}
       aria-hidden="true"
+      data-fixed-layer
       className={`pointer-events-none fixed right-[14px] bottom-[14px] z-500
                   transition-opacity duration-500
                   md:right-[clamp(16px,2.4vw,40px)] md:bottom-[clamp(16px,3vh,40px)]

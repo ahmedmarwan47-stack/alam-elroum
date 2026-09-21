@@ -211,6 +211,7 @@ export default function Preloader() {
     <div
       ref={root}
       aria-hidden
+      data-fixed-layer
       className={`fixed inset-0 z-[99999] flex items-center justify-center bg-cream
                   transition-[opacity,visibility] duration-800 ease-out
                   ${phase === "hidden" ? "pointer-events-none invisible opacity-0" : ""}`}

@@ -48,8 +48,8 @@ export default function Home() {
       <Statement />
       <Feature />
       <LifestyleStack />
-      <Connect />
       <Gallery />
+      <Connect />
       <Press />
       <Legacy />
       <Footer />
