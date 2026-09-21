@@ -115,8 +115,6 @@ export default function PressDrawer({ article, open, onClose }: Props) {
               </div>
               <div className="px-6 py-8 md:px-10 md:py-10">
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-sans text-12 tracking-[0.04em] text-ink/50 md:text-16">
-                  <span>{shown.source}</span>
-                  <span className="h-1 w-1 rounded-full bg-ink/40" />
                   <span>{shown.date}</span>
                   <span className="h-1 w-1 rounded-full bg-ink/40" />
                   <span>{shown.readTime}</span>

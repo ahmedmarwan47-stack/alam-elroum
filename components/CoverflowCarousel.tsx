@@ -40,15 +40,19 @@ function Arrow({ dir, onClick }: { dir: -1 | 1; onClick: () => void }) {
       type="button"
       aria-label={dir < 0 ? "Previous slide" : "Next slide"}
       onClick={onClick}
-      className={`group absolute top-1/2 z-[200] hidden h-11 w-11 -translate-y-1/2 items-center
-                  justify-center rounded-full border border-ink/25 text-ink
+      // A bare outline disappears over a photograph, so the control carries its
+      // own frosted plate: a low white wash over a blur, which reads on a dark
+      // render and on a bright one. Hover still fills it solid with ink.
+      className={`group absolute top-1/2 z-[200] hidden h-12 w-12 -translate-y-1/2 items-center
+                  justify-center rounded-full border border-white/50 bg-white/25 text-ink
+                  shadow-[0_2px_14px_rgba(28,43,58,0.14)] backdrop-blur-md
                   transition-[background-color,border-color,color] duration-400
                   hover:border-ink hover:bg-ink hover:text-cream md:flex
                   ${dir < 0 ? "left-4 lg:left-10" : "right-4 lg:right-10"}`}
     >
       <svg
         viewBox="0 0 20 20"
-        className={`h-4 w-4 transition-transform duration-400 ease-[cubic-bezier(0.16,1,0.3,1)]
+        className={`h-[18px] w-[18px] transition-transform duration-400 ease-[cubic-bezier(0.16,1,0.3,1)]
                     ${dir < 0 ? "group-hover:-translate-x-0.5" : "group-hover:translate-x-0.5"}`}
         fill="none"
         stroke="currentColor"
@@ -75,7 +79,7 @@ export default function CoverflowCarousel({
   perspective = 3,
   falloff = 0.56,
   fade = 0.12,
-  cardWidth = "clamp(220px, 34vw, 480px)",
+  cardWidth = "clamp(260px, 46vw, 660px)",
   gap = 0.06,
   loop = true,
   label = "Gallery",
@@ -98,6 +102,9 @@ export default function CoverflowCarousel({
     t: number;
     moved: boolean;
   } | null>(null);
+
+  /** The card the press landed on — read on pointerup, see `endDrag`. */
+  const hitRef = React.useRef<number | null>(null);
 
   const [selected, setSelected] = React.useState(0);
 
@@ -175,12 +182,63 @@ export default function CoverflowCarousel({
     [clamp, settle],
   );
 
+  /** How far a card sits from the centre of the ring, in card steps. */
+  const offsetOf = React.useCallback(
+    (index: number) => {
+      let offset = index - posRef.current;
+      if (loop) {
+        offset = ((offset % count) + count) % count;
+        if (offset > count / 2) offset -= count;
+      }
+      return Math.abs(offset);
+    },
+    [count, loop],
+  );
+
+  /**
+   * Which card is under the pointer.
+   *
+   * Not `document.elementFromPoint`, and not a click handler on the card:
+   * the rake pushes every card but the centre one *behind* the track's own
+   * plane (`translateZ` is negative), and a browser hit-tests that plane
+   * first — so the neighbours never receive a press at all, which is why
+   * tapping one used to do nothing. Their boxes are still measurable, so
+   * test those directly, and where two overlap take the one nearer the
+   * centre — the one drawn in front.
+   */
+  const cardAt = React.useCallback(
+    (clientX: number, clientY: number) => {
+      let hit: number | null = null;
+      let nearest = Infinity;
+      cardRefs.current.forEach((card, index) => {
+        if (!card || Number(card.style.opacity || "1") < 0.15) return;
+        const box = card.getBoundingClientRect();
+        if (
+          clientX < box.left ||
+          clientX > box.right ||
+          clientY < box.top ||
+          clientY > box.bottom
+        ) {
+          return;
+        }
+        const distance = offsetOf(index);
+        if (distance < nearest) {
+          nearest = distance;
+          hit = index;
+        }
+      });
+      return hit;
+    },
+    [offsetOf],
+  );
+
   const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     if (rafRef.current !== null) {
       cancelAnimationFrame(rafRef.current);
       rafRef.current = null;
     }
     event.currentTarget.setPointerCapture(event.pointerId);
+    hitRef.current = cardAt(event.clientX, event.clientY);
     targetRef.current = posRef.current;
     dragRef.current = {
       id: event.pointerId,
@@ -213,6 +271,14 @@ export default function CoverflowCarousel({
     const drag = dragRef.current;
     if (!drag || drag.id !== event.pointerId) return;
     dragRef.current = null;
+    const hit = hitRef.current;
+    hitRef.current = null;
+    // A tap on an off-centre card sweeps the ring to it, so the carousel can
+    // be driven by pointing as well as by dragging.
+    if (!drag.moved && hit !== null && hit !== indexAt(posRef.current)) {
+      goTo(hit);
+      return;
+    }
     const carried = Math.max(-2, Math.min(2, drag.v * 0.18));
     settle(clamp(Math.round(posRef.current + carried)));
   };
@@ -257,6 +323,7 @@ export default function CoverflowCarousel({
           onPointerMove={onPointerMove}
           onPointerUp={endDrag}
           onPointerCancel={endDrag}
+          data-cursor="drag"
           onKeyDown={(event) => {
             if (event.key === "ArrowLeft") {
               event.preventDefault();
@@ -289,9 +356,6 @@ export default function CoverflowCarousel({
                 role="group"
                 aria-roledescription="slide"
                 aria-label={`${index + 1} of ${count}`}
-                onClick={() => {
-                  if (!dragRef.current?.moved && index !== selected) goTo(index);
-                }}
                 className="absolute top-0 left-1/2 aspect-[4/3] overflow-hidden bg-ink/10
                            shadow-[0_16px_40px_rgba(28,43,58,0.16)] will-change-transform"
                 style={{ width: "var(--cf-card)" }}
@@ -301,7 +365,7 @@ export default function CoverflowCarousel({
                   alt={slide.alt}
                   fill
                   draggable={false}
-                  sizes="(max-width: 768px) 60vw, 34vw"
+                  sizes="(max-width: 768px) 80vw, 46vw"
                   className="pointer-events-none select-none object-cover"
                 />
               </div>

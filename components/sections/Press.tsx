@@ -71,7 +71,7 @@ export default function Press() {
             <button
               type="button"
               onClick={() => show(article)}
-              className="group flex w-full flex-col gap-5 border-b border-ink/12 py-8 text-left"
+              className="group flex h-full w-full flex-col gap-5 py-8 text-left"
             >
               <div className="relative aspect-[16/10] w-full overflow-hidden bg-ink/10">
                 <Image
@@ -85,8 +85,6 @@ export default function Press() {
               </div>
 
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-sans text-12 tracking-[0.04em] text-ink/50 md:text-16">
-                <span>{article.source}</span>
-                <span className="h-1 w-1 rounded-full bg-ink/40" />
                 <span>{article.date}</span>
                 <span className="h-1 w-1 rounded-full bg-ink/40" />
                 <span>{article.readTime}</span>
@@ -97,7 +95,11 @@ export default function Press() {
               </h3>
               <p className="font-sans text-16 leading-[1.6] text-ink/70">{article.excerpt}</p>
 
-              <span className="mt-1 inline-flex items-center gap-2 font-sans text-12 tracking-[0.06em] text-ink md:text-16">
+              {/* `mt-auto`, so the link sits on the floor of the card. The
+                  grid already stretches every card to the tallest in the row;
+                  this is what stops the links themselves from laddering if a
+                  title or excerpt ever runs a line longer than its neighbours. */}
+              <span className="mt-auto inline-flex items-center gap-2 pt-1 font-sans text-12 tracking-[0.06em] text-ink md:text-16">
                 Read the article
                 <ArrowRightIcon className="h-5 w-5" />
               </span>

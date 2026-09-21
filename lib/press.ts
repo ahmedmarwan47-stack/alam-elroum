@@ -3,7 +3,6 @@ export type PressArticle = {
   title: string;
   excerpt: string;
   image: string;
-  source: string;
   date: string;
   readTime: string;
   /** Paragraphs shown in the drawer. */
@@ -12,17 +11,21 @@ export type PressArticle = {
 
 /**
  * PLACEHOLDER CONTENT — swap for real coverage before launch. The imagery is
- * the site's own renders; the publication names are deliberately generic so
- * nothing here reads as a real attribution.
+ * the site's own renders, and no publication is named — nothing here should
+ * read as a real attribution until the coverage is real.
+ *
+ * Excerpts are held to roughly 125–130 characters so the three cards in the
+ * row wrap to the same depth and read as one band rather than a staircase.
+ * Keep replacements within that range. <Press> also pins the link to the
+ * bottom of each card, so a stray long line cannot re-introduce the ladder.
  */
 export const pressArticles: PressArticle[] = [
   {
     slug: "coastline-shaped-for-greatness",
     title: "A Coastline Shaped for Greatness",
     excerpt:
-      "Qatari Diar unveils Alam Al Roum, a 20.58 million square metre city on Egypt's North Coast, built around 7.2 kilometres of Mediterranean shoreline.",
+      "Qatari Diar unveils Alam Al Roum, a 20.58 million square metre city on Egypt's North Coast, shaped by 7.2 kilometres of shoreline.",
     image: "/images/image-11.jpg",
-    source: "Publication name",
     date: "12 September 2026",
     readTime: "5 min read",
     body: [
@@ -35,9 +38,8 @@ export const pressArticles: PressArticle[] = [
     slug: "the-lighthouse-returns",
     title: "The Lighthouse Returns to the Headland",
     excerpt:
-      "For centuries this headland guided sailors home. The masterplan places a new landmark at the heart of the coastline.",
+      "For centuries this headland guided sailors home. The masterplan sets a new landmark at its heart, facing the open Mediterranean.",
     image: "/images/image-18.jpg",
-    source: "Publication name",
     date: "28 August 2026",
     readTime: "4 min read",
     body: [
@@ -49,9 +51,8 @@ export const pressArticles: PressArticle[] = [
     slug: "marina-experience",
     title: "Three Marinas, One Waterfront",
     excerpt:
-      "An international marina for global yachting arrivals, a neighbourhood marina at community scale and a private marina for exclusive use.",
+      "An international marina for global yachting arrivals, a neighbourhood marina at community scale, and a third kept for residents.",
     image: "/images/ls-marina.jpg",
-    source: "Publication name",
     date: "10 August 2026",
     readTime: "6 min read",
     body: [
@@ -63,9 +64,8 @@ export const pressArticles: PressArticle[] = [
     slug: "golf-overlooking-the-sea",
     title: "Championship Golf Above the Mediterranean",
     excerpt:
-      "The 18-hole course lies along the northern edge of Alam Al Roum, with a clifftop clubhouse where the views become part of the game.",
+      "The 18-hole course lies along the northern edge of Alam Al Roum, with a clifftop clubhouse where the view becomes part of the game.",
     image: "/images/ls-golf.jpg",
-    source: "Publication name",
     date: "22 July 2026",
     readTime: "3 min read",
     body: [
@@ -77,9 +77,8 @@ export const pressArticles: PressArticle[] = [
     slug: "smart-sustainable-living",
     title: "Designed for a Lifetime, Not a Season",
     excerpt:
-      "An education hub, a longevity medical centre, autonomous mobility and renewable energy infrastructure underpin the city's long view.",
+      "An education hub, a longevity medical centre, autonomous mobility and renewable energy underpin a city built for a lifetime.",
     image: "/images/ls-smart.jpg",
-    source: "Publication name",
     date: "3 July 2026",
     readTime: "7 min read",
     body: [
@@ -91,9 +90,8 @@ export const pressArticles: PressArticle[] = [
     slug: "qatari-diar-north-coast",
     title: "Qatari Diar's Defining Statement on the North Coast",
     excerpt:
-      "Twenty years, twenty countries, one standard: the developer behind Lusail brings the same principle to Egypt's Mediterranean.",
+      "Twenty years, twenty countries, one standard: the developer behind Lusail brings that same principle to Egypt's Mediterranean.",
     image: "/images/image-16.jpg",
-    source: "Publication name",
     date: "15 June 2026",
     readTime: "5 min read",
     body: [

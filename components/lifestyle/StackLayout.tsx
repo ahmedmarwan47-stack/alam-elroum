@@ -6,7 +6,11 @@ import { ScrollTrigger, clamp01, easeInOutQuad, easeOutCubic } from "@/lib/gsap"
 import { lifestyleCards } from "@/lib/lifestyle";
 
 /**
- * Section 08 — Lifestyle.
+ * Section 08 — Lifestyle, the original layout: the full-height stack.
+ *
+ * The longest thing on the page by a distance — twelve viewports, two fifths
+ * of the whole scroll — which is what the layout toggle exists to compare
+ * against. See <LifestyleSwitcher>.
  *
  * Eleven absolutely-positioned cards sharing one sticky viewport, each
  * sliding up over the one before. The outer track is (cards + 1) × 100vh:
@@ -36,7 +40,7 @@ type Parts = {
   img: HTMLElement;
 };
 
-export default function LifestyleStack() {
+export default function StackLayout() {
   const outer = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -114,7 +118,6 @@ export default function LifestyleStack() {
   return (
     <div
       ref={outer}
-      id="ls-outer"
       className="relative"
       style={{ height: `${(lifestyleCards.length + 1) * 100}vh` }}
     >

@@ -23,6 +23,15 @@ type Props = {
   fadeOut?: boolean;
   /** Section 05 tracks its headline wide; 03 tracks it tight. */
   wideTracking?: boolean;
+  /**
+   * Hands the full-bleed frame straight to the next section: once the image
+   * has filled the screen and the track is spent, the whole stage is hidden
+   * instead of scrolling away. The section that follows must be pulled up by
+   * a viewport (`-mt-[100vh]`) so its own pinned stage is already sitting
+   * underneath, showing the same photograph — which is how the picture stays
+   * on screen exactly once instead of arriving twice.
+   */
+  handOff?: boolean;
   objectPosition?: string;
 };
 
@@ -46,11 +55,13 @@ export default function PinnedReveal({
   tag,
   fadeOut = false,
   wideTracking = false,
+  handOff = false,
   objectPosition = "center center",
 }: Props) {
   const track = useRef<HTMLElement>(null);
   const sticky = useRef<HTMLDivElement>(null);
   const content = useRef<HTMLDivElement>(null);
+  const tagEl = useRef<HTMLSpanElement>(null);
   const wrap = useRef<HTMLDivElement>(null);
   const img = useRef<HTMLImageElement>(null);
 
@@ -103,9 +114,14 @@ export default function PinnedReveal({
       imgEl.style.transform = `scale(${(1.08 - 0.08 * e).toFixed(4)})`;
       stickyEl.dataset.onImage = e >= 0.5 ? "true" : "false";
       if (fadeOut) {
-        contentEl.style.opacity = String(
-          1 - easeOutQuad(clamp01((p - 0.68) / 0.17)),
-        );
+        const o = String(1 - easeOutQuad(clamp01((p - 0.68) / 0.17)));
+        contentEl.style.opacity = o;
+        if (tagEl.current) tagEl.current.style.opacity = o;
+      }
+      // Spent: the next section is pinned underneath on the same frame, so
+      // step out of the way rather than scrolling the picture off twice.
+      if (handOff) {
+        stickyEl.style.visibility = p > 0.9995 ? "hidden" : "visible";
       }
     };
 
@@ -122,6 +138,10 @@ export default function PinnedReveal({
       end: "bottom bottom",
       onUpdate: (self) => apply(self.progress),
       onRefresh: (self) => apply(self.progress),
+      // A fast flick can cross the end without a final onUpdate; these keep
+      // the hand-off from being left half-applied either way.
+      onLeave: () => apply(1),
+      onEnterBack: (self) => apply(self.progress),
     });
 
     apply(expand.progress);
@@ -130,7 +150,7 @@ export default function PinnedReveal({
       typing.kill();
       expand.kill();
     };
-  }, [fadeOut]);
+  }, [fadeOut, handOff]);
 
   // Each word is its own inline block so it can rise and sharpen on its own.
   const lines = headline.map((line, i) => (
@@ -148,7 +168,11 @@ export default function PinnedReveal({
   ));
 
   return (
-    <section ref={track} id={id} className="relative h-[220vh] md:h-[200vh]">
+    <section
+      ref={track}
+      id={id}
+      className={`relative h-[220vh] md:h-[200vh] ${handOff ? "z-10" : ""}`}
+    >
       <div
         ref={sticky}
         data-on-image="false"
@@ -157,6 +181,7 @@ export default function PinnedReveal({
       >
         {tag && (
           <span
+            ref={tagEl}
             className={`absolute inset-x-0 top-[112px] z-20 text-center font-sans text-12
                         text-ink transition-[color,opacity,transform] duration-700
                         ease-[cubic-bezier(0.16,1,0.3,1)] group-data-[on-image=true]:text-white

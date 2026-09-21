@@ -109,11 +109,11 @@ export default function Nav({ menuOpen, onToggleMenu }: Props) {
       <Image
         src="/images/image-17.png"
         alt="Qatari Diar"
-        width={34}
-        height={34}
+        width={96}
+        height={96}
         priority
-        className="absolute top-1/2 left-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2
-                   rounded-[2px] md:h-[34px] md:w-[34px]"
+        className="absolute top-1/2 left-1/2 h-8 w-8 -translate-x-1/2 -translate-y-1/2
+                   rounded-[2px] object-contain md:h-12 md:w-12"
       />
 
       <div className="flex items-center gap-2 md:gap-6">
@@ -144,31 +144,36 @@ export default function Nav({ menuOpen, onToggleMenu }: Props) {
           />
         </div>
 
-        {/* "+" that rotates into "×" when open. The two bars are a fixed
-            cross inside a box that rotates as a whole, so the change of icon is
-            one continuous spin rather than two marks swapping. Tailwind v4 maps
-            `rotate-*` onto the standalone `rotate` property, so that — not
-            `transform` — is what has to be in the transition. */}
+        {/* Hamburger that folds into an ×. Two rules only: each bar slides to
+            the centre line and turns. `top` and `rotate` are separate CSS
+            properties, so both can be transitioned without touching
+            `transform` — which is where Tailwind v4 puts the centring
+            translate and would otherwise fight the turn. */}
         <button
           type="button"
           aria-label={menuOpen ? "Close menu" : "Open menu"}
           aria-expanded={menuOpen}
           onClick={onToggleMenu}
-          className="relative ml-1 flex h-7 w-7 shrink-0 items-center justify-center"
+          className="relative ml-1 flex h-9 w-9 shrink-0 items-center justify-center"
         >
-          <span
-            className={`relative block h-[22px] w-[22px] transition-[rotate] duration-500
-                        ease-[cubic-bezier(0.76,0,0.24,1)]
-                        ${menuOpen ? "rotate-[135deg]" : "rotate-0"}`}
-          >
-            <span
-              className={`absolute top-1/2 left-1/2 h-px w-[18px] -translate-x-1/2 -translate-y-1/2
-                          transition-colors duration-500 ${light ? "bg-white" : "bg-ink"}`}
-            />
-            <span
-              className={`absolute top-1/2 left-1/2 h-[18px] w-px -translate-x-1/2 -translate-y-1/2
-                          transition-colors duration-500 ${light ? "bg-white" : "bg-ink"}`}
-            />
+          <span className="relative block h-6 w-6">
+            {[0, 1].map((i) => (
+              <span
+                key={i}
+                className={`absolute left-0 h-px w-full origin-center transition-[top,rotate,background-color]
+                            duration-500 ease-[cubic-bezier(0.76,0,0.24,1)]
+                            ${light ? "bg-white" : "bg-ink"}
+                            ${
+                              menuOpen
+                                ? i === 0
+                                  ? "top-1/2 rotate-45"
+                                  : "top-1/2 -rotate-45"
+                                : i === 0
+                                  ? "top-[8px] rotate-0"
+                                  : "top-[16px] rotate-0"
+                            }`}
+              />
+            ))}
           </span>
         </button>
       </div>

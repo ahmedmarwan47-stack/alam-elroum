@@ -8,7 +8,7 @@ import PinnedReveal from "@/components/sections/PinnedReveal";
 import Sequence from "@/components/sections/Sequence";
 import Statement from "@/components/sections/Statement";
 import Feature from "@/components/sections/Feature";
-import LifestyleStack from "@/components/sections/LifestyleStack";
+import LifestyleSwitcher from "@/components/lifestyle/LifestyleSwitcher";
 import Connect from "@/components/sections/Connect";
 import Gallery from "@/components/sections/Gallery";
 import Press from "@/components/sections/Press";
@@ -32,6 +32,8 @@ export default function Home() {
         tag="About"
         headline={["For Centuries, This Headland", "Guided Sailors Home."]}
         objectPosition="center 30%"
+        fadeOut
+        handOff
       />
 
       <Sequence />
@@ -47,7 +49,7 @@ export default function Home() {
 
       <Statement />
       <Feature />
-      <LifestyleStack />
+      <LifestyleSwitcher />
       <Gallery />
       <Connect />
       <Press />

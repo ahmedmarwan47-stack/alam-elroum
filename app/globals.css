@@ -108,7 +108,7 @@ html.lenis body {
    Mac set to "always show"), `overflow: hidden` takes the scrollbar away and
    the viewport grows by its width — which slides the page and every fixed
    layer sideways as the menu opens, most visibly the header's wordmark,
-   centred seal and "+". `lockScroll()` measures that width into
+   centred seal and menu button. `lockScroll()` measures that width into
    --scrollbar-gutter, and it is given back here: as padding to the page, and
    as a right margin to the fixed layers, which html's padding cannot reach
    because they are sized by the viewport. Everything then stays exactly where
@@ -155,57 +155,193 @@ html.scroll-locked [data-fixed-layer] {
   animation: pre-bob 5s ease-in-out infinite;
 }
 
-/* Custom cursor ------------------------------------------------------------ */
+/* Custom cursor --------------------------------------------------------------
+   Two layers, each a fixed 88px box that the script centres on the pointer,
+   with the visible mark inside. Sizing the *inner* mark is what lets it grow
+   and morph from its own centre — and it leaves the outer transform free for
+   the script, which rewrites it every frame.
+
+   `html[data-cursor-mode]` is the whole vocabulary: default, hover, text,
+   drag, native. See <Cursor> for what sets it.
+--------------------------------------------------------------------------- */
 .site-cursor-dot,
 .site-cursor-ring {
   position: fixed;
   top: 0;
   left: 0;
+  display: flex;
+  width: 88px;
+  height: 88px;
+  align-items: center;
+  justify-content: center;
   pointer-events: none;
-  border-radius: 50%;
   opacity: 0;
   will-change: transform;
+  transition: opacity 0.3s ease;
 }
 .site-cursor-dot {
   z-index: 99999;
+}
+.site-cursor-ring {
+  z-index: 99998;
+}
+
+.site-cursor-mark {
+  display: block;
   width: 8px;
   height: 8px;
+  border-radius: 999px;
   background: var(--color-ink);
   transition:
     width 0.3s ease,
     height 0.3s ease,
-    background-color 0.3s ease,
-    opacity 0.3s ease;
+    border-radius 0.3s ease,
+    opacity 0.25s ease,
+    background-color 0.3s ease;
 }
-.site-cursor-ring {
-  z-index: 99998;
+
+.site-cursor-circle {
+  position: relative;
+  display: flex;
   width: 36px;
   height: 36px;
+  align-items: center;
+  justify-content: center;
   border: 1px solid rgba(28, 43, 58, 0.4);
+  border-radius: 999px;
+  box-shadow: 0 0 0 rgba(28, 43, 58, 0);
   transition:
     width 0.3s ease,
     height 0.3s ease,
+    opacity 0.25s ease,
     border-color 0.3s ease,
-    opacity 0.3s ease;
+    background-color 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.15s ease;
 }
-html[data-cursor-hover="true"] .site-cursor-dot {
-  width: 12px;
-  height: 12px;
+
+.site-cursor-chevron {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  color: var(--color-ink);
+  opacity: 0;
+  transition:
+    opacity 0.25s ease,
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.3s ease;
 }
-html[data-cursor-hover="true"] .site-cursor-ring {
-  width: 56px;
-  height: 56px;
+.site-cursor-chevron[data-dir="l"] {
+  left: 10px;
+  transform: translateX(6px);
 }
-html[data-cursor-down="true"] .site-cursor-ring {
-  transform: scale(0.8);
-  transition: transform 0.15s ease;
+.site-cursor-chevron[data-dir="r"] {
+  right: 10px;
+  transform: translateX(-6px);
 }
-html[data-cursor-dark="true"] .site-cursor-dot {
+
+/* link — the same frosted treatment the gallery gets, because it reads on a
+   photograph where a bare outline does not. The dot stays: you are aiming at
+   a target here, not sweeping, so the precise mark still earns its place. */
+html[data-cursor-mode="link"] .site-cursor-mark {
+  width: 10px;
+  height: 10px;
+}
+html[data-cursor-mode="link"] .site-cursor-circle {
+  width: 60px;
+  height: 60px;
+  border-color: rgba(28, 43, 58, 0.45);
+  background: rgba(28, 43, 58, 0.07);
+  backdrop-filter: blur(1px);
+}
+
+/* text — an I-beam, and the trailing ring gets out of the way */
+html[data-cursor-mode="text"] .site-cursor-mark {
+  width: 2px;
+  height: 26px;
+  border-radius: 1px;
+}
+html[data-cursor-mode="text"] .site-cursor-circle {
+  opacity: 0;
+}
+
+/* drag — the sweep, spelled out. Built like the gallery's own arrow controls:
+   a real frosted plate with a firm edge and a shadow under it, because this
+   sits over renders where a faint outline reads as nothing. The chevrons then
+   rock outward on a slow loop — a cursor that is quietly doing the gesture it
+   is asking for is far harder to miss than one that only changes size. */
+html[data-cursor-mode="drag"] .site-cursor-mark {
+  opacity: 0;
+}
+html[data-cursor-mode="drag"] .site-cursor-circle {
+  width: 84px;
+  height: 84px;
+  border-color: rgba(28, 43, 58, 0.5);
+  background: rgba(240, 237, 230, 0.3);
+  box-shadow: 0 4px 20px rgba(28, 43, 58, 0.18);
+  backdrop-filter: blur(6px) saturate(1.1);
+}
+html[data-cursor-mode="drag"] .site-cursor-chevron {
+  opacity: 1;
+  transform: translateX(0);
+}
+html[data-cursor-mode="drag"] .site-cursor-chevron[data-dir="l"] {
+  animation: cursor-sweep-l 2s ease-in-out infinite;
+}
+html[data-cursor-mode="drag"] .site-cursor-chevron[data-dir="r"] {
+  animation: cursor-sweep-r 2s ease-in-out infinite;
+}
+
+@keyframes cursor-sweep-l {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-4px);
+  }
+}
+@keyframes cursor-sweep-r {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+}
+
+/* native — form fields keep the real caret, so ours steps aside */
+html[data-cursor-mode="native"] .site-cursor-mark,
+html[data-cursor-mode="native"] .site-cursor-circle {
+  opacity: 0;
+}
+
+/* pressed */
+html[data-cursor-down="true"] .site-cursor-circle {
+  transform: scale(0.82);
+}
+
+/* over dark surfaces */
+html[data-cursor-dark="true"] .site-cursor-mark {
   background: #ffffff;
 }
-html[data-cursor-dark="true"] .site-cursor-ring {
+html[data-cursor-dark="true"] .site-cursor-circle {
   border-color: rgba(255, 255, 255, 0.45);
 }
+html[data-cursor-dark="true"] .site-cursor-chevron {
+  color: #ffffff;
+}
+html[data-cursor-dark="true"][data-cursor-mode="link"] .site-cursor-circle {
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.12);
+}
+html[data-cursor-dark="true"][data-cursor-mode="drag"] .site-cursor-circle {
+  border-color: rgba(255, 255, 255, 0.65);
+  background: rgba(28, 43, 58, 0.28);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
 html.has-cursor,
 html.has-cursor :where(*:not(input):not(textarea):not(select)) {
   cursor: none !important;

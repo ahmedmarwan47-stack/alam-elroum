@@ -10,12 +10,20 @@ import { ScrollTrigger } from "@/lib/gsap";
  * A 250vh track pinning one viewport through three beats, driven by scroll
  * progress but animated with the original's CSS transitions:
  *
- *   1. (0–5%)    image-14 full bleed, nothing else
- *   2. (5–45%)   the cream "A Landmark of Return" panel slides in from the
+ *   1. (0–3%)    image-14 full bleed — the *same* frame section 03 has just
+ *                finished expanding to, taken over in place
+ *   2. (3–45%)   the cream "A Landmark of Return" panel slides in from the
  *                right and holds
  *   3. (45%+)    panel slides back out, the photograph cross-fades to the
  *                Lusail skyline, and the Qatari Diar overlay fades up with a
  *                Read More expander
+ *
+ * The track is pulled up a full viewport so it pins at the exact scroll where
+ * section 03 stops pinning, and 03 hides itself there (`handOff`). Without
+ * that the reader met the same photograph twice — once as 03 scrolled it away
+ * and again as this section brought an identical copy back up — with a dead
+ * viewport of scrolling in between before the panel moved. Now the picture
+ * arrives once and the panel follows straight on.
  */
 export default function Sequence() {
   const track = useRef<HTMLDivElement>(null);
@@ -27,7 +35,7 @@ export default function Sequence() {
     if (!track.current) return;
 
     const apply = (p: number) => {
-      setBeat(p >= 0.45 ? 2 : p >= 0.05 ? 1 : 0);
+      setBeat(p >= 0.45 ? 2 : p >= 0.03 ? 1 : 0);
       setOverlay(p >= 0.47);
     };
 
@@ -44,7 +52,7 @@ export default function Sequence() {
   }, []);
 
   return (
-    <div ref={track} id="s4-trigger" className="relative h-[250vh]">
+    <div ref={track} id="s4-trigger" className="relative -mt-[100vh] h-[250vh]">
       <div className="sticky top-0 h-screen overflow-hidden">
         {/* Imagery only — data-dark must NOT wrap the cream panel, or the
             floating seals invert while sitting over it. */}
@@ -55,7 +63,8 @@ export default function Sequence() {
             fill
             sizes="100vw"
             className="object-cover transition-opacity duration-[900ms] ease-[ease]"
-            style={{ opacity: beat >= 2 ? 0 : 1 }}
+            // Same framing as section 03 leaves it on, or the hand-off jumps.
+            style={{ opacity: beat >= 2 ? 0 : 1, objectPosition: "center 30%" }}
           />
           <Image
             src="/images/image-16.jpg"

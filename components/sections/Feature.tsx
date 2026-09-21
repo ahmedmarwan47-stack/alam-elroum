@@ -34,7 +34,7 @@ function parseStat(value: string) {
  * then a full-bleed rust panel listing what the plan delivers.
  *
  * Mirrors the original `.s7`: hairlines draw in from the left, stat contents
- * fade up behind them, deliverable rows slide in from the right. Everything is
+ * fade up behind them, the deliverables come up as a bulleted list. Everything is
  * rendered in its final state so reduced-motion users (and the server render)
  * see the finished layout; the tweens only take over when motion is allowed.
  */
@@ -140,19 +140,22 @@ export default function Feature() {
           0,
         );
 
+        // Bullets, so they arrive as a list is read — from the left, each
+        // marker just ahead of its line — rather than sliding in from the
+        // right the way the hairline rows used to.
         (q("[data-s7-deliver]") as HTMLElement[]).forEach((item, i) => {
-          const at = i * 0.08;
+          const at = i * 0.07;
           tl.fromTo(
-            item.querySelectorAll("[data-s7-line]"),
-            { scaleX: 0, transformOrigin: "left center" },
-            { scaleX: 1, duration: 0.9, ease: EASE_OUT },
+            item.querySelectorAll("[data-s7-dot]"),
+            { scale: 0, opacity: 0 },
+            { scale: 1, opacity: 1, duration: 0.5, ease: EASE_OUT },
             at,
           );
           tl.fromTo(
             item.querySelectorAll("[data-s7-deliver-text]"),
-            { x: 30, opacity: 0 },
+            { x: -12, opacity: 0 },
             { x: 0, opacity: 1, duration: 0.7, ease: EASE_OUT },
-            at,
+            at + 0.05,
           );
         });
       }
@@ -257,28 +260,19 @@ export default function Feature() {
           Delivers
         </h3>
 
-        <ul className="flex flex-col">
-          {DELIVERS.map((item, i) => (
-            <li
-              key={item}
-              data-s7-deliver
-              className="relative overflow-hidden py-5"
-            >
-              {i === 0 && (
-                <span
-                  data-s7-line
-                  aria-hidden
-                  className="absolute inset-x-0 top-0 h-px origin-left bg-white/20"
-                />
-              )}
+        {/* Bullets. Full-width rows between hairlines read as a menu you are
+            meant to click; this is a list of what gets built. */}
+        <ul className="flex flex-col gap-4 md:gap-5">
+          {DELIVERS.map((item) => (
+            <li key={item} data-s7-deliver className="flex items-start gap-3.5">
               <span
-                data-s7-line
+                data-s7-dot
                 aria-hidden
-                className="absolute inset-x-0 bottom-0 h-px origin-left bg-white/20"
+                className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-white/70 md:mt-[11px]"
               />
               <p
                 data-s7-deliver-text
-                className="font-sans text-16 leading-[1.5] text-white"
+                className="font-serif text-16 leading-[1.5] text-white md:text-18"
               >
                 {item}
               </p>
