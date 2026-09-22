@@ -32,7 +32,6 @@ export default function Press() {
           { y: 24, opacity: 0, filter: "blur(6px)", duration: 0.9, ease: EASE_OUT, clearProps: "filter" },
           0.05,
         )
-        .from("[data-rule]", { scaleX: 0, transformOrigin: "left center", duration: 1.2, ease: EASE_OUT }, 0.1)
         .from(
           "[data-card]",
           { y: 36, opacity: 0, duration: 0.9, ease: EASE_OUT, stagger: 0.08 },
@@ -63,9 +62,7 @@ export default function Press() {
           Latest Press Releases
         </h2>
       </div>
-      <div data-rule className="mt-8 h-px w-full bg-ink/15" />
-
-      <ul className="mt-2 grid list-none grid-cols-1 gap-x-10 md:grid-cols-2 lg:grid-cols-3">
+      <ul className="mt-10 grid list-none grid-cols-1 gap-x-10 md:grid-cols-2 lg:grid-cols-3">
         {pressArticles.slice(0, 3).map((article) => (
           <li key={article.slug} data-card>
             <button

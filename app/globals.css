@@ -209,6 +209,53 @@ html.scroll-locked [data-fixed-layer] {
   animation: pre-bob 5s ease-in-out infinite;
 }
 
+/* Lightweight photo placeholder --------------------------------------------
+   The two flat brand seals form the faces of a CSS coin. This is deliberately
+   independent of the WebGL coin scene: it is ready immediately on slow
+   connections and costs no model download or 3D initialization. */
+@keyframes photo-loader-flip {
+  0%,
+  38% {
+    transform: rotateY(0deg);
+  }
+  50%,
+  88% {
+    transform: rotateY(180deg);
+  }
+  100% {
+    transform: rotateY(360deg);
+  }
+}
+
+.photo-loader-coin {
+  transform-style: preserve-3d;
+  animation: photo-loader-flip 2s cubic-bezier(0.76, 0, 0.24, 1) infinite;
+}
+
+.photo-loader-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.photo-loader-face-back {
+  transform: rotateY(180deg);
+}
+
+@keyframes drawer-scene-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.drawer-scene-in {
+  animation: drawer-scene-in 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 /* Gallery cursor -------------------------------------------------------------
    One layer, one state. A fixed 88px box the script centres on the pointer,
    with the visible ring inside — sizing the *inner* mark is what lets it grow

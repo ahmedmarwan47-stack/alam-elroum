@@ -38,14 +38,6 @@ export default function Home() {
 
       <Sequence />
 
-      <PinnedReveal
-        id="s5-trigger"
-        image="/images/image-18.jpg"
-        alt="Mediterranean marina sunset"
-        headline={["Where the Land, Sea,", "and Sky Align."]}
-        fadeOut
-      />
-
       <Statement />
       <Feature />
       <LifestyleSwitcher />
