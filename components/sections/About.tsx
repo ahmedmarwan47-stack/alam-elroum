@@ -4,9 +4,11 @@ import { useEffect, useRef } from "react";
 import { gsap, EASE_OUT, reducedMotion } from "@/lib/gsap";
 
 /**
- * Section 02 — About. A full-viewport cream panel, split in two on desktop:
- * the copy reads as one column on the left, the right half is left clear for
- * the coin to land in.
+ * Section 02 — About. A cream panel split in two on desktop: the copy reads
+ * as one column on the left, the right half is left clear for the coin to
+ * land in. Sized to the landed coin (600px of canvas) plus air rather than to
+ * the viewport — a full screen left a band of empty cream above and below the
+ * only two things in the section.
  *
  * Both blocks (`.fade-up`) rise 40px into place on the site's ease-out with
  * the lower block trailing by 150ms, and the headline resolves out of a soft
@@ -45,14 +47,14 @@ export default function About() {
     <section
       ref={root}
       id="about"
-      className="bg-cream px-6 pt-16 pb-14
-                 md:grid md:min-h-screen md:grid-cols-[minmax(0,46%)_minmax(0,54%)]
-                 md:items-center md:gap-x-10 md:px-19 md:py-19"
+      className="bg-cream px-6 pt-10 pb-10
+                 md:grid md:min-h-[620px] md:grid-cols-[minmax(0,46%)_minmax(0,54%)]
+                 md:items-center md:gap-x-10 md:px-19 md:py-12"
     >
       {/* Phones: where the coin lands after the chapter (see <LeadCoin>),
           ahead of the copy so its glide never crosses text. Sized to the
           landed disc (~67vw) plus air. */}
-      <div data-coin-landing aria-hidden className="mb-10 md:hidden" style={{ height: "76vw" }} />
+      <div data-coin-landing aria-hidden className="mb-6 md:hidden" style={{ height: "72vw" }} />
 
       {/* One block, not two. The copy used to be pushed to the top and bottom
           edges of a full-height panel, which left a gulf between the headline

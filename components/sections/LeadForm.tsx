@@ -5,6 +5,18 @@ import { gsap, ScrollTrigger, EASE_OUT, reducedMotion } from "@/lib/gsap";
 import SweepLink from "@/components/SweepLink";
 import LeadCoin from "@/components/coin/LeadCoin";
 
+/**
+ * The select's own chevron, since `appearance-none` takes the native one
+ * away. Inline data URI rather than a Tailwind arbitrary background: the
+ * markup carries spaces, and a class name cannot.
+ */
+const CHEVRON = `url("data:image/svg+xml,${encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">' +
+    '<path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" ' +
+    'stroke="rgba(240,237,230,0.7)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+    "</svg>",
+)}")`;
+
 const FIELDS: { label: string; id: string; type?: string; options?: string[] }[] = [
   { label: "Full name", id: "full-name" },
   { label: "Email", id: "email", type: "email" },
@@ -135,10 +147,10 @@ export default function LeadForm() {
                   name={f.id}
                   defaultValue=""
                   className="appearance-none border-0 border-b border-cream/30 bg-transparent
-                             bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22 viewBox=%220 0 10 6%22><path d=%22M1 1l4 4 4-4%22 stroke=%22rgba(240,237,230,0.6)%22 stroke-width=%221.2%22 fill=%22none%22 stroke-linecap=%22round%22/></svg>')]
-                             bg-[length:10px_6px] bg-[position:right_4px_center] bg-no-repeat pb-2 md:pb-3
-                             font-sans text-16 text-cream outline-none transition-colors
-                             focus:border-cream"
+                             bg-[length:18px_18px] bg-[position:right_2px_center] bg-no-repeat
+                             pb-2 pr-6 font-sans text-16 text-cream outline-none transition-colors
+                             focus:border-cream md:pb-3"
+                  style={{ backgroundImage: CHEVRON }}
                 >
                   <option value="" disabled className="text-ink">
                     Select

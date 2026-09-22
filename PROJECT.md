@@ -47,16 +47,21 @@ components/
   MenuOverlay.tsx   full-screen menu
   SmoothScroll.tsx  Lenis ⇄ ScrollTrigger bridge
   FloatingSeals.tsx fixed brand seals + dark-background detection
+  Cursor.tsx        the gallery's sweep cursor (nowhere else)
   sections/
-    Hero · About · PinnedReveal · Sequence · Statement
-    Feature · LifestyleStack · Connect · Legacy · Footer
+    Hero · LeadForm · CoinStory · About · PinnedReveal · Sequence
+    Statement · Feature · Gallery · Connect · Press · Legacy · Footer
+  lifestyle/
+    LifestyleSwitcher.tsx  the section wrapper + #ls-outer anchor
+    RailLayout.tsx         what ships, on every width
+    StackLayout.tsx        kept unreferenced, as the record of what it replaced
 lib/
   lifestyle.ts      the 11 lifestyle cards as data
 reference/          original site, for comparison
 ```
 
 **Two components cover eleven-plus sections:** `PinnedReveal` serves both 03 and
-05 (identical mechanic), and `LifestyleStack` renders all 11 cards from
+05 (identical mechanic), and `RailLayout` renders all 11 cards from
 `lib/lifestyle.ts`.
 
 ---
