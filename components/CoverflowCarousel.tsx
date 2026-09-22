@@ -51,16 +51,21 @@ function Arrow({ dir, onClick }: { dir: -1 | 1; onClick: () => void }) {
                   ${dir < 0 ? "left-4 lg:left-10" : "right-4 lg:right-10"}`}
     >
       <svg
-        viewBox="0 0 20 20"
-        className={`h-[18px] w-[18px] transition-transform duration-400 ease-[cubic-bezier(0.16,1,0.3,1)]
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        className={`h-6 w-6 transition-transform duration-400 ease-[cubic-bezier(0.16,1,0.3,1)]
                     ${dir < 0 ? "group-hover:-translate-x-0.5" : "group-hover:translate-x-0.5"}`}
         fill="none"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
       >
-        {dir < 0 ? <path d="M12.5 4 6.5 10l6 6" /> : <path d="M7.5 4l6 6-6 6" />}
+        <path
+          d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18"
+          {...(dir > 0 ? { transform: "translate(24 0) scale(-1 1)" } : {})}
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       </svg>
     </button>
   );

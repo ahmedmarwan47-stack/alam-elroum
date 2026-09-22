@@ -260,17 +260,17 @@ html.scroll-locked [data-fixed-layer] {
 
 .site-cursor-chevron {
   position: absolute;
-  width: 14px;
-  height: 14px;
+  width: 24px;
+  height: 24px;
   color: var(--color-ink);
   transition: color 0.3s ease;
 }
 .site-cursor-chevron[data-dir="l"] {
-  left: 10px;
+  left: 7px;
   animation: cursor-sweep-l 2s ease-in-out infinite;
 }
 .site-cursor-chevron[data-dir="r"] {
-  right: 10px;
+  right: 7px;
   animation: cursor-sweep-r 2s ease-in-out infinite;
 }
 
