@@ -71,14 +71,13 @@ export default function Statement() {
       >
         <span
           data-s6-tag
-          className="font-sans text-12 whitespace-nowrap text-ink/50 md:text-16"
+          className="type-eyebrow whitespace-nowrap text-ink/50"
         >
           The Masterplan
         </span>
         <h2
           data-s6-title
-          className="font-sans text-[clamp(24px,3.4vw,48px)] leading-[1.2] font-bold
-                     tracking-[-0.01em] text-ink uppercase"
+          className="type-section-title text-ink"
         >
           A sense of place defined by urban coastal living.
         </h2>

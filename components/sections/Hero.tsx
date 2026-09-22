@@ -106,9 +106,9 @@ export default function Hero() {
           >
             <h1
               ref={headlineLines}
-              className="font-sans text-[clamp(20px,5.4vw,28px)] leading-[1.3]
+              className="font-sans text-[clamp(32px,7vw,40px)] leading-[1.15]
                          font-medium tracking-display text-white
-                         md:max-w-[608px] md:text-48 md:leading-52"
+                         md:max-w-[760px] md:text-[56px] md:leading-[60px]"
             >
               <span className="block">Alam Al Roum, A Coastline</span>
               <span className="block">
@@ -125,8 +125,8 @@ export default function Hero() {
           <div
             ref={location}
             className="absolute bottom-14 left-6 z-20
-                       font-sans text-12 text-white
-                       md:bottom-20 md:left-[clamp(40px,5vw,76px)] md:text-16"
+                       type-eyebrow text-white
+                       md:bottom-20 md:left-[clamp(40px,5vw,76px)]"
           >
             Mediterranean , Egypt
           </div>

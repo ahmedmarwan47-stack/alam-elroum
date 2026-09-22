@@ -119,7 +119,7 @@ export default function PressDrawer({ article, open, onClose }: Props) {
                   <span className="h-1 w-1 rounded-full bg-ink/40" />
                   <span>{shown.readTime}</span>
                 </div>
-                <h2 className="mt-5 font-serif text-[clamp(28px,3vw,40px)] leading-[1.1] text-ink">
+                <h2 className="type-editorial mt-5 text-[clamp(28px,3vw,40px)] leading-[1.1] text-ink">
                   {shown.title}
                 </h2>
                 <div className="mt-6 h-px w-8 bg-ink" />

@@ -174,8 +174,7 @@ export default function Feature() {
         <div data-s7-copy>
           <h2
             data-s7-headline
-            className="mb-7 font-sans text-[clamp(24px,3.4vw,48px)] leading-[1.2]
-                       font-bold tracking-[-0.01em] text-ink uppercase"
+            className="type-section-title mb-7 text-ink"
           >
             A 7.2-Kilometre Beachfront
             <br />
@@ -252,8 +251,7 @@ export default function Feature() {
       >
         <h3
           data-s7-delivers-headline
-          className="font-sans text-[clamp(24px,3.4vw,48px)] leading-[1.15] font-bold
-                     tracking-[-0.01em] text-white uppercase md:sticky md:top-10"
+          className="type-section-title text-white md:sticky md:top-10"
         >
           What the Masterplan
           <br />

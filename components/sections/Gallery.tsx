@@ -33,16 +33,16 @@ export default function Gallery() {
       className="overflow-hidden border-t border-ink/12 bg-cream
                  px-6 pt-24 pb-16 md:px-[clamp(40px,5vw,80px)] md:py-[clamp(60px,8vh,100px)]"
     >
-      <div className="flex flex-wrap items-baseline gap-x-[14px] gap-y-2">
+      <div className="flex flex-col items-start gap-2">
         <span
           data-tag
-          className="font-sans text-12 text-ink/40 md:text-16"
+          className="type-eyebrow text-ink/40"
         >
           Gallery
         </span>
         <h2
           data-heading
-          className="font-serif text-[clamp(28px,3.4vw,48px)] leading-[1.1] text-ink"
+          className="type-editorial text-[clamp(28px,3.4vw,48px)] leading-[1.1] text-ink"
         >
           A Coastline in Pictures
         </h2>

@@ -49,16 +49,16 @@ export default function Press() {
       className="border-t border-ink/12 bg-cream px-6 pt-24 pb-16
                  md:px-[clamp(40px,5vw,80px)] md:py-[clamp(60px,8vh,100px)]"
     >
-      <div className="flex flex-wrap items-baseline gap-x-[14px] gap-y-2">
+      <div className="flex flex-col items-start gap-2">
         <span
           data-tag
-          className="font-sans text-12 text-ink/40 md:text-16"
+          className="type-eyebrow text-ink/40"
         >
           Press Release
         </span>
         <h2
           data-heading
-          className="font-serif text-[clamp(28px,3.4vw,48px)] leading-[1.1] text-ink"
+          className="type-editorial text-[clamp(28px,3.4vw,48px)] leading-[1.1] text-ink"
         >
           Latest Press Releases
         </h2>
@@ -84,7 +84,7 @@ export default function Press() {
                 />
               </div>
 
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-sans text-12 tracking-[0.04em] text-ink/50 md:text-16">
+              <div className="type-meta flex flex-wrap items-center gap-x-3 gap-y-1 text-ink/50">
                 <span>{article.date}</span>
                 <span className="h-1 w-1 rounded-full bg-ink/40" />
                 <span>{article.readTime}</span>
@@ -99,7 +99,7 @@ export default function Press() {
                   grid already stretches every card to the tallest in the row;
                   this is what stops the links themselves from laddering if a
                   title or excerpt ever runs a line longer than its neighbours. */}
-              <span className="mt-auto inline-flex items-center gap-2 pt-1 font-sans text-12 tracking-[0.06em] text-ink md:text-16">
+              <span className="type-meta mt-auto inline-flex items-center gap-2 pt-1 text-ink">
                 Read the article
                 <ArrowRightIcon className="h-5 w-5" />
               </span>

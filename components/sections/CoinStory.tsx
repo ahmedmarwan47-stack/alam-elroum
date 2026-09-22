@@ -84,8 +84,7 @@ export default function CoinStory() {
               <h2
                 key={i}
                 data-beat={i}
-                className="absolute inset-x-0 bottom-0 font-sans text-[clamp(28px,7.5vw,40px)]
-                           leading-[1.02] font-bold tracking-[-0.01em] text-cream uppercase
+                className="type-section-title absolute inset-x-0 bottom-0 text-cream
                            will-change-[transform,opacity,filter]
                            lg:top-1/2 lg:bottom-auto lg:-translate-y-1/2 lg:text-[clamp(32px,3.6vw,56px)]"
               >

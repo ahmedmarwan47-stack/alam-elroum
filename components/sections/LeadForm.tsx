@@ -114,7 +114,7 @@ export default function LeadForm() {
                    will-change-transform md:grid-cols-[1fr_1.5fr] md:gap-16 md:px-14 md:py-14"
       >
         <div>
-          <p data-lead-item className="font-sans text-12 text-cream/50 md:text-16">
+          <p data-lead-item className="type-eyebrow text-cream/50">
             Register Interest
           </p>
           <h2
@@ -138,7 +138,7 @@ export default function LeadForm() {
         >
           {FIELDS.map((f) => (
             <div key={f.id} data-lead-item className="flex flex-col gap-1 md:gap-2">
-              <label htmlFor={`lead-${f.id}`} className="font-sans text-12 tracking-[0.06em] text-cream/60 md:text-16">
+              <label htmlFor={`lead-${f.id}`} className="type-meta text-cream/60">
                 {f.label}
               </label>
               {f.options ? (

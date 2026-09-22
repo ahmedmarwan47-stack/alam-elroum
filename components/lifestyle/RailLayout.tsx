@@ -115,11 +115,11 @@ export default function RailLayout() {
           // to start below it. The floor is a px value and not a vh one on
           // purpose: the header does not get shorter on a short screen, so a
           // purely proportional value would slide back under it on a laptop.
-          className="order-1 flex flex-wrap items-baseline gap-x-[14px] gap-y-2 px-6 pt-14
+          className="order-1 flex flex-col items-start gap-2 px-6 pt-14
                      md:px-[clamp(40px,5vw,80px)] md:pt-[clamp(108px,14vh,148px)]"
         >
-          <span className="font-sans text-12 text-ink/40 md:text-16">Lifestyle &amp; Experiences</span>
-          <h2 className="font-serif text-[clamp(26px,3vw,40px)] leading-[1.1] text-ink">
+          <span className="type-eyebrow text-ink/40">Lifestyle &amp; Experiences</span>
+          <h2 className="type-editorial text-[clamp(26px,3vw,40px)] leading-[1.1] text-ink">
             Eleven Ways to Live Here
           </h2>
         </div>

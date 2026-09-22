@@ -62,7 +62,7 @@ export default function Legacy() {
     >
       <p
         data-tag
-        className="mb-[clamp(32px,5vh,56px)] font-sans text-12 text-ink/45 md:text-16"
+        className="type-eyebrow mb-[clamp(32px,5vh,56px)] text-ink/45"
       >
         Register Interest
       </p>
@@ -75,8 +75,7 @@ export default function Legacy() {
         <div className="flex flex-col">
           <h2
             data-heading
-            className="mb-[clamp(20px,3.5vh,36px)] font-sans text-[clamp(20px,6vw,28px)]
-                       leading-[1.08] font-bold text-ink uppercase md:text-[clamp(24px,3.4vw,48px)]"
+            className="type-section-title mb-[clamp(20px,3.5vh,36px)] text-ink"
           >
             BE PART OF
             <br />

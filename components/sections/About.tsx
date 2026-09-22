@@ -62,18 +62,17 @@ export default function About() {
           the right — around the coin — where it is doing the work. */}
       <div className="md:max-w-[620px]">
         <div data-fade-up>
+          <p className="type-eyebrow mb-4 text-ink/50">
+            Mediterranean , Egypt
+          </p>
           <h2
             data-headline
-            className="font-sans text-[clamp(22px,6vw,36px)] leading-[1.15] font-bold
-                       tracking-[-0.01em] text-ink uppercase md:text-[clamp(20px,2.4vw,36px)]"
+            className="type-section-title text-ink"
           >
             An Icon in the North&nbsp;Coast,
             <br />
             Defined by Scale
           </h2>
-          <p className="mt-4 font-sans text-12 text-ink/50 md:text-16">
-            Mediterranean , Egypt
-          </p>
         </div>
 
         <div data-fade-up className="mt-10 md:mt-8">

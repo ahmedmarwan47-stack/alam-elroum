@@ -80,6 +80,60 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Typography roles ---------------------------------------------------------
+   The page deliberately uses two voices: a bold sans for campaign statements
+   and an editorial serif for considered, narrative moments. These small role
+   classes keep the supporting type from drifting between sections. */
+.type-eyebrow {
+  font-family: var(--font-sans);
+  font-size: var(--text-12);
+  font-weight: 500;
+  line-height: var(--leading-16);
+  letter-spacing: var(--tracking-label);
+  text-transform: none;
+}
+
+.type-section-title {
+  font-family: var(--font-sans);
+  font-size: clamp(28px, 3.4vw, 48px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.type-editorial {
+  font-family: var(--font-sans);
+  font-size: clamp(28px, 3.4vw, 48px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.type-card-title {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.type-meta {
+  font-family: var(--font-sans);
+  font-size: var(--text-12);
+  font-weight: 500;
+  line-height: var(--leading-16);
+  letter-spacing: var(--tracking-label);
+}
+
+@media (min-width: 768px) {
+  .type-eyebrow,
+  .type-meta {
+    font-size: var(--text-16);
+    line-height: var(--leading-24);
+  }
+}
+
 /* Lenis requires these to manage scroll itself. */
 html.lenis,
 html.lenis body {

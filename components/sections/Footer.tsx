@@ -44,13 +44,12 @@ export default function Footer() {
       className="bg-ink px-6 pt-[clamp(36px,5vw,60px)] pb-[clamp(24px,3vw,36px)] text-cream
                  md:px-[clamp(40px,6vw,80px)]"
     >
-      <p data-tag className="font-sans text-12 text-cream/50 md:text-16">
+      <p data-tag className="type-eyebrow text-cream/50">
         Contact
       </p>
       <h2
         data-headline
-        className="mt-[clamp(14px,2vh,22px)] max-w-[620px] font-sans text-[clamp(20px,5.5vw,32px)]
-                   leading-[1.08] font-bold uppercase md:text-[clamp(24px,3.4vw,48px)]"
+        className="type-section-title mt-[clamp(14px,2vh,22px)] max-w-[620px]"
       >
         Be among the first
         <br />

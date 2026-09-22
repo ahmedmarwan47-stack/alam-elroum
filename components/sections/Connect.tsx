@@ -21,13 +21,13 @@ const LINKS = [
   ["INTEGRATED MARINA", "International yachting access connecting the Mediterranean network."],
 ];
 
-/** `.connect-subhead` — italic tag beside a bold, tracked heading. */
+/** A shared eyebrow and heading pair keeps both connectivity blocks in step. */
 function SubHead({ tag, heading }: { tag: string; heading: string }) {
   return (
-    <div data-subhead className="mb-[clamp(20px,3vh,36px)] flex items-baseline gap-3.5">
+    <div data-subhead className="mb-[clamp(20px,3vh,36px)] flex flex-col items-start gap-2">
       <span
         data-subhead-tag
-        className="shrink-0 font-sans text-12 text-ink/40 md:text-16"
+        className="type-eyebrow shrink-0 text-ink/40"
       >
         {tag}
       </span>
@@ -117,7 +117,7 @@ export default function Connect() {
               <span className="font-serif text-[clamp(24px,7vw,38px)] leading-none tracking-[0.01em] text-ink md:text-[clamp(26px,3vw,48px)]">
                 {city}
               </span>
-              <span className="font-sans text-12 tracking-[0.04em] whitespace-nowrap text-ink/50 md:text-16">
+              <span className="type-meta whitespace-nowrap text-ink/50">
                 {time}
               </span>
               {/* Hairline: every city on mobile, only the top row on desktop
@@ -156,7 +156,7 @@ export default function Connect() {
         >
           {LINKS.map(([title, desc]) => (
             <div key={title} data-item>
-              <h3 className="mb-1.5 block font-sans text-12 font-bold tracking-[0.09em] text-ink uppercase md:text-16">
+              <h3 className="type-eyebrow mb-1.5 block text-ink">
                 {title}
               </h3>
               <p className="font-sans text-16 leading-[1.55] text-ink/75">{desc}</p>

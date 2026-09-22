@@ -22,7 +22,6 @@ type Props = {
   /** Section 05 fades the headline out once the image fills the frame. */
   fadeOut?: boolean;
   /** Section 05 tracks its headline wide; 03 tracks it tight. */
-  wideTracking?: boolean;
   /**
    * Hands the full-bleed frame straight to the next section: once the image
    * has filled the screen and the track is spent, the whole stage is hidden
@@ -59,7 +58,6 @@ export default function PinnedReveal({
   headline,
   tag,
   fadeOut = false,
-  wideTracking = false,
   handOff = false,
   objectPosition = "center center",
 }: Props) {
@@ -324,9 +322,9 @@ export default function PinnedReveal({
             <span
               ref={tagEl}
               data-on-image="false"
-              className={`mb-5 font-sans text-12 text-ink transition-[color,opacity,transform]
+              className={`type-eyebrow mb-5 text-ink transition-[color,opacity,transform]
                           duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]
-                          data-[on-image=true]:text-white md:mb-6 md:text-16
+                          data-[on-image=true]:text-white md:mb-6
                           ${started ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}
             >
               {tag}
@@ -336,9 +334,7 @@ export default function PinnedReveal({
           <h2
             ref={title}
             aria-label={headline.join(" ")}
-            className={`min-h-[2.2em] font-sans text-[clamp(24px,3.4vw,48px)] leading-[1.1]
-                        font-bold text-ink uppercase
-                        ${wideTracking ? "tracking-[0.04em]" : "tracking-[-0.01em]"}`}
+            className="type-section-title min-h-[2.2em] text-ink"
           >
             {lines}
           </h2>

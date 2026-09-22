@@ -44,7 +44,6 @@ export default function Home() {
         alt="Mediterranean marina sunset"
         headline={["Where the Land, Sea,", "and Sky Align."]}
         fadeOut
-        wideTracking
       />
 
       <Statement />
