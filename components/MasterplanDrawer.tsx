@@ -55,7 +55,7 @@ export default function MasterplanDrawer({
     <div
       aria-hidden={!open}
       data-fixed-layer
-      className={`fixed inset-0 z-[1100] ${open ? "pointer-events-auto" : "pointer-events-none"}`}
+      className={`fixed inset-0 z-[1100] overflow-hidden ${open ? "pointer-events-auto" : "pointer-events-none"}`}
     >
       <button
         type="button"

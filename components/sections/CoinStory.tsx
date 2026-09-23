@@ -10,9 +10,9 @@ import { coinBeats } from "@/lib/coinStory";
  * centre while two beats of copy cross-fade around it.
  *
  * Desktop: headline left, coin centre, body right.
- * Phone: headline top-left, coin middle, body bottom-right — the reference's
- * stacked composition. The middle row is sized to the held disc (~57vw) plus
- * air for its tip, not to its canvas, so the copy sits close but never under it.
+ * Phone: headline top, coin middle, body bottom, all set flush left on the
+ * same edge. The middle row is sized to the held disc (~57vw) plus air for
+ * its tip, not to its canvas, so the copy sits close but never under it.
  */
 export default function CoinStory() {
   const root = useRef<HTMLElement>(null);
@@ -107,8 +107,8 @@ export default function CoinStory() {
                 key={i}
                 data-beat={i}
                 className="absolute inset-x-0 top-0 max-w-[380px] font-serif text-16 leading-[1.6]
-                           text-right text-cream/80 will-change-[transform,opacity,filter]
-                           lg:top-1/2 lg:-translate-y-1/2 lg:text-left lg:text-18 lg:leading-[1.7]"
+                           text-cream/80 will-change-[transform,opacity,filter]
+                           lg:top-1/2 lg:-translate-y-1/2 lg:text-18 lg:leading-[1.7]"
               >
                 {beat.body}
               </p>
