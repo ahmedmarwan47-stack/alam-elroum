@@ -109,6 +109,7 @@ export default function LeadCoin({ section, card, hold, landing }: Props) {
       // coin off the stage's centre.
       stageH: 0,
       oTop: 0, // lead section's page top
+      oLeft: 0, // lead section's page left
     };
 
     const measure = () => {
@@ -125,6 +126,7 @@ export default function LeadCoin({ section, card, hold, landing }: Props) {
 
       geo.stageH = stageH;
       geo.oTop = oTop;
+      geo.oLeft = o.left + window.scrollX;
       geo.s0 = oTop;
       geo.c0 = stTop;
       geo.c1 = stTop + st.height - stageH;
@@ -167,7 +169,7 @@ export default function LeadCoin({ section, card, hold, landing }: Props) {
     };
 
     const apply = (scroll: number) => {
-      const { s0, c0, c1, s1, start, holdX, end, stageH, oTop } = geo;
+      const { s0, c0, c1, s1, start, holdX, end, stageH, oTop, oLeft } = geo;
       // Page-space y of the stage's vertical centre while pinned at `scroll`.
       const holdY = (s: number) => s + stageH * 0.5 - oTop - SIZE / 2;
 
@@ -211,7 +213,21 @@ export default function LeadCoin({ section, card, hold, landing }: Props) {
         done = t > 0.995;
       }
 
-      gsap.set(el, { x: pos.x, y: pos.y });
+      // Held on stage, the coin is pinned to the viewport rather than moved
+      // through the page to cancel the scroll. Cancelling it needs a
+      // transform update per scroll event, and on a phone those arrive a
+      // frame behind the native scroll: the coin drifted with the page and
+      // snapped back on every frame, a fine shake against the sticky stage
+      // that never moved. Fixed, it sits still by construction. Either way
+      // the page-space maths above is the source of truth; this only changes
+      // which box the same point is expressed in, so the seams are exact.
+      if (scroll >= c0 && scroll <= c1) {
+        el.style.position = "fixed";
+        gsap.set(el, { x: pos.x + oLeft, y: pos.y + oTop - scroll });
+      } else {
+        el.style.position = "absolute";
+        gsap.set(el, { x: pos.x, y: pos.y });
+      }
       pose.current.scale = scale;
       pose.current.rotY = rotY;
       aim.current.tiltX = tiltX;
@@ -260,8 +276,8 @@ export default function LeadCoin({ section, card, hold, landing }: Props) {
   }, [enabled, size, desktop, section, card, hold, landing]);
 
   // Frame loop: eases the tip toward what scroll asked for, so a pause
-  // mid-turn still settles; once landed, tilts toward the pointer — or the
-  // finger, on touch screens.
+  // mid-turn still settles; once landed, tilts toward the pointer — or, on
+  // touch screens, a finger resting on the coin.
   useEffect(() => {
     if (!enabled) return;
     const el = wrap.current;
@@ -277,11 +293,24 @@ export default function LeadCoin({ section, card, hold, landing }: Props) {
       target.y = Math.max(-1, Math.min(1, ny * 2)) * 0.42;
     };
     const onMove = (e: MouseEvent) => aimAt(e.clientX, e.clientY);
-    const onTouch = (e: TouchEvent) => {
+    // Only a touch that begins on the coin steers it. Every scroll flick is
+    // a touch too, and following those had the landed coin lurch toward each
+    // one and spring back as the finger lifted — a wobble on every scroll.
+    let touchingCoin = false;
+    const onTouchStart = (e: TouchEvent) => {
       const t = e.touches[0];
-      if (t) aimAt(t.clientX, t.clientY);
+      if (!t || !settled.current) return;
+      const r = el.getBoundingClientRect();
+      touchingCoin =
+        t.clientX >= r.left && t.clientX <= r.right && t.clientY >= r.top && t.clientY <= r.bottom;
+      if (touchingCoin) aimAt(t.clientX, t.clientY);
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      const t = e.touches[0];
+      if (t && touchingCoin) aimAt(t.clientX, t.clientY);
     };
     const onTouchEnd = () => {
+      touchingCoin = false;
       target.x = 0;
       target.y = 0;
     };
@@ -299,15 +328,15 @@ export default function LeadCoin({ section, card, hold, landing }: Props) {
       raf = requestAnimationFrame(loop);
     };
     window.addEventListener("mousemove", onMove, { passive: true });
-    window.addEventListener("touchstart", onTouch, { passive: true });
-    window.addEventListener("touchmove", onTouch, { passive: true });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
     window.addEventListener("touchend", onTouchEnd, { passive: true });
     window.addEventListener("touchcancel", onTouchEnd, { passive: true });
     raf = requestAnimationFrame(loop);
     return () => {
       window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("touchstart", onTouch);
-      window.removeEventListener("touchmove", onTouch);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("touchend", onTouchEnd);
       window.removeEventListener("touchcancel", onTouchEnd);
       cancelAnimationFrame(raf);

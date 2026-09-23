@@ -146,10 +146,14 @@ export default function Sequence() {
       c.style.transform = `scale(${(1.08 - 0.08 * t).toFixed(4)})`;
     };
 
+    const stickyEl = trackEl.firstElementChild as HTMLElement;
     const st = ScrollTrigger.create({
       trigger: trackEl,
       start: "top top",
-      end: "bottom bottom",
+      // Measured from the boxes rather than `bottom bottom` — see the same
+      // note in <PinnedReveal>.
+      end: () => `+=${trackEl.offsetHeight - stickyEl.offsetHeight}`,
+      invalidateOnRefresh: true,
       onUpdate: (self) => apply(self.progress),
       onRefresh: (self) => apply(self.progress),
       // A fast flick can cross either end without a final onUpdate.

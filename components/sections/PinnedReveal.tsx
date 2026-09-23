@@ -230,19 +230,13 @@ export default function PinnedReveal({
       // Spent: the next section is pinned underneath on the same frame, so
       // step out of the way rather than scrolling the picture off twice.
       //
-      // The cue is where that section actually is, not this one's progress.
-      // The two boundaries are computed in different units — this track is
-      // `180vh` and ends at `bottom bottom`, which ScrollTrigger resolves
-      // against `window.innerHeight`, while the next one is pulled up by a
-      // CSS `100vh`. On a phone those differ by the address bar, so a
-      // progress-based hand-off holds this picture over the top of the next
-      // section for the first slice of its timeline: its copy rises and its
-      // progress bar starts filling underneath, then appears all at once.
-      // Reading the position closes that gap whatever the units disagree by.
-      // Whichever cue comes first: the two orders are not fixed. On a phone
-      // the next stage reaches the top before this track runs out; on a
-      // desktop this track runs out first, and once it does nothing here
-      // updates again — so the progress test has to stay as the backstop.
+      // The cue is where that section actually is, not only this one's
+      // progress: the two boundaries are computed separately (this pin's
+      // length here, the next track's pull-up in CSS) and can land a pixel
+      // apart after rounding, which would hold this picture over the top of
+      // the next section for the first slice of its timeline. Whichever cue
+      // comes first wins; once this track runs out nothing here updates
+      // again, so the progress test stays as the backstop.
       if (handOff) {
         const covered =
           pinned > 0.9995 ||
@@ -270,7 +264,13 @@ export default function PinnedReveal({
     st.expand = ScrollTrigger.create({
       trigger: trackEl,
       start: "top top",
-      end: "bottom bottom",
+      // The pin's own length, from the boxes, not `bottom bottom`: that
+      // resolves against `innerHeight`, which on a phone is the short view
+      // with the address bar up while the sticky box is the large one — and
+      // the difference had the picture still expanding after the stage had
+      // already let go.
+      end: () => `+=${trackEl.offsetHeight - stickyEl.offsetHeight}`,
+      invalidateOnRefresh: true,
       onUpdate: render,
       onRefresh: () => {
         measure();

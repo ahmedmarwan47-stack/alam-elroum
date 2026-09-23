@@ -33,13 +33,19 @@ export default function SmoothScroll() {
    * One height for the full-screen stages, in pixels, published as
    * `--stage-h`.
    *
-   * The stages used to be sized in `vh` while ScrollTrigger resolved their
-   * starts and ends against `window.innerHeight`. On a desktop those agree.
-   * On a phone they do not: CSS `100vh` is the *large* viewport, as though
-   * the address bar were hidden, and `innerHeight` is what you can actually
-   * see. A `180vh` track with a `100vh` sticky box therefore stopped sticking
-   * a bar's height before its animation finished, and the picture slid away
-   * and snapped back — the jump at the seam of sections 03 and 04.
+   * It is the *large* viewport — the screen with the browser chrome
+   * collapsed, what CSS `100lvh` (and, on phones, plain `100vh`) resolves
+   * to — not `innerHeight`, which at load on a phone is the short view with
+   * the address bar still up. A stage sized to the short view leaves a band
+   * of the next section showing beneath it once the bar goes away, which on
+   * the 03 → 04 hand-off is a second copy of the same photograph sliding up
+   * under the first. Sized to the large view, the stage's bottom edge simply
+   * sits under the bar until the bar collapses, as it does on any site.
+   *
+   * The pinned tracks then measure their own scroll length from this box
+   * (`track height − stage height`) rather than letting ScrollTrigger resolve
+   * `bottom bottom` against `innerHeight`, so the two never disagree by a
+   * bar's height whatever state the chrome is in.
    *
    * Measured once and republished only when the width changes, which mirrors
    * `ignoreMobileResize`: the address bar collapsing must not move the
@@ -48,8 +54,18 @@ export default function SmoothScroll() {
   useEffect(() => {
     const root = document.documentElement;
     let width = window.innerWidth;
+    const largeViewport = () => {
+      const probe = document.createElement("div");
+      probe.style.cssText =
+        "position:fixed;top:0;left:0;width:0;height:100lvh;visibility:hidden;pointer-events:none";
+      document.body.appendChild(probe);
+      const h = probe.offsetHeight;
+      probe.remove();
+      // A browser without `lvh` leaves the probe at zero height.
+      return Math.max(h, window.innerHeight);
+    };
     const publish = () => {
-      root.style.setProperty("--stage-h", `${window.innerHeight}px`);
+      root.style.setProperty("--stage-h", `${largeViewport()}px`);
     };
     publish();
     const onResize = () => {
