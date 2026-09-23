@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import SweepLink from "./SweepLink";
 import { CallIcon, DownloadIcon, WhatsAppIcon } from "./icons";
-import { BROCHURE_HREF, PHONE_HREF, WHATSAPP_HREF } from "@/lib/contact";
+import { BROCHURE_FILENAME, BROCHURE_HREF, PHONE_HREF, WHATSAPP_HREF } from "@/lib/contact";
 
 type Props = {
   menuOpen: boolean;
@@ -146,7 +146,7 @@ export default function Nav({ menuOpen, onToggleMenu }: Props) {
           <div className="hidden xl:block">
             <SweepLink
               href={BROCHURE_HREF}
-              external
+              download={BROCHURE_FILENAME}
               label={
                 <span className="inline-flex items-center gap-2">
                   <DownloadIcon className="h-[18px] w-[18px]" />

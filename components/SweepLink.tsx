@@ -16,6 +16,8 @@ type Props = {
   bg?: string;
   /** Opens in a new tab, for links off the site. */
   external?: boolean;
+  /** Saves the target as a file with this name instead of navigating to it. */
+  download?: string;
   /** Text colour once the fill is up, as a group-hover class, e.g. "group-hover:text-cream". */
   hoverText: string;
   href?: string;
@@ -37,6 +39,7 @@ export default function SweepLink({
   hoverText,
   bg = "",
   external = false,
+  download,
   href,
   type = "button",
   onClick,
@@ -69,6 +72,7 @@ export default function SweepLink({
         className={classes}
         style={style}
         {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+        {...(download ? { download } : {})}
       >
         {inner}
       </a>

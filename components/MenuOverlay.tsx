@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { lockScroll, unlockScroll } from "@/lib/lenis";
 import SweepLink from "./SweepLink";
 import { DownloadIcon } from "./icons";
-import { BROCHURE_HREF } from "@/lib/contact";
+import { BROCHURE_FILENAME, BROCHURE_HREF } from "@/lib/contact";
 
 const ITEMS = [
   { n: "01", label: "About", href: "#about" },
@@ -122,7 +122,7 @@ export default function MenuOverlay({
         >
           <SweepLink
             href={BROCHURE_HREF}
-            external
+            download={BROCHURE_FILENAME}
             label={
               <span className="inline-flex items-center gap-2">
                 <DownloadIcon className="h-[18px] w-[18px]" />
