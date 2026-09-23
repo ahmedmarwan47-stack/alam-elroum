@@ -279,7 +279,7 @@ export default function LeadCoin({ section, card, hold, landing }: Props) {
   // mid-turn still settles; once landed, tilts toward the pointer — or, on
   // touch screens, a finger resting on the coin.
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled || !onScreen) return;
     const el = wrap.current;
     if (!el) return;
     const target = { x: 0, y: 0 };
@@ -341,7 +341,7 @@ export default function LeadCoin({ section, card, hold, landing }: Props) {
       window.removeEventListener("touchcancel", onTouchEnd);
       cancelAnimationFrame(raf);
     };
-  }, [enabled]);
+  }, [enabled, onScreen]);
 
   /*
    * The canvas renders on every frame for as long as it is alive, and the

@@ -371,7 +371,7 @@ export default function PinnedReveal({
           ref={wrap}
           data-dark
           className="absolute bottom-0 left-1/2 z-10 h-[50%] w-[92vw] -translate-x-1/2
-                     overflow-hidden will-change-[width,height] md:h-[54%] md:w-[62vw]"
+                     overflow-hidden md:h-[54%] md:w-[62vw]"
         >
           <Image
             ref={img}

@@ -25,10 +25,17 @@ export default function FloatingSeals() {
 
   useEffect(() => {
     let frame = 0;
+    let last = 0;
     const phone = window.matchMedia("(max-width: 767px)");
+
+    // Each hit-test forces a layout, and there are up to five of them; once
+    // per scroll frame was a steady tax on every scroll on a phone. The
+    // swap is a 400ms transition anyway, so a check every 120ms is plenty.
+    const INTERVAL = 120;
 
     const check = () => {
       frame = 0;
+      last = performance.now();
       const el = ref.current;
       if (!el) return;
       const r = el.getBoundingClientRect();
@@ -55,8 +62,16 @@ export default function FloatingSeals() {
       );
     };
 
+    let timer = 0;
     const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(check);
+      if (frame || timer) return;
+      const wait = INTERVAL - (performance.now() - last);
+      if (wait <= 0) frame = requestAnimationFrame(check);
+      else
+        timer = window.setTimeout(() => {
+          timer = 0;
+          frame = requestAnimationFrame(check);
+        }, wait);
     };
 
     check();
@@ -64,6 +79,7 @@ export default function FloatingSeals() {
     window.addEventListener("resize", onScroll);
     return () => {
       if (frame) cancelAnimationFrame(frame);
+      if (timer) window.clearTimeout(timer);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };

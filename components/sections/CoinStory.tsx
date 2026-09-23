@@ -30,6 +30,10 @@ export default function CoinStory() {
     // On phones `departure` takes it back out as the stage unpins, since the
     // coin's glide to About runs straight down through the stacked copy.
     const phone = window.matchMedia("(max-width: 1023px)");
+    // A blur that changes on every scroll frame is re-rendered on every
+    // scroll frame, and on a phone that is the difference between the coin
+    // chapter scrolling smoothly and not. Phones cross-fade without it.
+    const blur = !reduced && !phone.matches;
     const apply = (p: number, arrival: number, departure: number) => {
       beats.forEach((b) => {
         const i = Number(b.dataset.beat);
@@ -43,7 +47,7 @@ export default function CoinStory() {
         const v = clamp01(1 - (d - win) / win) * arrival * (phone.matches ? 1 - departure : 1);
         b.style.opacity = String(v);
         b.style.transform = `translate3d(0, ${((1 - v) * 24 * (p < centre ? 1 : -1)).toFixed(1)}px, 0)`;
-        b.style.filter = v < 0.999 && !reduced ? `blur(${((1 - v) * 8).toFixed(2)}px)` : "";
+        b.style.filter = v < 0.999 && blur ? `blur(${((1 - v) * 8).toFixed(2)}px)` : "";
       });
     };
 
@@ -85,7 +89,7 @@ export default function CoinStory() {
                 key={i}
                 data-beat={i}
                 className="type-section-title absolute inset-x-0 bottom-0 text-cream
-                           will-change-[transform,opacity,filter]
+                           will-change-[transform,opacity]
                            lg:top-1/2 lg:bottom-auto lg:-translate-y-1/2 lg:text-[clamp(32px,3.6vw,56px)]"
               >
                 {beat.title.map((line, l) => (
@@ -107,7 +111,7 @@ export default function CoinStory() {
                 key={i}
                 data-beat={i}
                 className="absolute inset-x-0 top-0 max-w-[380px] font-serif text-16 leading-[1.6]
-                           text-cream/80 will-change-[transform,opacity,filter]
+                           text-cream/80 will-change-[transform,opacity]
                            lg:top-1/2 lg:-translate-y-1/2 lg:text-18 lg:leading-[1.7]"
               >
                 {beat.body}
