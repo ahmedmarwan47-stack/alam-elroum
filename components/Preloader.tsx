@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { lockScroll, unlockScroll } from "@/lib/lenis";
+import { jumpTo } from "@/lib/scroller";
 import { reducedMotion } from "@/lib/gsap";
 import { asset } from "@/lib/asset";
 
@@ -145,7 +146,7 @@ export default function Preloader() {
 
     // Always open at the top so the iris lands on the hero.
     if ("scrollRestoration" in history) history.scrollRestoration = "manual";
-    window.scrollTo(0, 0);
+    jumpTo(0);
     lockScroll();
 
     const timers: number[] = [];

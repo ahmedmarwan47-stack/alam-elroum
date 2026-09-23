@@ -1,4 +1,5 @@
 import type Lenis from "lenis";
+import { getScroller, scrollTop } from "./scroller";
 
 /**
  * Tiny registry so components that need to pause scrolling (the preloader,
@@ -27,7 +28,8 @@ export const lockScroll = () => {
   // lock is about to reclaim. `globals.css` hands it back so nothing — page or
   // fixed layer — moves sideways. Zero with overlay scrollbars.
   if (locks === 1) {
-    const gutter = window.innerWidth - root.clientWidth;
+    const scroller = getScroller();
+    const gutter = scroller ? scroller.offsetWidth - scroller.clientWidth : 0;
     root.style.setProperty("--scrollbar-gutter", `${gutter}px`);
   }
   instance?.stop();
@@ -77,8 +79,7 @@ export const scrollToHash = (hash: string) => {
       },
     });
   } else {
-    const top =
-      target.getBoundingClientRect().top + window.scrollY - headerOffset();
-    window.scrollTo({ top, behavior: "smooth" });
+    const top = target.getBoundingClientRect().top + scrollTop() - headerOffset();
+    getScroller()?.scrollTo({ top, behavior: "smooth" });
   }
 };

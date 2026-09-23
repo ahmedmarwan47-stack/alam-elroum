@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { getScroller } from "@/lib/scroller";
 
 /**
  * The two brand seals, fixed bottom-right for the whole page. Decorative, so
@@ -75,12 +76,13 @@ export default function FloatingSeals() {
     };
 
     check();
-    window.addEventListener("scroll", onScroll, { passive: true });
+    const scroller = getScroller();
+    scroller?.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     return () => {
       if (frame) cancelAnimationFrame(frame);
       if (timer) window.clearTimeout(timer);
-      window.removeEventListener("scroll", onScroll);
+      scroller?.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
   }, []);

@@ -2,8 +2,9 @@
 
 import { useEffect } from "react";
 import Lenis from "lenis";
-import { gsap, ScrollTrigger, reducedMotion } from "@/lib/gsap";
+import { gsap, ScrollTrigger, bindScroller, reducedMotion } from "@/lib/gsap";
 import { isNavigating, scrollToHash, setLenis } from "@/lib/lenis";
+import { getScroller, viewportHeight } from "@/lib/scroller";
 
 /**
  * Drives the page with Lenis and hands scroll position to GSAP's ScrollTrigger.
@@ -31,41 +32,23 @@ const MAX_LEAD_VH = 0.32;
 export default function SmoothScroll() {
   /*
    * One height for the full-screen stages, in pixels, published as
-   * `--stage-h`.
+   * `--stage-h`: the scroller's own height. The page scrolls inside a
+   * fixed, full-screen element (see lib/scroller.ts), so this is exactly the
+   * visible area on every device and it does not move with a phone's
+   * browser chrome, because that chrome never moves.
    *
-   * It is the *large* viewport — the screen with the browser chrome
-   * collapsed, what CSS `100lvh` (and, on phones, plain `100vh`) resolves
-   * to — not `innerHeight`, which at load on a phone is the short view with
-   * the address bar still up. A stage sized to the short view leaves a band
-   * of the next section showing beneath it once the bar goes away, which on
-   * the 03 → 04 hand-off is a second copy of the same photograph sliding up
-   * under the first. Sized to the large view, the stage's bottom edge simply
-   * sits under the bar until the bar collapses, as it does on any site.
-   *
-   * The pinned tracks then measure their own scroll length from this box
-   * (`track height − stage height`) rather than letting ScrollTrigger resolve
-   * `bottom bottom` against `innerHeight`, so the two never disagree by a
-   * bar's height whatever state the chrome is in.
-   *
-   * Measured once and republished only when the width changes, which mirrors
-   * `ignoreMobileResize`: the address bar collapsing must not move the
-   * stages, because it does not move ScrollTrigger's measurements either.
+   * Republished only when the width changes — an orientation change, a
+   * window resize — which mirrors `ignoreMobileResize`.
    */
   useEffect(() => {
+    // First of all: this effect runs before any section's, in tree order.
+    const scroller = getScroller();
+    if (scroller) bindScroller(scroller);
+
     const root = document.documentElement;
     let width = window.innerWidth;
-    const largeViewport = () => {
-      const probe = document.createElement("div");
-      probe.style.cssText =
-        "position:fixed;top:0;left:0;width:0;height:100lvh;visibility:hidden;pointer-events:none";
-      document.body.appendChild(probe);
-      const h = probe.offsetHeight;
-      probe.remove();
-      // A browser without `lvh` leaves the probe at zero height.
-      return Math.max(h, window.innerHeight);
-    };
     const publish = () => {
-      root.style.setProperty("--stage-h", `${largeViewport()}px`);
+      root.style.setProperty("--stage-h", `${viewportHeight()}px`);
     };
     publish();
     const onResize = () => {
@@ -94,7 +77,11 @@ export default function SmoothScroll() {
     // Respect the OS setting — skip smooth scrolling entirely.
     if (reducedMotion()) return () => document.removeEventListener("click", onClick);
 
+    const wrapper = getScroller();
+    if (!wrapper) return () => document.removeEventListener("click", onClick);
     const lenis = new Lenis({
+      wrapper,
+      content: wrapper.firstElementChild as HTMLElement,
       lerp: LERP,
       smoothWheel: true,
     });
@@ -116,7 +103,7 @@ export default function SmoothScroll() {
     const tick = (time: number) => {
       if (!isNavigating() && !lenis.isTouching && lenis.isScrolling !== "native") {
         const lead = lenis.targetScroll - lenis.animatedScroll;
-        const maxLead = window.innerHeight * MAX_LEAD_VH;
+        const maxLead = viewportHeight() * MAX_LEAD_VH;
         if (Math.abs(lead) > maxLead) {
           lenis.scrollTo(lenis.animatedScroll + Math.sign(lead) * maxLead, {
             programmatic: false,

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { jumpTo } from "@/lib/scroller";
 import { restingPose, type CoinPose } from "@/components/coin/CoinScene";
 import SweepLink from "@/components/SweepLink";
 
@@ -239,7 +240,7 @@ export default function CoinPreview() {
   const active = CONCEPTS.find((c) => c.id === concept)!;
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    jumpTo(0);
     ScrollTrigger.refresh();
   }, [concept]);
 

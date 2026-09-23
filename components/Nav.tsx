@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import SweepLink from "./SweepLink";
 import { CallIcon, DownloadIcon, WhatsAppIcon } from "./icons";
 import { BROCHURE_FILENAME, BROCHURE_HREF, PHONE_HREF, WHATSAPP_HREF } from "@/lib/contact";
+import { getScroller } from "@/lib/scroller";
 
 type Props = {
   menuOpen: boolean;
@@ -33,10 +34,12 @@ export default function Nav({ menuOpen, onToggleMenu }: Props) {
   }, []);
 
   useEffect(() => {
-    const update = () => setScrolled(window.scrollY > 24);
+    const scroller = getScroller();
+    if (!scroller) return;
+    const update = () => setScrolled(scroller.scrollTop > 24);
     update();
-    window.addEventListener("scroll", update, { passive: true });
-    return () => window.removeEventListener("scroll", update);
+    scroller.addEventListener("scroll", update, { passive: true });
+    return () => scroller.removeEventListener("scroll", update);
   }, []);
 
   const light = !scrolled && !menuOpen;
