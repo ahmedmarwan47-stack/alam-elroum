@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { lockScroll, unlockScroll } from "@/lib/lenis";
 
 export type MasterplanPlace = {
@@ -17,6 +17,10 @@ type Props = {
   place: MasterplanPlace;
   open: boolean;
   onClose: () => void;
+  onPreviousPlace: () => void;
+  onNextPlace: () => void;
+  placeIndex: number;
+  placeCount: number;
 };
 
 /** Detail panel for the interactive masterplan pins. */
@@ -24,12 +28,14 @@ export default function MasterplanDrawer({
   place,
   open,
   onClose,
+  onPreviousPlace,
+  onNextPlace,
+  placeIndex,
+  placeCount,
 }: Props) {
   const scroller = useRef<HTMLDivElement>(null);
   const closeButton = useRef<HTMLButtonElement>(null);
-  const [sceneState, setSceneState] = useState({ placeTitle: place.title, index: 0 });
-  const sceneIndex = sceneState.placeTitle === place.title ? sceneState.index : 0;
-  const scene = place.scenes[sceneIndex] ?? place.scenes[0];
+  const scene = place.scenes[0];
 
   useEffect(() => {
     if (!open) return;
@@ -45,17 +51,6 @@ export default function MasterplanDrawer({
     };
   }, [open, onClose]);
 
-  const previousScene = () =>
-    setSceneState({
-      placeTitle: place.title,
-      index: (sceneIndex - 1 + place.scenes.length) % place.scenes.length,
-    });
-  const nextScene = () =>
-    setSceneState({
-      placeTitle: place.title,
-      index: (sceneIndex + 1) % place.scenes.length,
-    });
-
   return (
     <div
       aria-hidden={!open}
@@ -67,7 +62,7 @@ export default function MasterplanDrawer({
         tabIndex={-1}
         aria-label="Close masterplan details"
         onClick={onClose}
-        className={`absolute inset-0 bg-ink/55 transition-opacity duration-700
+        className={`absolute inset-0 bg-ink/30 transition-opacity duration-700
                     ${open ? "opacity-100" : "opacity-0"}`}
       />
 
@@ -77,7 +72,7 @@ export default function MasterplanDrawer({
         aria-label={place.title}
         className={`absolute inset-y-0 right-0 flex w-full flex-col bg-cream
                     shadow-[-24px_0_60px_rgba(28,43,58,0.3)] transition-transform
-                    duration-750 ease-[cubic-bezier(0.76,0,0.24,1)] md:w-[min(600px,48vw)]
+                    duration-750 ease-[cubic-bezier(0.76,0,0.24,1)] md:w-[min(520px,42vw)]
                     ${open ? "translate-x-0" : "translate-x-full"}`}
       >
         <div className="px-6 pt-5 md:px-10 md:pt-6">
@@ -109,7 +104,7 @@ export default function MasterplanDrawer({
             >
               <Image
                 src={scene.image}
-                alt={`${place.title}, view ${sceneIndex + 1}`}
+                alt={place.title}
                 fill
                 sizes="(max-width: 768px) 100vw, 560px"
                 className="object-cover"
@@ -117,7 +112,7 @@ export default function MasterplanDrawer({
             </div>
 
             <div className="px-6 pt-8 pb-12 md:px-10 md:pt-8">
-              <h3 className="font-serif text-36 leading-[1.02] font-normal text-ink md:text-44">
+              <h3 className="font-serif text-28 leading-[1.02] font-normal text-ink md:text-40">
                 {place.title}
               </h3>
               <p className="type-eyebrow mt-3 text-rust">{place.category}</p>
@@ -136,22 +131,22 @@ export default function MasterplanDrawer({
             <span
               className="absolute inset-y-0 left-0 bg-ink transition-[width] duration-500
                          ease-[cubic-bezier(0.16,1,0.3,1)]"
-              style={{ width: `${((sceneIndex + 1) / place.scenes.length) * 100}%` }}
+              style={{ width: `${((placeIndex + 1) / placeCount) * 100}%` }}
             />
           </div>
           <div className="flex items-center gap-5">
             <button
               type="button"
-              aria-label="Previous photo"
-              onClick={previousScene}
+              aria-label="Previous masterplan location"
+              onClick={onPreviousPlace}
               className="text-20 text-ink transition-transform duration-300 hover:-translate-x-1"
             >
               ←
             </button>
             <button
               type="button"
-              aria-label="Next photo"
-              onClick={nextScene}
+              aria-label="Next masterplan location"
+              onClick={onNextPlace}
               className="text-20 text-ink transition-transform duration-300 hover:translate-x-1"
             >
               →

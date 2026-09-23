@@ -106,8 +106,8 @@ const MASTERPLAN_PINS: MasterplanPin[] = [
 ];
 
 /**
- * Section 06 — Masterplan statement. Cream panel with a label and a single
- * wide headline, then the aerial render running full bleed beneath it.
+ * Section 06 — Masterplan statement. A compact heading and the interactive
+ * aerial render share a single full-viewport composition.
  *
  * Mirrors the original `.s6`: the header slides in from the right, the image
  * follows 0.2s later on a longer travel, and the picture itself settles from a
@@ -124,6 +124,11 @@ export default function Statement() {
     setActivePin(index);
   };
   const closePin = useCallback(() => setActivePin(null), []);
+  const showAdjacentPin = useCallback((direction: -1 | 1) => {
+    const next = (shownPin + direction + MASTERPLAN_PINS.length) % MASTERPLAN_PINS.length;
+    setShownPin(next);
+    setActivePin(next);
+  }, [shownPin]);
 
   useEffect(() => {
     if (reducedMotion()) return;
@@ -178,22 +183,17 @@ export default function Statement() {
     <section
       ref={root}
       id="s6"
-      className="relative overflow-hidden bg-cream pt-22 md:pt-30"
+      className="relative flex h-[100svh] flex-col overflow-hidden bg-cream"
     >
       <div
         data-s6-header
-        className="mb-15 flex flex-col items-start gap-2 px-6 md:gap-3.5 md:px-20"
+        className="flex shrink-0 flex-col items-start gap-2 px-6 pt-22 pb-7
+                   md:gap-3.5 md:px-20 md:pt-28 md:pb-10"
       >
-        <span
-          data-s6-tag
-          className="type-eyebrow whitespace-nowrap text-ink/50"
-        >
+        <span data-s6-tag className="type-eyebrow whitespace-nowrap text-ink/50">
           The Masterplan
         </span>
-        <h2
-          data-s6-title
-          className="type-section-title text-ink"
-        >
+        <h2 data-s6-title className="type-section-title max-w-[900px] text-ink">
           A sense of place defined by urban coastal living.
         </h2>
       </div>
@@ -201,7 +201,7 @@ export default function Statement() {
       <div
         data-s6-image
         data-dark
-        className="relative h-[100svh] min-h-[620px] w-full overflow-hidden bg-ink"
+        className="relative min-h-0 w-full flex-1 overflow-hidden bg-ink"
       >
         <Image
           src="/images/masterplan-aerial.jpg"
@@ -213,19 +213,13 @@ export default function Statement() {
 
         <div aria-hidden className="absolute inset-0 bg-ink/8" />
 
-        <p
-          className="absolute top-6 left-6 z-10 max-w-[190px] font-sans text-12 leading-[1.5]
-                     tracking-[0.04em] text-white drop-shadow-md md:top-10 md:left-20 md:text-16"
-        >
-          Select a landmark to explore the masterplan
-        </p>
-
         {MASTERPLAN_PINS.map((pin, index) => (
           <button
             key={pin.title}
             type="button"
             data-map-pin
             aria-label={`Explore ${pin.title}`}
+            aria-pressed={activePin === index}
             onClick={() => openPin(index)}
             className="group absolute z-20 h-14 w-12 -translate-x-1/2 -translate-y-full
                        focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream"
@@ -234,31 +228,38 @@ export default function Statement() {
             <span aria-hidden className="absolute bottom-0 left-1/2 h-2 w-7 -translate-x-1/2 rounded-full bg-ink/35 blur-[3px]" />
             <span
               aria-hidden
-              className="absolute top-0 left-1/2 flex h-11 w-11 -translate-x-1/2
+              className={`absolute top-0 left-1/2 flex h-11 w-11 -translate-x-1/2
                          items-center justify-center will-change-transform
                          transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]
-                         group-hover:-translate-y-2 group-hover:scale-110"
+                         group-hover:-translate-y-2 group-hover:scale-110
+                         ${activePin === index ? "-translate-y-2 scale-110" : ""}`}
             >
               <span
-                className="flex h-full w-full rotate-[-45deg] items-center justify-center
-                           rounded-[50%_50%_50%_0] border-2 border-cream bg-ink
+                className={`flex h-full w-full rotate-[-45deg] items-center justify-center
+                           rounded-[50%_50%_50%_0] border-2 border-cream bg-qatar-purple
                            shadow-[0_8px_22px_rgba(28,43,58,0.4)]
                            transition-[background-color,box-shadow] duration-500
                            ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:bg-rust
-                           group-hover:shadow-[0_12px_28px_rgba(28,43,58,0.32)]"
+                           group-hover:shadow-[0_12px_28px_rgba(28,43,58,0.32)]
+                           ${
+                             activePin === index
+                               ? "bg-rust shadow-[0_12px_28px_rgba(28,43,58,0.32)]"
+                               : ""
+                           }`}
               >
                 <span className="h-2.5 w-2.5 rounded-full border-2 border-cream bg-transparent" />
               </span>
             </span>
 
             <span
-              className="pointer-events-none absolute bottom-[calc(100%+30px)] left-1/2 z-30 flex
+              className={`pointer-events-none absolute bottom-[calc(100%+48px)] left-1/2 z-30 flex
                          -translate-x-1/2 translate-y-5 scale-[0.94] items-end opacity-0
                          transition-[opacity,transform] delay-0 duration-500
                          ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0
                          group-hover:scale-100 group-hover:opacity-100 group-hover:delay-75
                          group-focus-visible:translate-y-0 group-focus-visible:scale-100
-                         group-focus-visible:opacity-100"
+                         group-focus-visible:opacity-100
+                         ${activePin === index ? "translate-y-0 scale-100 opacity-100 delay-75" : ""}`}
             >
               {pin.scenes.slice(0, 2).map((scene, previewIndex) => (
                 <span
@@ -268,8 +269,8 @@ export default function Statement() {
                               ease-[cubic-bezier(0.22,1,0.36,1)]
                               ${
                                 previewIndex === 0
-                                  ? "z-10 translate-x-2 translate-y-2 rotate-0 group-hover:translate-x-0 group-hover:translate-y-0 group-hover:rotate-[-4deg]"
-                                  : "-ml-5 -translate-x-2 translate-y-4 rotate-0 group-hover:translate-x-0 group-hover:translate-y-2 group-hover:rotate-[4deg]"
+                                  ? `z-10 translate-x-2 translate-y-2 rotate-0 group-hover:translate-x-0 group-hover:translate-y-0 group-hover:rotate-[-4deg] ${activePin === index ? "translate-x-0 translate-y-0 rotate-[-4deg]" : ""}`
+                                  : `-ml-5 -translate-x-2 translate-y-4 rotate-0 group-hover:translate-x-0 group-hover:translate-y-2 group-hover:rotate-[4deg] ${activePin === index ? "translate-x-0 translate-y-2 rotate-[4deg]" : ""}`
                               }`}
                 >
                   <Image
@@ -283,13 +284,14 @@ export default function Statement() {
               ))}
             </span>
             <span
-              className="pointer-events-none absolute top-[calc(100%+5px)] left-1/2
+              className={`pointer-events-none absolute top-[calc(100%+5px)] left-1/2
                          -translate-x-1/2 translate-y-2 whitespace-nowrap bg-cream px-3 py-2
                          font-sans text-12 tracking-[0.04em] text-ink opacity-0 shadow-lg
                          transition-[opacity,transform] delay-0 duration-500
                          ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0
                          group-hover:opacity-100 group-hover:delay-75 group-focus-visible:translate-y-0
-                         group-focus-visible:opacity-100"
+                         group-focus-visible:opacity-100
+                         ${activePin === index ? "translate-y-0 opacity-100 delay-75" : ""}`}
             >
               {pin.title}
             </span>
@@ -301,6 +303,10 @@ export default function Statement() {
         place={MASTERPLAN_PINS[shownPin]}
         open={activePin !== null}
         onClose={closePin}
+        onPreviousPlace={() => showAdjacentPin(-1)}
+        onNextPlace={() => showAdjacentPin(1)}
+        placeIndex={shownPin}
+        placeCount={MASTERPLAN_PINS.length}
       />
     </section>
   );
