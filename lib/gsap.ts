@@ -18,6 +18,17 @@ gsap.registerPlugin(ScrollTrigger, CustomEase);
 // width changes still refresh.
 ScrollTrigger.config({ ignoreMobileResize: true });
 
+/**
+ * The page scrolls in an element, not the document — see lib/scroller.ts.
+ * <SmoothScroll> binds it here once it exists, before any section's effect
+ * creates a trigger. The element itself, not a selector: a trigger made
+ * inside a scoped `gsap.context` resolves selector strings within its own
+ * section and would never find the scroller from there.
+ */
+export const bindScroller = (scroller: Element) => {
+  ScrollTrigger.defaults({ scroller });
+};
+
 if (!CustomEase.get("siteOut")) {
   CustomEase.create("siteOut", "0.16, 1, 0.3, 1");
   CustomEase.create("siteInOut", "0.76, 0, 0.24, 1");

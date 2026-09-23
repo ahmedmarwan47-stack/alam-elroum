@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type RefObject } from "react";
 import dynamic from "next/dynamic";
 import { gsap, ScrollTrigger, clamp01, easeInOutQuad, reducedMotion } from "@/lib/gsap";
 import { restingPose, type CoinPose } from "./CoinScene";
+import { scrollTop, viewportHeight } from "@/lib/scroller";
 
 const CoinScene = dynamic(() => import("./CoinScene"), { ssr: false });
 
@@ -113,20 +114,22 @@ export default function LeadCoin({ section, card, hold, landing }: Props) {
     };
 
     const measure = () => {
-      const vh = window.innerHeight;
+      const vh = viewportHeight();
+      const y0 = scrollTop();
       const o = sec.getBoundingClientRect();
-      const oTop = o.top + window.scrollY;
+      const oTop = o.top + y0;
       const c = cardEl.getBoundingClientRect();
-      const cardRestTop = c.top + window.scrollY - Number(gsap.getProperty(cardEl, "y") || 0);
+      const cardRestTop = c.top + y0 - Number(gsap.getProperty(cardEl, "y") || 0);
       const st = stage.getBoundingClientRect();
-      const stTop = st.top + window.scrollY;
+      const stTop = st.top + y0;
       const stageH = stage.firstElementChild?.getBoundingClientRect().height || vh;
       const l = land.getBoundingClientRect();
-      const lTop = l.top + window.scrollY;
+      const lTop = l.top + y0;
 
       geo.stageH = stageH;
       geo.oTop = oTop;
-      geo.oLeft = o.left + window.scrollX;
+      // The scroller never scrolls sideways, so this is a viewport x too.
+      geo.oLeft = o.left;
       geo.s0 = oTop;
       geo.c0 = stTop;
       geo.c1 = stTop + st.height - stageH;
@@ -143,7 +146,7 @@ export default function LeadCoin({ section, card, hold, landing }: Props) {
       if (band && band.height > 0) {
         // Phones: the landing band under the About copy. Landed once its
         // centre sits a little above the middle of the screen.
-        const bandTop = band.top + window.scrollY;
+        const bandTop = band.top + y0;
         geo.end = {
           x: band.left + band.width / 2 - o.left - SIZE / 2,
           y: bandTop + band.height / 2 - oTop - SIZE / 2,
@@ -247,7 +250,7 @@ export default function LeadCoin({ section, card, hold, landing }: Props) {
         },
       });
       measure();
-      apply(window.scrollY);
+      apply(scrollTop());
       ScrollTrigger.refresh();
     }, sec);
 
@@ -257,7 +260,7 @@ export default function LeadCoin({ section, card, hold, landing }: Props) {
     // fonts are in, and on load, so the coin never waits on a stale layout.
     const remeasure = () => {
       measure();
-      apply(window.scrollY);
+      apply(scrollTop());
     };
     const ro = new ResizeObserver(remeasure);
     // Border boxes, so padding changes count too; the body catches any
@@ -279,7 +282,7 @@ export default function LeadCoin({ section, card, hold, landing }: Props) {
   // mid-turn still settles; once landed, tilts toward the pointer — or, on
   // touch screens, a finger resting on the coin.
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled || !onScreen) return;
     const el = wrap.current;
     if (!el) return;
     const target = { x: 0, y: 0 };
@@ -341,7 +344,7 @@ export default function LeadCoin({ section, card, hold, landing }: Props) {
       window.removeEventListener("touchcancel", onTouchEnd);
       cancelAnimationFrame(raf);
     };
-  }, [enabled]);
+  }, [enabled, onScreen]);
 
   /*
    * The canvas renders on every frame for as long as it is alive, and the

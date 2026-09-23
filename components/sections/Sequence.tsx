@@ -4,7 +4,21 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { ScrollTrigger, clamp01, easeInOutQuad, easeOutQuad, reducedMotion } from "@/lib/gsap";
 
+/**
+ * The flipping seal that covers a photograph until it has loaded. Its flip
+ * is an infinite CSS animation, so it is only mounted while the stage is
+ * near the viewport, and it is unmounted once the fade after loading has
+ * run — otherwise two of them would keep the compositor busy behind every
+ * other section for the life of the page.
+ */
 function PhotoLoadCoin({ loaded }: { loaded: boolean }) {
+  const [gone, setGone] = useState(false);
+  useEffect(() => {
+    if (!loaded) return;
+    const t = window.setTimeout(() => setGone(true), 800);
+    return () => window.clearTimeout(t);
+  }, [loaded]);
+  if (gone) return null;
   return (
     <div
       aria-hidden="true"
@@ -80,6 +94,18 @@ export default function Sequence() {
   const progressLabel = useRef<HTMLSpanElement>(null);
   const [expanded, setExpanded] = useState(false);
   const [loadedPhotos, setLoadedPhotos] = useState({ b: false, c: false });
+  const [near, setNear] = useState(false);
+
+  // Whether the stage is within a viewport of the screen — see <PhotoLoadCoin>.
+  useEffect(() => {
+    const el = track.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setNear(e.isIntersecting), {
+      rootMargin: "100% 0px",
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   useEffect(() => {
     const trackEl = track.current;
@@ -94,6 +120,9 @@ export default function Sequence() {
     if (!trackEl || !a || !b || !c || !ca || !cb || !cc || !fill || !label) return;
 
     const reduced = reducedMotion();
+    // The outgoing copy blurs as it lifts away — except on phones, where a
+    // blur that changes every scroll frame costs more than the beat is worth.
+    const blur = !reduced && !window.matchMedia("(max-width: 1023px)").matches;
 
     /**
      * One block of copy at a given strength: `v` 0 → 1 rises it into place,
@@ -107,7 +136,7 @@ export default function Sequence() {
       el.style.pointerEvents = o > 0.6 ? "auto" : "none";
       if (reduced) return;
       el.style.transform = `translate3d(0, ${((1 - v) * 20 - out * 26).toFixed(1)}px, 0)`;
-      el.style.filter = out > 0.002 ? `blur(${(out * 7).toFixed(2)}px)` : "";
+      el.style.filter = blur && out > 0.002 ? `blur(${(out * 7).toFixed(2)}px)` : "";
     };
 
     const apply = (p: number) => {
@@ -128,9 +157,13 @@ export default function Sequence() {
       const t = easeInOutQuad(clamp01((p - 0.68) / 0.16));
       b.style.opacity = String(s);
       c.style.opacity = String(t);
-      // Nothing to composite once the skyline covers it.
+      // Nothing to composite once the skyline covers it — and nothing to
+      // composite before an incoming frame has started to show, either. A
+      // full-bleed layer at a phone's pixel density is a lot of memory to
+      // hold for a picture at opacity 0.
       a.style.visibility = s > 0.999 ? "hidden" : "visible";
-      b.style.visibility = t > 0.999 ? "hidden" : "visible";
+      b.style.visibility = t > 0.999 || s < 0.001 ? "hidden" : "visible";
+      c.style.visibility = t < 0.001 ? "hidden" : "visible";
 
       // A literal measure of the complete three-beat journey. Scale rather
       // than height keeps the fill smooth and avoids layout work on scroll.
@@ -198,7 +231,7 @@ export default function Sequence() {
           <div
             ref={imgB}
             className="absolute inset-0 will-change-[opacity,transform]"
-            style={{ opacity: 0, transform: "scale(1.08)" }}
+            style={{ opacity: 0, transform: "scale(1.08)", visibility: "hidden" }}
           >
             <Image
               src="/images/image-16.jpg"
@@ -210,12 +243,12 @@ export default function Sequence() {
               onLoad={() => setLoadedPhotos((state) => ({ ...state, b: true }))}
               className="object-cover"
             />
-            <PhotoLoadCoin loaded={loadedPhotos.b} />
+            {near && <PhotoLoadCoin loaded={loadedPhotos.b} />}
           </div>
           <div
             ref={imgC}
             className="absolute inset-0 will-change-[opacity,transform]"
-            style={{ opacity: 0, transform: "scale(1.08)" }}
+            style={{ opacity: 0, transform: "scale(1.08)", visibility: "hidden" }}
           >
             <Image
               src="/images/image-18.jpg"
@@ -226,7 +259,7 @@ export default function Sequence() {
               onLoad={() => setLoadedPhotos((state) => ({ ...state, c: true }))}
               className="object-cover"
             />
-            <PhotoLoadCoin loaded={loadedPhotos.c} />
+            {near && <PhotoLoadCoin loaded={loadedPhotos.c} />}
           </div>
           <div
             aria-hidden="true"

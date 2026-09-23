@@ -200,12 +200,13 @@ html.lenis body {
    the viewport grows by its width — which slides the page and every fixed
    layer sideways as the menu opens, most visibly the header's wordmark,
    centred seal and menu button. `lockScroll()` measures that width into
-   --scrollbar-gutter, and it is given back here: as padding to the page, and
-   as a right margin to the fixed layers, which html's padding cannot reach
-   because they are sized by the viewport. Everything then stays exactly where
+   --scrollbar-gutter, and it is given back here: as padding to the scroller
+   (the page scrolls inside `#scroller`, not as the document — see
+   lib/scroller.ts), and as a right margin to the fixed layers, which the
+   scroller's padding cannot reach because they are sized by the viewport. Everything then stays exactly where
    it was, both ways. Where scrollbars are overlays the width is 0 and none of
    this does anything. */
-html.scroll-locked {
+html.scroll-locked #scroller {
   overflow: hidden;
   padding-right: var(--scrollbar-gutter, 0px);
 }
