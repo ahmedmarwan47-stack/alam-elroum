@@ -3,6 +3,8 @@
 import { useEffect } from "react";
 import { lockScroll, unlockScroll } from "@/lib/lenis";
 import SweepLink from "./SweepLink";
+import { DownloadIcon } from "./icons";
+import { BROCHURE_HREF } from "@/lib/contact";
 
 const ITEMS = [
   { n: "01", label: "About", href: "#about" },
@@ -109,19 +111,36 @@ export default function MenuOverlay({
           ))}
         </ul>
 
-        {/* Register Interest — a button now, not a list entry */}
+        {/* The two calls to action, as buttons rather than list entries:
+            the brochure outlined, Register Interest solid. Stacked on phones,
+            side by side from md up. */}
         <div
-          className={`mt-8 transition-[opacity,transform] duration-500
+          className={`mt-8 flex flex-col gap-3 transition-[opacity,transform] duration-500
+                      md:flex-row
                       ${open ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"}`}
           style={{ transitionDelay: open ? `${0.35 + ITEMS.length * 0.07}s` : "0s" }}
         >
           <SweepLink
-            href="#lead"
-            onClick={onClose}
-            label="Register Interest"
+            href={BROCHURE_HREF}
+            external
+            label={
+              <span className="inline-flex items-center gap-2">
+                <DownloadIcon className="h-[18px] w-[18px]" />
+                Download Brochure
+              </span>
+            }
             className="border-cream/80 text-cream"
             fill="bg-cream"
             hoverText="group-hover:text-rust"
+          />
+          <SweepLink
+            href="#lead"
+            onClick={onClose}
+            label="Register Interest"
+            bg="bg-cream"
+            className="border-cream text-rust"
+            fill="bg-ink"
+            hoverText="group-hover:text-cream"
           />
         </div>
       </nav>

@@ -8,6 +8,14 @@ type Props = {
   className?: string;
   /** Background of the fill that rises on hover, e.g. "bg-ink". */
   fill: string;
+  /**
+   * Resting background for the solid variant, e.g. "bg-ink". Leave unset for
+   * the outlined button. The border should match it so the two variants
+   * stay the same height and weight side by side.
+   */
+  bg?: string;
+  /** Opens in a new tab, for links off the site. */
+  external?: boolean;
   /** Text colour once the fill is up, as a group-hover class, e.g. "group-hover:text-cream". */
   hoverText: string;
   href?: string;
@@ -17,16 +25,18 @@ type Props = {
 };
 
 /**
- * The site's one button: outlined, Immortel, 44px tall. On hover a fill rises
- * from the bottom edge and the label changes colour a beat later, once the
- * fill is most of the way up. Fills the width on phones; content-width from
- * md up.
+ * The site's one button: Immortel, 44px tall, outlined or — with `bg` —
+ * solid. On hover a fill rises from the bottom edge and the label changes
+ * colour a beat later, once the fill is most of the way up. Fills the width
+ * on phones; content-width from md up.
  */
 export default function SweepLink({
   label,
   className = "",
   fill,
   hoverText,
+  bg = "",
+  external = false,
   href,
   type = "button",
   onClick,
@@ -35,7 +45,8 @@ export default function SweepLink({
   const classes = `group relative inline-flex h-11 w-full cursor-pointer items-center justify-center
                    overflow-hidden rounded-[2px] border px-5 font-serif text-16 leading-none
                    whitespace-nowrap md:w-auto
-                   transition-[border-color,opacity,transform] duration-500 ${className}`;
+                   transition-[border-color,background-color,opacity,transform] duration-500
+                   ${bg} ${className}`;
   const inner = (
     <>
       <span
@@ -52,7 +63,13 @@ export default function SweepLink({
   );
   if (href) {
     return (
-      <a href={href} onClick={onClick} className={classes} style={style}>
+      <a
+        href={href}
+        onClick={onClick}
+        className={classes}
+        style={style}
+        {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      >
         {inner}
       </a>
     );

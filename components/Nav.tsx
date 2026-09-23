@@ -3,8 +3,8 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import SweepLink from "./SweepLink";
-import { CallIcon, WhatsAppIcon } from "./icons";
-import { PHONE_HREF, WHATSAPP_HREF } from "@/lib/contact";
+import { CallIcon, DownloadIcon, WhatsAppIcon } from "./icons";
+import { BROCHURE_HREF, PHONE_HREF, WHATSAPP_HREF } from "@/lib/contact";
 
 type Props = {
   menuOpen: boolean;
@@ -42,9 +42,14 @@ export default function Nav({ menuOpen, onToggleMenu }: Props) {
   const light = !scrolled && !menuOpen;
 
   const markColor = light ? "text-white" : "text-ink";
+  // The bar is symmetrical about the Qatari Diar mark, so the right-hand
+  // cluster can only be as wide as half the bar less the mark. It grows in
+  // steps as the width allows: Register Interest from lg, the brochure
+  // beside it from xl, and the Call / WhatsApp labels only from 2xl — below
+  // each step the item is an icon, or lives in the menu instead.
   const contactLink = `hidden items-center gap-2 font-serif text-16 leading-none
-                       transition-[color,opacity] duration-500 hover:opacity-70 lg:flex ${markColor}`;
-  const iconOnly = `flex h-9 w-9 items-center justify-center transition-colors duration-500 lg:hidden ${markColor}`;
+                       transition-[color,opacity] duration-500 hover:opacity-70 2xl:flex ${markColor}`;
+  const iconOnly = `flex h-9 w-9 items-center justify-center transition-colors duration-500 2xl:hidden ${markColor}`;
 
   return (
     <nav
@@ -116,7 +121,7 @@ export default function Nav({ menuOpen, onToggleMenu }: Props) {
                    rounded-[2px] object-contain md:h-12 md:w-12"
       />
 
-      <div className="flex items-center gap-2 md:gap-6">
+      <div className="flex items-center gap-2 md:gap-4">
         {/* Call / WhatsApp — labels from lg up, icons only below */}
         <a href={PHONE_HREF} className={contactLink}>
           <CallIcon className="h-[18px] w-[18px]" />
@@ -133,14 +138,33 @@ export default function Nav({ menuOpen, onToggleMenu }: Props) {
           <WhatsAppIcon className="h-[18px] w-[18px]" />
         </a>
 
-        {/* Hidden on mobile — the menu carries Register Interest there. */}
-        <div className="hidden md:block">
+        {/* Two calls to action — the brochure outlined, Register Interest
+            solid so the pair reads as secondary and primary. The menu carries
+            both wherever the bar cannot. Over the hero both are white-on-dark;
+            on the cream bar they swap to ink. */}
+        <div className="hidden items-center gap-3 lg:flex">
+          <div className="hidden xl:block">
+            <SweepLink
+              href={BROCHURE_HREF}
+              external
+              label={
+                <span className="inline-flex items-center gap-2">
+                  <DownloadIcon className="h-[18px] w-[18px]" />
+                  Download Brochure
+                </span>
+              }
+              className={light ? "border-white/80 text-white" : "border-ink text-ink"}
+              fill={light ? "bg-white" : "bg-ink"}
+              hoverText={light ? "group-hover:text-ink" : "group-hover:text-cream"}
+            />
+          </div>
           <SweepLink
             href="#lead"
             label="Register Interest"
-            className={light ? "border-white/80 text-white" : "border-ink text-ink"}
-            fill="bg-ink"
-            hoverText="group-hover:text-cream"
+            bg={light ? "bg-white" : "bg-ink"}
+            className={light ? "border-white text-ink" : "border-ink text-cream"}
+            fill={light ? "bg-ink" : "bg-cream"}
+            hoverText={light ? "group-hover:text-white" : "group-hover:text-ink"}
           />
         </div>
 
