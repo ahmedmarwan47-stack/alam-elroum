@@ -1,8 +1,13 @@
 name: Deploy to GitHub Pages
 
+# One Pages site, two builds: `main` is the live site at the root, and the
+# `preview` branch — when it exists — is built under /preview/ so a change
+# can be tried on a phone at a separate link before it goes live. Either
+# branch being pushed rebuilds both, since a Pages deploy replaces the whole
+# site.
 on:
   push:
-    branches: [main]
+    branches: [main, preview]
   workflow_dispatch:
 
 permissions:
@@ -19,18 +24,51 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: site
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: site/package-lock.json
       - run: npm ci
+        working-directory: site
       - run: npm run build
+        working-directory: site
         env:
           NEXT_PUBLIC_BASE_PATH: /alam-elroum
-      - run: touch out/.nojekyll
+      - run: touch site/out/.nojekyll
+
+      - id: preview
+        name: Is there a preview branch?
+        run: |
+          if git -C site ls-remote --exit-code --heads origin preview >/dev/null; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.preview.outputs.exists == 'true'
+        uses: actions/checkout@v4
+        with:
+          ref: preview
+          path: preview
+      - if: steps.preview.outputs.exists == 'true'
+        run: npm ci
+        working-directory: preview
+      - if: steps.preview.outputs.exists == 'true'
+        run: npm run build
+        working-directory: preview
+        env:
+          NEXT_PUBLIC_BASE_PATH: /alam-elroum/preview
+      - if: steps.preview.outputs.exists == 'true'
+        run: |
+          mkdir -p site/out/preview
+          cp -R preview/out/. site/out/preview/
+
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: out
+          path: site/out
   deploy:
     needs: build
     runs-on: ubuntu-latest
