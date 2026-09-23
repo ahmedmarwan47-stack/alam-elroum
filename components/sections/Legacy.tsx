@@ -57,7 +57,7 @@ export default function Legacy() {
       ref={root}
       id="legacySection"
       className="relative z-[2] flex flex-col border-t border-ink/12 bg-cream
-                 px-6 pt-24 pb-24
+                 px-6 pt-10 pb-10
                  md:px-[clamp(40px,6vw,80px)] md:pt-[clamp(48px,7vw,88px)] md:pb-[clamp(56px,8vw,96px)]"
     >
       <p

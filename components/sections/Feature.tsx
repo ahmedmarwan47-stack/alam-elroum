@@ -168,7 +168,7 @@ export default function Feature() {
     <section ref={root} id="s7" className="bg-cream">
       {/* ── TOP: headline + body left | stats right ─────────────────────── */}
       <div
-        className="grid grid-cols-1 items-start gap-10 px-6 pt-22 pb-15
+        className="grid grid-cols-1 items-start gap-10 px-6 pt-15 pb-15
                    md:min-h-[70vh] md:grid-cols-[1fr_1.4fr] md:gap-20 md:px-19 md:py-30"
       >
         <div data-s7-copy>
@@ -176,8 +176,10 @@ export default function Feature() {
             data-s7-headline
             className="type-section-title mb-7 text-ink"
           >
-            A 7.2-Kilometre Beachfront
-            <br />
+            {/* The authored break is for the desktop measure. On a phone the
+                line it makes re-wraps and strands a word, so the phrase wraps
+                as one there and `text-wrap: balance` sets the lines. */}
+            A 7.2-Kilometre Beachfront <br className="hidden md:inline" />
             Defines the Edge.
           </h2>
           <p data-s7-body className="font-serif text-16 leading-[1.8] text-ink/80">
@@ -185,7 +187,7 @@ export default function Feature() {
             kilometres of waterfront that reach into residential communities,
             leisure zones, and urban centres far beyond the shoreline. A central
             boulevard connects the arrival gateway to the marina, forming the
-            spine of a walkable, human-scaled city.
+            spine of a walkable, human-scaled{"\u00a0"}city.
           </p>
         </div>
 
@@ -205,10 +207,14 @@ export default function Feature() {
                     className="absolute inset-x-0 top-0 h-px origin-left bg-ink/20"
                   />
                 )}
+                {/* The closing rule under the last figure is desktop-only: on a
+                    phone the list ends the column, so a trailing line reads as
+                    a divider with nothing to divide. */}
                 <span
                   data-s7-line
                   aria-hidden
-                  className="absolute inset-x-0 bottom-0 h-px origin-left bg-ink/20"
+                  className={`absolute inset-x-0 bottom-0 h-px origin-left bg-ink/20
+                              ${i === STATS.length - 1 ? "hidden md:block" : ""}`}
                 />
 
                 <div
@@ -246,15 +252,19 @@ export default function Feature() {
       <div
         data-s7-bottom
         data-dark
-        className="relative grid grid-cols-1 items-start gap-10 bg-rust px-6 pt-22 pb-15
+        className="relative grid grid-cols-1 items-start gap-10 bg-rust px-6 pt-15 pb-15
                    md:grid-cols-[1fr_1.6fr] md:gap-20 md:px-20 md:py-30"
       >
         <h3
           data-s7-delivers-headline
           className="type-section-title text-white md:sticky md:top-10"
         >
-          What the Masterplan
-          <br />
+          {/* Four words that cannot wrap cleanly on their own: every break the
+              browser picks leaves "Delivers" by itself. So the break is
+              authored on both sides — after "What the" on a phone, after
+              "Masterplan" from md up. */}
+          What the <br className="md:hidden" />
+          Masterplan <br className="hidden md:inline" />
           Delivers
         </h3>
 

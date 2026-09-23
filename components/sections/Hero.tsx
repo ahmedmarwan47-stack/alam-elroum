@@ -104,9 +104,14 @@ export default function Hero() {
                        md:inset-x-auto md:top-1/2 md:right-auto
                        md:left-[clamp(40px,5vw,76px)] md:-translate-y-1/2 md:px-0"
           >
+            {/* The mobile size is derived, not picked: the longest line —
+                "Alam Al Roum, A Coastline" — measures about 12.1em wide, so
+                dividing the available width (100vw less the two 24px gutters)
+                by 12.9 keeps it on one line at any phone width. That is what
+                holds the headline to two lines instead of three. */}
             <h1
               ref={headlineLines}
-              className="font-sans text-[clamp(32px,7vw,40px)] leading-[1.15]
+              className="font-sans text-[calc((100vw-48px)/12.9)] leading-[1.12]
                          font-medium tracking-display text-white
                          md:max-w-[760px] md:text-[56px] md:leading-[60px]"
             >

@@ -169,6 +169,11 @@ export default function PinnedReveal({
     // plain `const` declared below would meet in its dead zone.
     const st: { rise?: ScrollTrigger; expand?: ScrollTrigger } = {};
 
+    /** The stage that takes this one's place — see the hand-off in `render`. */
+    const nextStickyEl = handOff
+      ? (trackEl.nextElementSibling?.firstElementChild as HTMLElement | null)
+      : null;
+
     const render = () => {
       const { wPre, hPre, w0, h0 } = sizes();
       const approach = st.rise?.progress ?? 0;
@@ -221,8 +226,26 @@ export default function PinnedReveal({
       }
       // Spent: the next section is pinned underneath on the same frame, so
       // step out of the way rather than scrolling the picture off twice.
+      //
+      // The cue is where that section actually is, not this one's progress.
+      // The two boundaries are computed in different units — this track is
+      // `180vh` and ends at `bottom bottom`, which ScrollTrigger resolves
+      // against `window.innerHeight`, while the next one is pulled up by a
+      // CSS `100vh`. On a phone those differ by the address bar, so a
+      // progress-based hand-off holds this picture over the top of the next
+      // section for the first slice of its timeline: its copy rises and its
+      // progress bar starts filling underneath, then appears all at once.
+      // Reading the position closes that gap whatever the units disagree by.
+      // Whichever cue comes first: the two orders are not fixed. On a phone
+      // the next stage reaches the top before this track runs out; on a
+      // desktop this track runs out first, and once it does nothing here
+      // updates again — so the progress test has to stay as the backstop.
       if (handOff) {
-        stickyEl.style.visibility = pinned > 0.9995 ? "hidden" : "visible";
+        const covered =
+          pinned > 0.9995 ||
+          (nextStickyEl !== null &&
+            nextStickyEl.getBoundingClientRect().top <= 0.5);
+        stickyEl.style.visibility = covered ? "hidden" : "visible";
       }
     };
 

@@ -43,18 +43,18 @@ function Arrow({ dir, onClick }: { dir: -1 | 1; onClick: () => void }) {
       // A bare outline disappears over a photograph, so the control carries its
       // own frosted plate: a low white wash over a blur, which reads on a dark
       // render and on a bright one. Hover still fills it solid with ink.
-      className={`group absolute top-1/2 z-[200] hidden h-12 w-12 -translate-y-1/2 items-center
+      className={`group absolute top-1/2 z-[200] flex h-10 w-10 -translate-y-1/2 items-center
                   justify-center rounded-full border border-white/50 bg-white/25 text-ink
                   shadow-[0_2px_14px_rgba(28,43,58,0.14)] backdrop-blur-md
                   transition-[background-color,border-color,color] duration-400
-                  hover:border-ink hover:bg-ink hover:text-cream md:flex
-                  ${dir < 0 ? "left-4 lg:left-10" : "right-4 lg:right-10"}`}
+                  hover:border-ink hover:bg-ink hover:text-cream md:h-12 md:w-12
+                  ${dir < 0 ? "left-3 md:left-4 lg:left-10" : "right-3 md:right-4 lg:right-10"}`}
     >
       <svg
         width="24"
         height="24"
         viewBox="0 0 24 24"
-        className={`h-6 w-6 transition-transform duration-400 ease-[cubic-bezier(0.16,1,0.3,1)]
+        className={`h-5 w-5 transition-transform duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] md:h-6 md:w-6
                     ${dir < 0 ? "group-hover:-translate-x-0.5" : "group-hover:translate-x-0.5"}`}
         fill="none"
       >
@@ -338,7 +338,7 @@ export default function CoverflowCarousel({
               nudge(1);
             }
           }}
-          className="cursor-grab overflow-hidden pt-8 pb-16 outline-none focus-visible:ring-1
+          className="cursor-grab overflow-hidden pt-2 pb-10 outline-none focus-visible:ring-1
                      focus-visible:ring-ink/40 active:cursor-grabbing md:pt-12 md:pb-20"
           style={{
             perspective: `calc(var(--cf-card) * ${perspective})`,

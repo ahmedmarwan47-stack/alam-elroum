@@ -79,7 +79,7 @@ export default function Sequence() {
   const progressFill = useRef<HTMLDivElement>(null);
   const progressLabel = useRef<HTMLSpanElement>(null);
   const [expanded, setExpanded] = useState(false);
-  const [loadedPhotos, setLoadedPhotos] = useState({ a: false, b: false, c: false });
+  const [loadedPhotos, setLoadedPhotos] = useState({ b: false, c: false });
 
   useEffect(() => {
     const trackEl = track.current;
@@ -175,17 +175,21 @@ export default function Sequence() {
             // hand-off jumps on the frame the two sections share.
             style={{ transform: "scale(1)" }}
           >
+            {/* Eager, and with no loading coin over it. This is the frame
+                section 03 hands across — the same photograph the reader has
+                been looking at for a viewport of scrolling. Lazy-loading a
+                second copy of it meant the hand-off landed on an opaque cream
+                panel that then faded to reveal a picture already on screen:
+                a jump, once, on the first pass and never again. */}
             <Image
               src="/images/image-14.jpg"
               alt="Alam Al Roum headland at night"
               fill
               sizes="100vw"
-              loading="lazy"
-              onLoad={() => setLoadedPhotos((state) => ({ ...state, a: true }))}
+              loading="eager"
               className="object-cover"
               style={{ objectPosition: "center 30%" }}
             />
-            <PhotoLoadCoin loaded={loadedPhotos.a} />
           </div>
           <div
             ref={imgB}

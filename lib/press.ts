@@ -31,14 +31,14 @@ export const pressArticles: PressArticle[] = [
     body: [
       "Alam Al Roum unfolds across 7.2 kilometres of Mediterranean shoreline and 22 kilometres of lagoon. A city where coastal living, open water and urban life meet. Not for a season, but for a lifetime.",
       "A network of lagoons carries the water deep inland, creating over 28 kilometres of waterfront that reach into residential communities, leisure zones and urban centres far beyond the shoreline.",
-      "A central boulevard connects the arrival gateway to the marina, forming the spine of a walkable, human-scaled city.",
+      "A central boulevard connects the arrival gateway to the marina, forming the spine of a walkable, human-scaled city.",
     ],
   },
   {
     slug: "the-lighthouse-returns",
     title: "The Lighthouse Returns to the Headland",
     excerpt:
-      "For centuries this headland guided sailors home. The masterplan sets a new landmark at its heart, facing the open Mediterranean.",
+      "For centuries this headland guided sailors home. The masterplan sets a new landmark at its heart, facing the open Mediterranean.",
     image: "/images/image-18.jpg",
     date: "28 August 2026",
     readTime: "4 min read",

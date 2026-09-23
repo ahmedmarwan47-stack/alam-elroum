@@ -48,12 +48,28 @@ export const unlockScroll = () => {
  * Lenis isn't running (reduced motion). Exempt from the site's scroll-speed
  * cap so a menu link never takes ten seconds to reach the footer.
  */
+/**
+ * The header is fixed, so landing a section flush at the top of the viewport
+ * tucks its first line underneath. Sections used to hide this behind generous
+ * top padding; now that the padding is set for rhythm instead, the clearance
+ * is measured from the header itself and taken off the target.
+ */
+const headerOffset = () => {
+  const nav = document.querySelector<HTMLElement>("nav");
+  const height = nav?.getBoundingClientRect().height ?? 0;
+  return height + 12;
+};
+
 export const scrollToHash = (hash: string) => {
   const target = document.querySelector<HTMLElement>(hash);
   if (!target) return;
   if (instance) {
     navigating = true;
-    instance.scrollTo(target, {
+    // A number, not the element with an `offset`: Lenis's own offset option
+    // left the instance in its scrolling state without ever moving the page.
+    const top =
+      target.getBoundingClientRect().top + instance.animatedScroll - headerOffset();
+    instance.scrollTo(Math.max(0, top), {
       duration: 1.6,
       easing: (t) => 1 - Math.pow(1 - t, 4),
       onComplete: () => {
@@ -61,6 +77,8 @@ export const scrollToHash = (hash: string) => {
       },
     });
   } else {
-    target.scrollIntoView({ behavior: "smooth" });
+    const top =
+      target.getBoundingClientRect().top + window.scrollY - headerOffset();
+    window.scrollTo({ top, behavior: "smooth" });
   }
 };

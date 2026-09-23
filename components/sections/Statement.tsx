@@ -187,7 +187,7 @@ export default function Statement() {
     >
       <div
         data-s6-header
-        className="flex shrink-0 flex-col items-start gap-2 px-6 pt-22 pb-7
+        className="flex shrink-0 flex-col items-start gap-2 px-6 pt-15 pb-7
                    md:gap-3.5 md:px-20 md:pt-28 md:pb-10"
       >
         <span data-s6-tag className="type-eyebrow whitespace-nowrap text-ink/50">

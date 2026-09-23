@@ -45,7 +45,7 @@ export default function Press() {
     <section
       ref={root}
       id="press"
-      className="border-t border-ink/12 bg-cream px-6 pt-24 pb-16
+      className="border-t border-ink/12 bg-cream px-6 pt-10 pb-10
                  md:px-[clamp(40px,5vw,80px)] md:py-[clamp(60px,8vh,100px)]"
     >
       <div className="flex flex-col items-start gap-2">
@@ -57,18 +57,29 @@ export default function Press() {
         </span>
         <h2
           data-heading
-          className="type-editorial text-[clamp(28px,3.4vw,48px)] leading-[1.1] text-ink"
+          className="type-editorial text-[clamp(24px,3.4vw,48px)] leading-[1.1] text-ink"
         >
           Latest Press Releases
         </h2>
       </div>
-      <ul className="mt-10 grid list-none grid-cols-1 gap-x-10 md:grid-cols-2 lg:grid-cols-3">
+      {/* On a phone the three cards are a horizontal rail rather than a stack:
+          full-bleed so it can scroll edge to edge, with `px-6` putting the
+          first card on the section's own left margin and `scroll-p-6` keeping
+          every snap there. Cards are 78vw, so the next one always peeks in and
+          the rail reads as having more. From `md` up it is the row again. */}
+      <ul
+        className="mt-6 -mx-6 flex snap-x snap-mandatory list-none gap-5 overflow-x-auto
+                   scroll-p-6 px-6 [-webkit-overflow-scrolling:touch] [scrollbar-width:none]
+                   [&::-webkit-scrollbar]:hidden
+                   md:mt-10 md:mx-0 md:grid md:snap-none md:grid-cols-2 md:gap-x-10 md:overflow-visible
+                   md:px-0 lg:grid-cols-3"
+      >
         {pressArticles.slice(0, 3).map((article) => (
-          <li key={article.slug} data-card>
+          <li key={article.slug} data-card className="w-[78vw] shrink-0 snap-start md:w-auto">
             <button
               type="button"
               onClick={() => show(article)}
-              className="group flex h-full w-full flex-col gap-5 py-8 text-left"
+              className="group flex h-full w-full flex-col gap-5 pb-8 text-left md:py-8"
             >
               <div className="relative aspect-[16/10] w-full overflow-hidden bg-ink/10">
                 <Image
@@ -87,7 +98,10 @@ export default function Press() {
                 <span>{article.readTime}</span>
               </div>
 
-              <h3 className="font-serif text-24 leading-[1.15] text-ink md:text-28">
+              {/* Sized off the card's own measure (78vw) so the longest title
+                  keeps its last word company at any phone width; the 28px
+                  desktop size takes over as soon as there is room. */}
+              <h3 className="font-serif text-[min(5.2vw,28px)] leading-[1.15] text-ink">
                 {article.title}
               </h3>
               <p className="font-sans text-16 leading-[1.6] text-ink/70">{article.excerpt}</p>

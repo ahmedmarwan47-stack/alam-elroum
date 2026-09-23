@@ -81,6 +81,34 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* No orphans ---------------------------------------------------------------
+   A single word left alone on a line reads as a mistake, especially in the big
+   display type. `text-wrap: pretty` is the rule that matches that intent: it
+   asks the browser to pull a word down rather than strand one. `balance` was
+   tried first and is the wrong tool here — it equalises line lengths, which is
+   precisely what pushes a long last word onto a line of its own. Where a line
+   break is deliberate (the hero's `block` spans) there is nothing to wrap and
+   this does nothing. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+li,
+dd,
+dt,
+label,
+summary,
+blockquote,
+figcaption,
+.type-editorial,
+.type-section-title,
+.type-card-title {
+  text-wrap: pretty;
+}
+
 /* Typography roles ---------------------------------------------------------
    The page deliberately uses two voices: a bold sans for campaign statements
    and an editorial serif for considered, narrative moments. These small role
@@ -96,7 +124,13 @@ body {
 
 .type-section-title {
   font-family: var(--font-sans);
-  font-size: clamp(28px, 3.4vw, 48px);
+  /* Derived, not picked. A fixed mobile size cannot hold the no-orphan rule,
+     because whether a heading strands its last word depends on the measure,
+     which is the viewport. So the size is capped by the width the longest
+     heading needs: the gutters come off, and what is left is divided by that
+     phrase's width in ems. `min()` lets the desktop ramp win as soon as there
+     is room, so nothing above `md` changes. */
+  font-size: min(calc((100vw - 48px) / 12.2), clamp(24px, 3.4vw, 48px));
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.01em;
@@ -105,7 +139,9 @@ body {
 
 .type-editorial {
   font-family: var(--font-sans);
-  font-size: clamp(28px, 3.4vw, 48px);
+  /* Same derivation as `.type-section-title`; the binding phrase here is
+     "A Coastline in Pictures" at 13.4em. */
+  font-size: min(calc((100vw - 48px) / 13.5), clamp(24px, 3.4vw, 48px));
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.01em;

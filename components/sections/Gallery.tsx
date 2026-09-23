@@ -31,7 +31,7 @@ export default function Gallery() {
       ref={root}
       id="gallery"
       className="overflow-hidden border-t border-ink/12 bg-cream
-                 px-6 pt-24 pb-16 md:px-[clamp(40px,5vw,80px)] md:py-[clamp(60px,8vh,100px)]"
+                 px-6 pt-10 pb-10 md:px-[clamp(40px,5vw,80px)] md:py-[clamp(60px,8vh,100px)]"
     >
       <div className="flex flex-col items-start gap-2">
         <span
@@ -42,13 +42,16 @@ export default function Gallery() {
         </span>
         <h2
           data-heading
-          className="type-editorial text-[clamp(28px,3.4vw,48px)] leading-[1.1] text-ink"
+          className="type-editorial text-[clamp(24px,3.4vw,48px)] leading-[1.1] text-ink"
         >
           A Coastline in Pictures
         </h2>
       </div>
 
-      <div data-carousel className="mt-8 md:mt-10">
+      {/* Full-bleed on mobile: inside the section's `px-6` the neighbouring
+          cards were sliced off square at the padding edge. Let them run to the
+          screen edge instead, so the rake reads as depth rather than a crop. */}
+      <div data-carousel className="mt-4 -mx-6 md:mx-0 md:mt-10">
         <CoverflowCarousel slides={gallerySlides} label="Alam Al Roum gallery" />
       </div>
     </section>

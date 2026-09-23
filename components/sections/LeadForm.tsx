@@ -104,7 +104,7 @@ export default function LeadForm() {
     <section
       ref={root}
       id="lead"
-      className="relative z-10 flex items-center bg-cream px-4 pt-24 pb-16 md:min-h-screen md:px-19 md:py-28"
+      className="relative z-10 flex items-center bg-cream px-4 pt-15 pb-15 md:min-h-screen md:px-19 md:py-28"
     >
       <div
         ref={card}

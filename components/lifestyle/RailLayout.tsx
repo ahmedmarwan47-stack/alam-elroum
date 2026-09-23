@@ -115,7 +115,7 @@ export default function RailLayout() {
           // to start below it. The floor is a px value and not a vh one on
           // purpose: the header does not get shorter on a short screen, so a
           // purely proportional value would slide back under it on a laptop.
-          className="order-1 flex flex-col items-start gap-2 px-6 pt-14
+          className="order-1 flex flex-col items-start gap-2 px-6 pt-10
                      md:px-[clamp(40px,5vw,80px)] md:pt-[clamp(108px,14vh,148px)]"
         >
           <span className="type-eyebrow text-ink/40">Lifestyle &amp; Experiences</span>
@@ -126,7 +126,7 @@ export default function RailLayout() {
 
         {/* The rail. Phones scroll it natively with snapping; from md up the
             scroll position is driven by the pinned track above. */}
-        <div className="order-3 mt-6 md:order-2 md:mt-0 md:flex md:flex-1 md:items-stretch md:overflow-hidden">
+        <div className="order-3 mt-5 md:order-2 md:mt-0 md:flex md:flex-1 md:items-stretch md:overflow-hidden">
           <div
             ref={row}
             // `scroll-pl-6` matters more than it looks. A snap target aligns
@@ -155,7 +155,11 @@ export default function RailLayout() {
                 // `md:h-auto` — a flex item that stretches. The card is then
                 // as tall as the stage has room for, whatever the heading and
                 // the counter leave behind, at any viewport height.
-                className="group relative h-[60vh] w-[76vw] shrink-0 snap-start overflow-hidden
+                // 84vw on a phone, not 76: the card's own measure is what
+                // decides whether a title like "Entertainment & Culture" can
+                // hold its words together, and at 76vw it could not. The next
+                // card still peeks by a clear 36px.
+                className="group relative h-[60vh] w-[84vw] shrink-0 snap-start overflow-hidden
                            bg-ink/10 md:h-auto md:w-[clamp(360px,40vw,580px)]"
               >
                 <Image
@@ -171,8 +175,8 @@ export default function RailLayout() {
                   className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t
                              from-black/85 via-black/45 to-transparent"
                 />
-                <div className="absolute inset-x-0 bottom-0 p-5 md:p-6">
-                  <h3 className="font-serif text-20 leading-[1.05] text-white md:text-24">
+                <div className="absolute inset-x-0 bottom-0 p-4 md:p-6">
+                  <h3 className="font-serif text-[min(calc((84vw-32px)/15.5),24px)] leading-[1.05] text-white">
                     {card.headline.join(" ")}
                   </h3>
                   <p className="mt-2.5 max-w-[34ch] font-serif text-12 leading-[1.55] text-white/80 md:text-14">
@@ -191,7 +195,11 @@ export default function RailLayout() {
             desktop it trails, high enough to clear the toggle — on its own
             the extra air reads as a margin, not a gap. */}
         <div
-          className="order-2 mt-5 flex items-center gap-4 px-6 pb-14
+          // `pb-0` on a phone: here the counter sits *between* the heading and
+          // the rail, so the desktop floor padding would open a void right
+          // under the title. It only earns that padding at `md`, where it
+          // trails the rail instead.
+          className="order-2 mt-4 flex items-center gap-4 px-6 pb-0
                      md:order-3 md:mt-0 md:px-[clamp(40px,5vw,80px)] md:pb-[clamp(64px,9vh,104px)]"
         >
           <span className="font-sans text-12 tabular-nums text-ink md:text-16">

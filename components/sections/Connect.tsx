@@ -98,12 +98,12 @@ export default function Connect() {
     <section
       ref={root}
       id="connectSection"
-      className="border-t border-ink/12 bg-cream px-6 pt-16 pb-14
+      className="border-t border-ink/12 bg-cream px-6 pt-10 pb-10
                  md:px-[clamp(40px,5vw,80px)] md:py-[clamp(60px,8vh,100px)]"
     >
       <div data-panel className="relative w-full">
         {/* Flight radius */}
-        <SubHead tag="Locations" heading="WITHIN A 5-HOUR FLIGHT RADIUS" />
+        <SubHead tag="Locations" heading="WITHIN A 5-HOUR FLIGHT RADIUS" />
         <div
           className="mb-[clamp(28px,4vw,48px)] grid grid-cols-2 gap-x-5
                      md:grid-cols-3 md:gap-x-[clamp(24px,4vw,64px)]"

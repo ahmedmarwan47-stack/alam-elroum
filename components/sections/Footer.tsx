@@ -41,7 +41,7 @@ export default function Footer() {
       ref={root}
       id="footerSection"
       data-dark
-      className="bg-ink px-6 pt-[clamp(36px,5vw,60px)] pb-[clamp(24px,3vw,36px)] text-cream
+      className="bg-ink px-6 pt-10 md:pt-[clamp(36px,5vw,60px)] pb-[clamp(24px,3vw,36px)] text-cream
                  md:px-[clamp(40px,6vw,80px)]"
     >
       <p data-tag className="type-eyebrow text-cream/50">
