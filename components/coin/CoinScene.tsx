@@ -118,16 +118,36 @@ useGLTF.preload(COIN_URL);
 export default function CoinScene({
   pose,
   className = "",
+  active = true,
 }: {
   pose: MutableRefObject<CoinPose>;
   className?: string;
+  /** False parks the render loop — see the observer in <LeadCoin>. */
+  active?: boolean;
 }) {
+  // Read once, at mount: this module only ever loads in the browser
+  // (`ssr: false`), and these three are read when the canvas is created.
+  //
+  // A phone pays for antialiasing and a high pixel ratio far more than it
+  // gains from them on an object this small and this round, and asking for
+  // the high-performance GPU on a handset buys nothing but battery. The
+  // canvas otherwise renders every frame for the whole life of the page,
+  // against Lenis and eight scroll triggers.
+  const phone =
+    typeof window !== "undefined" &&
+    window.matchMedia("(max-width: 1023px)").matches;
+
   return (
     <div className={`pointer-events-none ${className}`} aria-hidden>
       <Canvas
-        dpr={[1, 1.75]}
+        frameloop={active ? "always" : "never"}
+        dpr={phone ? [1, 1.5] : [1, 1.75]}
         camera={{ position: [0, 0, 5.2], fov: 32 }}
-        gl={{ alpha: true, antialias: true, powerPreference: "high-performance" }}
+        gl={{
+          alpha: true,
+          antialias: !phone,
+          powerPreference: phone ? "default" : "high-performance",
+        }}
         style={{ background: "transparent" }}
       >
         <Studio />

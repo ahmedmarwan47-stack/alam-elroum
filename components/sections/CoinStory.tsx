@@ -70,8 +70,8 @@ export default function CoinStory() {
   }, []);
 
   return (
-    <section ref={root} id="coin-story" data-dark className="relative h-[200vh] bg-ink">
-      <div className="sticky top-0 h-screen overflow-hidden">
+    <section ref={root} id="coin-story" data-dark className="relative h-[calc(var(--stage-h,100vh)*2)] bg-ink">
+      <div className="sticky top-0 h-[var(--stage-h,100vh)] overflow-hidden">
         <div
           className="relative mx-auto grid h-full w-full max-w-[1400px] px-6
                      grid-rows-[1fr_minmax(0,76vw)_1fr] items-center

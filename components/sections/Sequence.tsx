@@ -162,8 +162,8 @@ export default function Sequence() {
   }, []);
 
   return (
-    <div ref={track} id="s4-trigger" className="relative -mt-[100vh] h-[360vh]">
-      <div className="sticky top-0 h-screen overflow-hidden">
+    <div ref={track} id="s4-trigger" className="relative -mt-[var(--stage-h,100vh)] h-[calc(var(--stage-h,100vh)*3.6)]">
+      <div className="sticky top-0 h-[var(--stage-h,100vh)] overflow-hidden">
         {/* Imagery only. Both beats of copy now sit on the photograph, so
             there is no cream panel left for the floating seals to invert
             against — but keep the flag on the pictures, where it belongs. */}

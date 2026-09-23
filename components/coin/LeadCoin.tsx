@@ -63,6 +63,7 @@ export default function LeadCoin({ section, card, hold, landing }: Props) {
   const aim = useRef({ tiltX: 0 });
   const settled = useRef(false);
   const [enabled, setEnabled] = useState(false);
+  const [onScreen, setOnScreen] = useState(true);
   const [size, setSize] = useState(600);
   const [desktop, setDesktop] = useState(true);
 
@@ -313,6 +314,24 @@ export default function LeadCoin({ section, card, hold, landing }: Props) {
     };
   }, [enabled]);
 
+  /*
+   * The canvas renders on every frame for as long as it is alive, and the
+   * coin is only actually on screen for a few sections of a very long page.
+   * Park the render loop the rest of the time — on a phone that loop is the
+   * difference between scrolling smoothly and not.
+   */
+  useEffect(() => {
+    if (!enabled) return;
+    const el = wrap.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => setOnScreen(entry.isIntersecting),
+      { rootMargin: "25% 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [enabled]);
+
   if (!enabled) return null;
 
   return (
@@ -321,7 +340,7 @@ export default function LeadCoin({ section, card, hold, landing }: Props) {
       className="pointer-events-none absolute top-0 left-0 z-0 will-change-transform"
       style={{ width: size, height: size }}
     >
-      <CoinScene pose={pose} className="h-full w-full" />
+      <CoinScene pose={pose} active={onScreen} className="h-full w-full" />
     </div>
   );
 }

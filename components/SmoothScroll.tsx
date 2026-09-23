@@ -29,6 +29,39 @@ const LERP = 0.09;
 const MAX_LEAD_VH = 0.32;
 
 export default function SmoothScroll() {
+  /*
+   * One height for the full-screen stages, in pixels, published as
+   * `--stage-h`.
+   *
+   * The stages used to be sized in `vh` while ScrollTrigger resolved their
+   * starts and ends against `window.innerHeight`. On a desktop those agree.
+   * On a phone they do not: CSS `100vh` is the *large* viewport, as though
+   * the address bar were hidden, and `innerHeight` is what you can actually
+   * see. A `180vh` track with a `100vh` sticky box therefore stopped sticking
+   * a bar's height before its animation finished, and the picture slid away
+   * and snapped back — the jump at the seam of sections 03 and 04.
+   *
+   * Measured once and republished only when the width changes, which mirrors
+   * `ignoreMobileResize`: the address bar collapsing must not move the
+   * stages, because it does not move ScrollTrigger's measurements either.
+   */
+  useEffect(() => {
+    const root = document.documentElement;
+    let width = window.innerWidth;
+    const publish = () => {
+      root.style.setProperty("--stage-h", `${window.innerHeight}px`);
+    };
+    publish();
+    const onResize = () => {
+      if (window.innerWidth === width) return;
+      width = window.innerWidth;
+      publish();
+      ScrollTrigger.refresh();
+    };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.button !== 0) return;

@@ -202,8 +202,11 @@ export default function PinnedReveal({
         h = hPre + (h0 - hPre) * a;
         scale = 1.16 - 0.04 * a;
       }
+      // Height as a percentage of the stage rather than in `vh`: the stage is
+      // sized from `--stage-h`, so a percentage of it is the same number the
+      // scroll maths uses. `vh` here would be the large viewport again.
       wrapEl.style.width = `${w.toFixed(3)}vw`;
-      wrapEl.style.height = `${h.toFixed(3)}vh`;
+      wrapEl.style.height = `${h.toFixed(3)}%`;
       imgEl.style.transform = `scale(${scale.toFixed(4)})`;
 
       // One continuous descent across both phases: `t` runs 0 → 1 over the
@@ -213,7 +216,7 @@ export default function PinnedReveal({
       offsetY = -shift() * (1 - easeOutQuad(clamp01((t - 0.55) / 0.61)));
       contentEl.style.transform = `translate3d(0, ${offsetY.toFixed(1)}px, 0)`;
 
-      const imgTop = window.innerHeight * (1 - h / 100);
+      const imgTop = stickyEl.clientHeight * (1 - h / 100);
       for (const m of marks) {
         m.el.dataset.onImage = imgTop <= m.mid + offsetY ? "true" : "false";
       }
@@ -323,11 +326,11 @@ export default function PinnedReveal({
     <section
       ref={track}
       id={id}
-      className={`relative h-[180vh] md:h-[160vh] ${handOff ? "z-10" : ""}`}
+      className={`relative h-[calc(var(--stage-h,100vh)*1.8)] md:h-[calc(var(--stage-h,100vh)*1.6)] ${handOff ? "z-10" : ""}`}
     >
       <div
         ref={sticky}
-        className="sticky top-0 h-screen overflow-hidden bg-cream"
+        className="sticky top-0 h-[var(--stage-h,100vh)] overflow-hidden bg-cream"
       >
         {/* The copy is centred in the band of cream between the header and
             the photograph's resting top edge, rather than hung from a fixed
@@ -337,9 +340,9 @@ export default function PinnedReveal({
             height, so the centring is of the air you can actually see. */}
         <div
           ref={content}
-          className="pointer-events-none absolute inset-x-0 top-0 z-20 flex h-[50vh]
+          className="pointer-events-none absolute inset-x-0 top-0 z-20 flex h-[50%]
                      flex-col items-center justify-center px-6 pt-[64px] text-center
-                     md:h-[46vh] md:px-10 md:pt-[80px]"
+                     md:h-[46%] md:px-10 md:pt-[80px]"
         >
           {tag && (
             <span
@@ -367,8 +370,8 @@ export default function PinnedReveal({
         <div
           ref={wrap}
           data-dark
-          className="absolute bottom-0 left-1/2 z-10 h-[50vh] w-[92vw] -translate-x-1/2
-                     overflow-hidden will-change-[width,height] md:h-[54vh] md:w-[62vw]"
+          className="absolute bottom-0 left-1/2 z-10 h-[50%] w-[92vw] -translate-x-1/2
+                     overflow-hidden will-change-[width,height] md:h-[54%] md:w-[62vw]"
         >
           <Image
             ref={img}

@@ -71,9 +71,9 @@ export default function Hero() {
   }, []);
 
   return (
-    <div ref={root} id="scrollTrigger" className="relative h-screen">
-      <div className="sticky top-0 h-screen overflow-hidden">
-        <div className="relative h-screen w-full overflow-hidden bg-cream">
+    <div ref={root} id="scrollTrigger" className="relative h-[var(--stage-h,100vh)]">
+      <div className="sticky top-0 h-[var(--stage-h,100vh)] overflow-hidden">
+        <div className="relative h-[var(--stage-h,100vh)] w-full overflow-hidden bg-cream">
           {/* Full-bleed photograph */}
           <div data-dark className="absolute inset-0 z-5">
             <Image
