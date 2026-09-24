@@ -10,9 +10,10 @@ export type PressArticle = {
 };
 
 /**
- * PLACEHOLDER CONTENT — swap for real coverage before launch. The imagery is
- * the site's own renders, and no publication is named — nothing here should
- * read as a real attribution until the coverage is real.
+ * Qatari Diar's press releases, newest first. Bodies are the releases' own
+ * text, lightly copy-edited (typos, and "Alam Al Roum" spelled as on the
+ * site); the "About" boilerplate is left out. Read times are the body at
+ * roughly 200 words a minute.
  *
  * Excerpts are held to roughly 125–130 characters so the three cards in the
  * row wrap to the same depth and read as one band rather than a staircase.
@@ -21,82 +22,74 @@ export type PressArticle = {
  */
 export const pressArticles: PressArticle[] = [
   {
-    slug: "coastline-shaped-for-greatness",
-    title: "A Coastline Shaped for Greatness",
+    slug: "phase-one-launch",
+    title: "Qatari Diar Launches Phase One of Its Landmark Alam Al Roum Development on Egypt's North Coast",
     excerpt:
-      "Qatari Diar unveils Alam Al Roum, a 20.58 million square metre city on Egypt's North Coast, shaped by 7.2 kilometres of shoreline.",
-    image: "/images/image-11.jpg",
-    date: "12 September 2026",
+      "Qatari Diar launches the first phase of Alam Al Roum, a US$29.7 billion Mediterranean city, with handover beginning in 2030.",
+    image: "/press/phase-one-launch.jpg",
+    date: "9 August 2026",
     readTime: "5 min read",
     body: [
-      "Alam Al Roum unfolds across 7.2 kilometres of Mediterranean shoreline and 22 kilometres of lagoon. A city where coastal living, open water and urban life meet. Not for a season, but for a lifetime.",
-      "A network of lagoons carries the water deep inland, creating over 28 kilometres of waterfront that reach into residential communities, leisure zones and urban centres far beyond the shoreline.",
-      "A central boulevard connects the arrival gateway to the marina, forming the spine of a walkable, human-scaled city.",
+      "Cairo, August 9, 2026 – Qatari Diar has officially announced the launch of the first phase of its landmark Alam Al Roum development on Egypt's North Coast, marking the beginning of one of the Mediterranean's most ambitious mixed-use urban and tourism destinations. The project represents a total investment of US$29.7 billion, including US$3.5 billion in direct cash investments, with handover of the first phase scheduled to begin in 2030.",
+      "The first phase is expected to generate thousands of direct and indirect employment opportunities as part of the project's overall target of creating more than 250,000 jobs upon completion. It will also open significant opportunities for Egyptian and international contractors to participate in the construction works, strengthening the competitiveness of the local construction sector and reinforcing Qatari Diar's commitment to maximizing local value creation.",
+      "The announcement was made during a site visit by His Excellency Prime Minister Dr. Mostafa Madbouly, accompanied by H.E. Randa El Menshawy, Minister of Housing, Utilities and Urban Communities, as part of his tour to review major development and investment projects and monitor implementation progress across Egypt's North Coast. Upon arrival, the Prime Minister was welcomed by Sheikh Hamad bin Talal Al-Thani, Chief Executive Officer of Qatari Diar, along with the company's senior executives, who presented the implementation roadmap and timeline for Phase One ahead of construction.",
+      "During the visit, the Prime Minister and the accompanying delegation reviewed the project's masterplan. The development is one of Qatari Diar's largest integrated urban and tourism projects worldwide and its biggest investment in Egypt. Spanning 20.58 million square meters, the project boasts 7.2 kilometers of Mediterranean waterfront and is envisioned as a fully integrated coastal city combining residential, hospitality, commercial, cultural, entertainment, educational, and healthcare components within a modern urban framework designed to create a sustainable community for future generations.",
+      "Although it represents the first step toward achieving this vision, the project's first phase embodies the scale and potential of a fully integrated development in its own right. The phase spans 4 million square meters and features a total built-up area of 1.4 million square meters. It includes a 2-kilometer beachfront and promenade, open-sea connected lagoons suitable for swimming and yachting, as well as 195,000 square meters of swimmable artificial lagoons, and open spaces accounting for approximately 85% of the total land area. The development also features a town-center marina with capacity for 50 yacht berths, and four hotels offering more than 1,000 hotel rooms, sports centers, and international retail and dining venues, further reinforcing its position as a premier destination. The first phase is expected to generate approximately 30,000 direct and indirect jobs, backed by investments reaching up to EGP 220 billion.",
+      "The project's overall masterplan includes 22 kilometers of seawater-connected lagoons, integrated with waterfront promenades and extended beaches, 850,000 square meters of swimmable lagoons, an international marina accommodating up to 370 yacht berths, a domestic marina with 120 berths, and an 18-hole championship golf course spanning nearly 980,000 square meters with direct sea views. The development will also feature more than 3,500 hotel rooms across a collection of internationally branded hotels and resorts, positioning it as a regional hub for yacht tourism, sports, and global events.",
+      "The company also highlighted the project's urban planning philosophy, which is centered on creating a walkable city through an integrated network of pedestrian and cycling paths, smart mobility solutions, and best-in-class environmental sustainability standards in water resource management, biodiversity protection, and climate resilience.",
+      "Alam Al Roum represents a transformative milestone in reshaping Egypt's Mediterranean North Coast. The project's components are scheduled to be delivered progressively beginning in 2030, coinciding with the completion of the first phase.",
+      "Strategically located at the crossroads of North Africa, Europe, and the Middle East, the development benefits from its proximity to Ras El Hekma Airport and Marsa Matrouh International Airport, as well as direct connectivity to the International Coastal Highway and the under-development High-Speed Rail network, positioning it among the Mediterranean's premier tourism and investment destinations.",
+      "Commenting on the launch, Sheikh Hamad bin Talal Al-Thani, Chief Executive Officer of Qatari Diar, said: “We are delighted to officially launch the first phase of Alam Al Roum in the presence of His Excellency the Prime Minister and the accompanying delegation. This milestone reflects the scale of our commitment to Alam Al Roum, with total investments of US$29.7 billion across the project, including US$3.5 billion in direct cash investments. We remain committed to start delivering this phase by 2030, supported by Egypt's stable investment environment and long-term partnership opportunities.”",
+      "He added: “Phase One embodies our vision of creating a world-class coastal city that introduces a new lifestyle on the Mediterranean, guided by the highest international standards of urban planning and sustainability. From the earliest stages, we have partnered with leading global experts in master planning, marina design, hospitality consulting, landscape architecture, and infrastructure engineering to ensure the project meets international best practices.”",
+      "He continued: “We are implementing Phase One according to a carefully structured timeline targeting starting delivery in 2030. The project will help attract further investment, strengthen Egypt's tourism sector, and capitalize on the exceptional advantages of the North Coast. We are confident that this milestone will make a significant contribution to the Mediterranean's investment, tourism, and urban development landscape.”",
+      "Qatari Diar stands as one of the world's leading real estate development companies, backed by the Qatar Investment Authority. The company boasts an elite portfolio comprising 42 projects across more than 20 countries, with total investments exceeding $35 billion. Furthermore, Qatari Diar has sustained its strategic investments in the Egyptian market for over two decades, accumulating a total investment volume of approximately $7 billion.",
     ],
   },
   {
-    slug: "the-lighthouse-returns",
-    title: "The Lighthouse Returns to the Headland",
+    slug: "master-plan-som",
+    title: "Qatari Diar Egypt Unveils “Alam Al Roum” Master Plan with SOM",
     excerpt:
-      "For centuries this headland guided sailors home. The masterplan sets a new landmark at its heart, facing the open Mediterranean.",
-    image: "/images/image-18.jpg",
-    date: "28 August 2026",
-    readTime: "4 min read",
-    body: [
-      "A Roman landmark that once guided sailors safely home, Alam Al Roum now returns this coastline to its true meaning, defined by timeless beauty, grandeur and enduring light.",
-      "Each day begins with one of the city's most iconic sights: the sun rising from the Mediterranean horizon and casting a golden path across the sea towards the Lighthouse.",
-    ],
-  },
-  {
-    slug: "marina-experience",
-    title: "Three Marinas, One Waterfront",
-    excerpt:
-      "An international marina for global yachting arrivals, a neighbourhood marina at community scale, and a third kept for residents.",
-    image: "/images/ls-marina.jpg",
-    date: "10 August 2026",
-    readTime: "6 min read",
-    body: [
-      "Together the three marinas frame a waterfront promenade alive with dining, retail and the rhythm of the sea.",
-      "Through the city's centre, a signature canal walk animates daily life, carrying water taxis and quiet currents alike, connecting the boulevard to the marina in one continuous, walkable thread.",
-    ],
-  },
-  {
-    slug: "golf-overlooking-the-sea",
-    title: "Championship Golf Above the Mediterranean",
-    excerpt:
-      "The 18-hole course lies along the northern edge of Alam Al Roum, with a clifftop clubhouse where the view becomes part of the game.",
-    image: "/images/ls-golf.jpg",
-    date: "22 July 2026",
+      "Across 20.5 million square metres and a 7.2 km Mediterranean waterfront, the master plan is led by Skidmore, Owings & Merrill.",
+    image: "/images/masterplan-aerial.jpg",
+    date: "July 2026",
     readTime: "3 min read",
     body: [
-      "The championship course overlooks a natural lagoon and the Mediterranean beyond. A clifftop clubhouse completes the experience.",
-      "Morning runs along 22 kilometres of coastal trails, paddleboarding, cycling and yoga by the sea: wellness here is built into every part of daily life.",
+      "Cairo, July 2026: Qatari Diar Egypt, one of the world's leading real estate developers, hosted a site visit to its landmark Alam Al Roum project on Egypt's North Coast, attended by a distinguished group of international partners responsible for developing the project's master plan. The visit was led by Skidmore, Owings & Merrill (SOM), one of the world's foremost architecture, engineering, and urban planning firms, appointed to develop the project's master plan.",
+      "The visit formed part of the company's efforts to showcase the project's vision of creating one of Egypt's most prominent coastal communities. Alam Al Roum is envisioned as a fully integrated Mediterranean destination that remains vibrant year-round, combining exceptional natural surroundings with advanced urban design.",
+      "Spanning 20.5 million square meters (4,900 acres), the development enjoys a strategic location approximately 20 minutes from Marsa Matrouh and 50 minutes from Ras El Hekma, with 7.2 kilometers of private Mediterranean beachfront. Representing a total investment of USD 29.7 billion, including USD 3.5 billion in direct cash investment, it is among the region's largest tourism and mixed-use developments.",
+      "SOM plays a central role in shaping the project's planning vision by combining global best practices with the site's unique environmental characteristics to create a sustainable coastal destination that redefines waterfront living in Egypt and the wider region.",
+      "The master plan is supported by a consortium of internationally renowned firms, including SWA, the global landscape architecture specialist, Marina Projects, a leader in marina design and operations, and Setec, a leading transportation and traffic engineering consultancy. Together, they will ensure the project is delivered to the highest international standards of quality and innovation.",
+      "Commenting on the project, Sheikh Hamad bin Talal Al Thani, Chief Executive Officer of Qatari Diar, said: “Alam Al Roum marks a historic milestone in Qatari Diar's journey in Egypt and expands our land portfolio to more than 40 million square meters. It also reflects our confidence in Egypt as a premier destination for tourism and investment. Qatari Diar currently has an investment portfolio in Egypt valued at USD 7 billion, and we are developing the project in collaboration with world-class partners, including SOM. We remain committed to delivering the project by Egyptian hands for the Egyptian people, combining Qatari Diar's international expertise across 22 countries with Egypt's rich heritage to create a sustainable destination that supports the country's vision for comprehensive economic development.”",
+      "Taleb Al-Athba, Chief Development & Project Delivery Officer – Asia & Africa at Qatari Diar, stated: “Working alongside SOM and international partners including Setec, Marina Projects, and SWA, Alam Al Roum has been designed as a fully integrated smart city that seamlessly combines its coastal setting with architectural innovation to enhance quality of life and mobility. Qatari Diar is committing USD 3.5 billion in direct cash investment to ensure efficient project delivery. The development will feature an international yacht marina, luxury hotels, sustainable energy solutions, and locally sourced materials. Benefiting from its strategic location between Marsa Matrouh and Ras El Hekma, together with its 7.2-kilometer beachfront, the project is designed to become a year-round tourism destination.”",
+      "Thomas Hussey, Principal of SOM's City Design Practice, said: “Our master plan for Alam Al Roum presents a new vision for waterfront living on Egypt’s North Coast, shaped by the Mediterranean climate, landscape, and cultural character of its setting. Our ambition is to create a sustainable, resilient coastal destination that offers residents and visitors a more immersive way to live by the water.”",
+      "Alam Al Roum is the latest addition to Qatari Diar Egypt's growing portfolio, which includes landmark developments such as CityGate, NEWGIZA, and The St. Regis Cairo. Through this expansion, the company reaffirms its long-term commitment as a strategic partner in Egypt's urban transformation, contributing to a sustainable future that strengthens the country's position as a leading destination for real estate and tourism investment.",
     ],
   },
   {
-    slug: "smart-sustainable-living",
-    title: "Designed for a Lifetime, Not a Season",
+    slug: "partnership-signing",
+    title: "Qatari–Egyptian Investment Partnership to Develop “Alam Al Roum” in Egypt’s North Coast",
     excerpt:
-      "An education hub, a longevity medical centre, autonomous mobility and renewable energy underpin a city built for a lifetime.",
-    image: "/images/ls-smart.jpg",
-    date: "3 July 2026",
-    readTime: "7 min read",
+      "Prime Minister Dr. Mostafa Madbouly witnesses the signing of a US$29.7 billion partnership to develop Alam Al Roum on the coast.",
+    image: "/press/signing.jpg",
+    date: "6 November 2025",
+    readTime: "4 min read",
     body: [
-      "Alam Al Roum is designed for those who stay not for a season, but for a life. An Education Hub and a Longevity Medical Centre sit alongside autonomous mobility and renewable energy infrastructure.",
-      "A dedicated Free Zone, mixed-use town centres, commercial districts and an Expo and Convention Centre power regional business, not just serve visitors.",
-    ],
-  },
-  {
-    slug: "qatari-diar-north-coast",
-    title: "Qatari Diar's Defining Statement on the North Coast",
-    excerpt:
-      "Twenty years, twenty countries, one standard: the developer behind Lusail brings that same principle to Egypt's Mediterranean.",
-    image: "/images/image-16.jpg",
-    date: "15 June 2026",
-    readTime: "5 min read",
-    body: [
-      "Qatari Diar is a global real estate developer backed by the sovereign capital of the Qatar Investment Authority. Across more than 50 projects in 20 countries, the same principle has held: that exceptional places are built for people, not just for markets.",
-      "Alam Al Roum is Qatari Diar's defining statement on Egypt's North Coast.",
+      "At the Ministerial Headquarters in Egypt’s New Administrative Capital, His Excellency Dr. Mostafa Madbouly, Prime Minister of Egypt, witnessed the signing of a landmark investment partnership agreement between the New Urban Communities Authority and Qatari Diar Real Estate Investment Company.",
+      "The agreement aims to develop an integrated urban, touristic, and mixed-use developmental project in the Alam Al Roum area of the North Coast, located in Matrouh Governorate.",
+      "Implemented to the highest international standards, the project represents a total investment of USD 29.7 billion, spanning 4,900 acres and extending across 7.2 kilometers of pristine Mediterranean shoreline.",
+      "The project seeks to transform Alam Al Roum into a comprehensive year-round destination of residential, touristic, commercial, and service zones to attract both regional and international visitors.",
+      "The project will feature luxury residential neighborhoods, premium hospitality, tourism facilities, entertainment and leisure zones, artificial lakes, golf courses and a world-class marina for international yachts, in addition to two local internal marinas.",
+      "It will also include a fully integrated infrastructure, a free service zone, power distribution stations, water desalination and treatment plants, as well as hospitals, schools, universities, and several governmental facilities, ensuring a self-sustained urban ecosystem.",
+      "The agreement includes a payment of USD 3.5 billion and an in-kind component comprising a built-up area of 396,000 square meters, expected to generate revenues of no less than USD 1.8 billion. Furthermore, 15% of the project’s profits will be allocated to the New Urban Communities Authority after the company recovers its total investment cost. This profit share includes the earnings of the company and its affiliated entities, as stipulated in the agreement.",
+      "Prime Minister Dr. Mostafa Madbouly clarified that this agreement aligns with the standard framework adopted between the New Urban Communities Authority and real estate developers, which combines land allocation in return for both cash and in-kind payments, along with a share of the profits.",
+      "According to the master plan, approximately 60% of the total area will be dedicated to residential zones, 15% to service zones, and 25% to roads, public squares, and green open spaces. The project will include no industrial components and will be handed over in two main phases, each comprising several sub-phases. The land will be handed over fully cleared and ready for development.",
+      "The signing ceremony was attended by His Excellency Mr. Abdullah bin Hamad bin Abdullah Al Attiyah, Minister of Municipality of Qatar and Chairman of Qatari Diar; His Excellency Mr. Ahmed Kojak, Egyptian Minister of Finance; His Excellency Eng. Sherif El Sherbiny, Minister of Housing, Utilities and Urban Communities; Mr. Ali Mohamed Al Ali, CEO of Qatari Diar; and Sheikh Hamad bin Talal Al Thani, Chief of Development and Projects for Asia and Africa at Qatari Diar.",
+      "Prime Minister Dr. Mostafa Madbouly stated: “This agreement represents a major investment partnership between our two brotherly nations and reflects the strength of the exceptional relationship between His Excellency President Abdel Fattah El-Sisi and His Highness Sheikh Tamim bin Hamad Al Thani, Emir of the State of Qatar.” He added that the agreement embodies the shared vision of both leaders to strengthen economic partnerships and launch a new era of direct Qatari investments in Egypt, contributing to sustainable economic cooperation and mutual benefit for both peoples.",
+      "His Excellency Abdullah bin Hamad bin Abdullah Al Attiyah, Minister of Municipality of Qatar and Chairman of Qatari Diar, commented: “This project represents a strategic step towards further positioning the North Coast as a world-class integrated destination. It reflects Qatar’s commitment—through Qatari Diar—to supporting the Egyptian government’s efforts to achieve sustainable development and activate coastal areas all year round. This pivotal investment, located in one of the region’s most distinguished sites, will bring a qualitative leap in developing the North Coast, create over 250,000 direct and indirect jobs, and reinforce private sector participation in the national economy. It also reflects our deep confidence in the Egyptian economy and its promising potential, as well as Egypt’s unique geographic location that enables it to become a regional hub for investment and tourism.”",
+      "Eng. Ali Mohamed Al Ali, CEO of Qatari Diar, added: “The Alam Al Roum Project marks a new milestone in Qatari Diar’s journey of developing exceptional destinations, particularly in Egypt. It stands among a series of strategic projects the company is implementing regionally and globally. We are confident this project will become a turning point in the North Coast’s development and a global destination redefining standards of tourism and coastal living along the Mediterranean.”",
+      "He added that Qatari Diar remains one of the largest real estate developers in Egypt, holding a land portfolio exceeding 60 million square meters and current investments surpassing USD 7 billion across landmark projects such as CityGate New Cairo, The St. Regis Cairo, New Giza, the Red Sea Project, and Sharm El-Sheikh.",
+      "Under the agreement, a newly established project company (solely owned by Qatari Diar) will oversee the development and prepare a master plan in compliance with the New Urban Communities Authority, subject to the Authority’s approval.",
+      "In conclusion, Prime Minister Dr. Mostafa Madbouly affirmed that Egypt continues to take serious and proactive measures to attract and facilitate foreign direct investments, emphasizing that such projects drive comprehensive national development, urban expansion, job creation, and sustainable economic growth, ensuring mutual prosperity for all stakeholders.",
     ],
   },
 ];

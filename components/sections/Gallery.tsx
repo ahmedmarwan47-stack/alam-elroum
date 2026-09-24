@@ -1,13 +1,20 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap, EASE_OUT, reducedMotion } from "@/lib/gsap";
-import { gallerySlides } from "@/lib/gallery";
+import { galleryItems } from "@/lib/gallery";
 import CoverflowCarousel from "@/components/CoverflowCarousel";
+import MediaLightbox from "@/components/MediaLightbox";
 
-/** Gallery — a cover-flow of the renders, placed after Location. */
+/**
+ * Media Gallery — one cover-flow of every set (beach, Experience Center, the
+ * Prime Minister's visit, the land signing), arranged in lib/gallery.ts and
+ * captioned by set. Tapping the centre card opens it full-screen; video
+ * cards play there with sound. Placed after Location.
+ */
 export default function Gallery() {
   const root = useRef<HTMLElement>(null);
+  const [open, setOpen] = useState<number | null>(null);
 
   useEffect(() => {
     if (reducedMotion()) return;
@@ -42,9 +49,9 @@ export default function Gallery() {
         </span>
         <h2
           data-heading
-          className="type-editorial text-[clamp(24px,3.4vw,48px)] leading-[1.1] text-ink"
+          className="type-editorial text-[clamp(22px,3vw,42px)] leading-[1.1] text-ink"
         >
-          A Coastline in Pictures
+          Media Gallery
         </h2>
       </div>
 
@@ -52,8 +59,15 @@ export default function Gallery() {
           cards were sliced off square at the padding edge. Let them run to the
           screen edge instead, so the rake reads as depth rather than a crop. */}
       <div data-carousel className="mt-4 -mx-6 md:mx-0 md:mt-10">
-        <CoverflowCarousel slides={gallerySlides} label="Alam Al Roum gallery" />
+        <CoverflowCarousel slides={galleryItems} label="Alam Al Roum media gallery" onOpen={setOpen} />
       </div>
+
+      <MediaLightbox
+        items={galleryItems}
+        index={open}
+        onChange={setOpen}
+        onClose={() => setOpen(null)}
+      />
     </section>
   );
 }

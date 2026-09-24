@@ -102,7 +102,7 @@ export default function PressDrawer({ article, open, onClose }: Props) {
                 />
               </div>
               <div className="px-6 pt-8 pb-12 md:px-10 md:pt-8">
-                <h2 className="font-serif text-28 leading-[1.02] font-normal text-ink md:text-40">
+                <h2 className="font-serif text-[22px] leading-[1.15] font-normal text-ink md:text-28">
                   {shown.title}
                 </h2>
                 <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 font-sans text-12 tracking-[0.04em] text-rust md:text-16">

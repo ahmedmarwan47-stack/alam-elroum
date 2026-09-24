@@ -148,9 +148,9 @@ export default function StackLayout() {
               </span>
               <h2
                 data-head
-                className="mb-[10px] font-serif text-[clamp(24px,6.5vw,38px)] leading-[1.05]
+                className="mb-[10px] font-serif text-[clamp(22px,5.8vw,34px)] leading-[1.05]
                            font-normal text-ink opacity-0 will-change-[transform,opacity]
-                           md:mb-7 md:text-[clamp(26px,3vw,44px)]"
+                           md:mb-7 md:text-[clamp(24px,2.7vw,40px)]"
               >
                 {card.headline.map((line, n) => (
                   <span key={n} className="block">

@@ -27,8 +27,10 @@ type Props = {
 };
 
 /**
- * The site's one button: Immortel, 44px tall, outlined or — with `bg` —
- * solid. On hover a fill rises from the bottom edge and the label changes
+ * The site's one button: 44px tall, outlined or — with `bg` — solid. The
+ * label matches the live site's CTAs: Neue Haas Grotesk, 12px uppercase,
+ * semibold (the live site's 600 resolves to the Bold file, as it does here),
+ * 0.16em tracking. On hover a fill rises from the bottom edge and the label changes
  * colour a beat later, once the fill is most of the way up. Fills the width
  * on phones; content-width from md up.
  */
@@ -46,7 +48,8 @@ export default function SweepLink({
   style,
 }: Props) {
   const classes = `group relative inline-flex h-11 w-full cursor-pointer items-center justify-center
-                   overflow-hidden rounded-[2px] border px-5 font-serif text-16 leading-none
+                   overflow-hidden rounded-[2px] border px-5 font-sans text-12 leading-none
+                   font-semibold tracking-nav uppercase
                    whitespace-nowrap md:w-auto
                    transition-[border-color,background-color,opacity,transform] duration-500
                    ${bg} ${className}`;

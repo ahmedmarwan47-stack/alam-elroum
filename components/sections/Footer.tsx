@@ -58,15 +58,7 @@ export default function Footer() {
         Alam Al Roum
       </h2>
 
-      <div className="mt-[clamp(28px,4vh,48px)] grid grid-cols-1 gap-8 md:grid-cols-[1fr_1fr_auto] md:items-end md:gap-12">
-        <address data-item className="not-italic">
-          <p className="font-sans text-12 leading-[1.9] tracking-[0.03em] text-cream/50 md:text-16">
-            Lusail City
-          </p>
-          <p className="font-sans text-12 leading-[1.9] tracking-[0.03em] text-cream/50 md:text-16">
-            Doha, Qatar
-          </p>
-        </address>
+      <div className="mt-[clamp(28px,4vh,48px)] grid grid-cols-1 gap-8 md:grid-cols-[1fr_auto] md:items-end md:gap-12">
         <div data-item>
           <p className="font-sans text-12 leading-[1.9] tracking-[0.03em] text-cream/50 md:text-16">
             Sales enquiries

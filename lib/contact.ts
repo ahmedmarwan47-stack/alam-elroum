@@ -1,10 +1,14 @@
 /**
- * Contact channels shown in the header.
+ * Contact channels shown in the header's top strip.
  * PLACEHOLDER NUMBERS — replace with the sales line before launch.
  */
 export const PHONE_DISPLAY = "16XXX";
 export const PHONE_HREF = "tel:+2016XXX";
 export const WHATSAPP_HREF = "https://wa.me/20XXXXXXXXXX?text=Hi";
+
+/** Social profiles shown in the top strip. PLACEHOLDERS — replace before launch. */
+export const FACEBOOK_HREF = "https://www.facebook.com/";
+export const INSTAGRAM_HREF = "https://www.instagram.com/";
 
 import { asset } from "./asset";
 

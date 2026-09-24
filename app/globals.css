@@ -73,6 +73,12 @@ html {
   scroll-behavior: auto;
 }
 
+/* The contact strip above the header bar (components/Nav.tsx). Sections that
+   clear the fixed header add this to the bar's own height. */
+:root {
+  --strip-h: 32px;
+}
+
 body {
   background: var(--color-cream);
   color: var(--color-ink);
@@ -128,9 +134,10 @@ figcaption,
      because whether a heading strands its last word depends on the measure,
      which is the viewport. So the size is capped by the width the longest
      heading needs: the gutters come off, and what is left is divided by that
-     phrase's width in ems. `min()` lets the desktop ramp win as soon as there
-     is room, so nothing above `md` changes. */
-  font-size: min(calc((100vw - 48px) / 12.2), clamp(24px, 3.4vw, 48px));
+     phrase's width in ems, with ~10% to spare so headings sit a size down
+     from the measure's limit. `min()` lets the desktop ramp win as soon as
+     there is room. */
+  font-size: min(calc((100vw - 48px) / 13.4), clamp(22px, 3vw, 42px));
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.01em;
@@ -139,9 +146,8 @@ figcaption,
 
 .type-editorial {
   font-family: var(--font-sans);
-  /* Same derivation as `.type-section-title`; the binding phrase here is
-     "A Coastline in Pictures" at 13.4em. */
-  font-size: min(calc((100vw - 48px) / 13.5), clamp(24px, 3.4vw, 48px));
+  /* Same derivation as `.type-section-title`, sized from a 13.4em phrase. */
+  font-size: min(calc((100vw - 48px) / 14.8), clamp(22px, 3vw, 42px));
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.01em;

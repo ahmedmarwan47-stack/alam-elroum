@@ -301,7 +301,7 @@ export default function Sequence() {
                      md:right-auto md:bottom-15 md:left-15 md:max-w-[560px]"
           style={{ opacity: 0, visibility: "hidden" }}
         >
-          <h2 className="mb-2 font-sans text-24 leading-[1.15] font-bold tracking-[0.02em] uppercase md:text-32">
+          <h2 className="mb-2 font-sans text-24 leading-[1.15] font-bold tracking-[0.02em] uppercase md:text-28">
             A Landmark
             <br />
             of Return
@@ -331,7 +331,7 @@ export default function Sequence() {
             height={80}
             className="mb-4 h-20 w-20 object-contain"
           />
-          <h2 className="mb-2 font-sans text-24 leading-[1.15] font-bold tracking-[0.02em] uppercase md:text-32">
+          <h2 className="mb-2 font-sans text-24 leading-[1.15] font-bold tracking-[0.02em] uppercase md:text-28">
             Qatari Diar —
             <br />
             The Developer
@@ -388,7 +388,7 @@ export default function Sequence() {
                      md:right-auto md:bottom-15 md:left-15 md:max-w-[560px]"
           style={{ opacity: 0, visibility: "hidden" }}
         >
-          <h2 className="mb-3 font-sans text-24 leading-[1.15] font-bold tracking-[0.02em] uppercase md:text-32">
+          <h2 className="mb-3 font-sans text-24 leading-[1.15] font-bold tracking-[0.02em] uppercase md:text-28">
             Where the Land, Sea,
             <br />
             and Sky Align.

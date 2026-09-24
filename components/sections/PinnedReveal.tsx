@@ -337,12 +337,12 @@ export default function PinnedReveal({
             top padding. Hanging it put the tag directly under the header on
             some viewports and left a hole above the picture on others; the
             band always splits the difference. Its padding is the header's own
-            height, so the centring is of the air you can actually see. */}
+            height (bar plus contact strip), so the centring is of the air you can actually see. */}
         <div
           ref={content}
           className="pointer-events-none absolute inset-x-0 top-0 z-20 flex h-[50%]
-                     flex-col items-center justify-center px-6 pt-[64px] text-center
-                     md:h-[46%] md:px-10 md:pt-[80px]"
+                     flex-col items-center justify-center px-6 pt-[calc(64px+var(--strip-h))] text-center
+                     md:h-[46%] md:px-10 md:pt-[calc(80px+var(--strip-h))]"
         >
           {tag && (
             <span

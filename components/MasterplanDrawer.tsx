@@ -112,7 +112,7 @@ export default function MasterplanDrawer({
             </div>
 
             <div className="px-6 pt-8 pb-12 md:px-10 md:pt-8">
-              <h3 className="font-serif text-28 leading-[1.02] font-normal text-ink md:text-40">
+              <h3 className="font-serif text-[22px] leading-[1.15] font-normal text-ink md:text-28">
                 {place.title}
               </h3>
               <p className="type-eyebrow mt-3 text-rust">{place.category}</p>

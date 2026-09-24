@@ -11,6 +11,8 @@ export type CoverflowSlide = {
   alt: string;
   title?: string;
   subtitle?: string;
+  /** Marks a video card: it carries a play badge. */
+  video?: string;
 };
 
 type Props = {
@@ -32,6 +34,8 @@ type Props = {
   loop?: boolean;
   label?: string;
   className?: string;
+  /** Called when the centre card is tapped (or Enter is pressed on it). */
+  onOpen?: (index: number) => void;
 };
 
 function Arrow({ dir, onClick }: { dir: -1 | 1; onClick: () => void }) {
@@ -89,6 +93,7 @@ export default function CoverflowCarousel({
   loop = true,
   label = "Gallery",
   className = "",
+  onOpen,
 }: Props) {
   const count = slides.length;
 
@@ -284,6 +289,12 @@ export default function CoverflowCarousel({
       goTo(hit);
       return;
     }
+    // A tap on the centre card opens it.
+    if (!drag.moved && hit !== null && onOpen) {
+      settle(clamp(Math.round(posRef.current)));
+      onOpen(hit);
+      return;
+    }
     const carried = Math.max(-2, Math.min(2, drag.v * 0.18));
     settle(clamp(Math.round(posRef.current + carried)));
   };
@@ -336,6 +347,9 @@ export default function CoverflowCarousel({
             } else if (event.key === "ArrowRight") {
               event.preventDefault();
               nudge(1);
+            } else if (event.key === "Enter" && onOpen) {
+              event.preventDefault();
+              onOpen(selected);
             }
           }}
           className="cursor-grab overflow-hidden pt-2 pb-10 outline-none focus-visible:ring-1
@@ -373,6 +387,22 @@ export default function CoverflowCarousel({
                   sizes="(max-width: 768px) 80vw, 46vw"
                   className="pointer-events-none select-none object-cover"
                 />
+                {slide.video && (
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute top-1/2 left-1/2 flex h-14 w-14 -translate-x-1/2
+                               -translate-y-1/2 items-center justify-center rounded-full border border-white/60
+                               bg-white/20 text-white backdrop-blur-md md:h-18 md:w-18"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="ml-0.5 h-6 w-6 md:h-7 md:w-7"
+                      fill="currentColor"
+                    >
+                      <path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z" />
+                    </svg>
+                  </span>
+                )}
               </div>
             ))}
           </div>
@@ -404,20 +434,36 @@ export default function CoverflowCarousel({
         )}
       </div>
 
-      {/* Pagination */}
-      <div className="mt-6 flex items-center justify-center gap-2">
-        {slides.map((slide, index) => (
-          <button
-            key={slide.src}
-            type="button"
-            aria-label={`Go to slide ${index + 1}`}
-            aria-current={index === selected}
-            onClick={() => goTo(index)}
-            className={`h-1.5 rounded-full bg-ink transition-[width,opacity] duration-400
+      {/* Pagination. Past a dozen slides a dot each outgrows a phone's
+          width, so long sets get a counter over a slim progress line. */}
+      {count > 12 ? (
+        <div className="mt-6 flex flex-col items-center gap-3">
+          <p className="type-meta tabular-nums text-ink/60" aria-live="polite">
+            {String(selected + 1).padStart(2, "0")} /{" "}
+            {String(count).padStart(2, "0")}
+          </p>
+          <div aria-hidden className="h-px w-40 bg-ink/15">
+            <div
+              className="h-full bg-ink transition-[width] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+              style={{ width: `${((selected + 1) / count) * 100}%` }}
+            />
+          </div>
+        </div>
+      ) : (
+        <div className="mt-6 flex items-center justify-center gap-2">
+          {slides.map((slide, index) => (
+            <button
+              key={slide.src}
+              type="button"
+              aria-label={`Go to slide ${index + 1}`}
+              aria-current={index === selected}
+              onClick={() => goTo(index)}
+              className={`h-1.5 rounded-full bg-ink transition-[width,opacity] duration-400
                         ${index === selected ? "w-6 opacity-100" : "w-1.5 opacity-30 hover:opacity-60"}`}
-          />
-        ))}
-      </div>
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

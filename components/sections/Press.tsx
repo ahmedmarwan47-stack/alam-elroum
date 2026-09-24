@@ -57,7 +57,7 @@ export default function Press() {
         </span>
         <h2
           data-heading
-          className="type-editorial text-[clamp(24px,3.4vw,48px)] leading-[1.1] text-ink"
+          className="type-editorial text-[clamp(22px,3vw,42px)] leading-[1.1] text-ink"
         >
           Latest Press Releases
         </h2>
@@ -99,9 +99,9 @@ export default function Press() {
               </div>
 
               {/* Sized off the card's own measure (78vw) so the longest title
-                  keeps its last word company at any phone width; the 28px
+                  keeps its last word company at any phone width; the 24px
                   desktop size takes over as soon as there is room. */}
-              <h3 className="font-serif text-[min(5.2vw,28px)] leading-[1.15] text-ink">
+              <h3 className="font-serif text-[min(4.6vw,24px)] leading-[1.15] text-ink">
                 {article.title}
               </h3>
               <p className="font-sans text-16 leading-[1.6] text-ink/70">{article.excerpt}</p>

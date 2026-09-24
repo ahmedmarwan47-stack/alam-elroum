@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { gsap, ScrollTrigger, EASE_OUT, reducedMotion } from "@/lib/gsap";
 import SweepLink from "@/components/SweepLink";
 import LeadCoin from "@/components/coin/LeadCoin";
+import { COUNTRIES, PRIORITY_CODES, flagOf } from "@/lib/countries";
 
 /**
  * The select's own chevron, since `appearance-none` takes the native one
@@ -17,11 +18,22 @@ const CHEVRON = `url("data:image/svg+xml,${encodeURIComponent(
     "</svg>",
 )}")`;
 
-const FIELDS: { label: string; id: string; type?: string; options?: string[] }[] = [
+/** Priority markets first, then everyone else by name. */
+const PRIORITY = PRIORITY_CODES.map((code) => COUNTRIES.find((c) => c.code === code)!);
+const REST = COUNTRIES.filter((c) => !PRIORITY_CODES.includes(c.code));
+
+const FIELDS: {
+  label: string;
+  id: string;
+  type?: string;
+  options?: string[];
+  /** `phone` pairs the number with a dial-code picker; `country` is the nationality list. */
+  kind?: "phone" | "country";
+}[] = [
   { label: "Full name", id: "full-name" },
   { label: "Email", id: "email", type: "email" },
-  { label: "Phone number", id: "phone", type: "tel" },
-  { label: "Nationality", id: "nationality" },
+  { label: "Phone number", id: "phone", kind: "phone" },
+  { label: "Nationality", id: "nationality", kind: "country" },
   {
     label: "Area of interest",
     id: "interest",
@@ -48,6 +60,8 @@ export default function LeadForm() {
   const root = useRef<HTMLElement>(null);
   const card = useRef<HTMLDivElement>(null);
   const [sent, setSent] = useState(false);
+  const [dialCountry, setDialCountry] = useState("EG");
+  const dial = COUNTRIES.find((c) => c.code === dialCountry)!;
 
   useEffect(() => {
     const section = root.current;
@@ -119,7 +133,7 @@ export default function LeadForm() {
           </p>
           <h2
             data-lead-item
-            className="mt-3 font-serif text-[clamp(24px,3.2vw,44px)] leading-[1.1] text-cream md:mt-6"
+            className="mt-3 font-serif text-[clamp(22px,2.8vw,40px)] leading-[1.1] text-cream md:mt-6"
           >
             Be among the first to discover Alam Al Roum
           </h2>
@@ -141,7 +155,57 @@ export default function LeadForm() {
               <label htmlFor={`lead-${f.id}`} className="type-meta text-cream/60">
                 {f.label}
               </label>
-              {f.options ? (
+              {f.kind === "phone" ? (
+                // One underline across the pair. The dial-code picker shows a
+                // compact flag + prefix; the real <select> sits invisibly on
+                // top of it, so the native list (and its accessibility) is
+                // kept without the long "Egypt (+20)" label in the field.
+                <div className="flex items-center gap-3 border-b border-cream/30 pb-2 transition-colors focus-within:border-cream md:pb-3">
+                  <div className="relative flex shrink-0 items-center gap-1.5 pr-5 font-sans text-16 text-cream">
+                    <span aria-hidden>{flagOf(dial.code)}</span>
+                    <span aria-hidden>{dial.dial}</span>
+                    <span
+                      aria-hidden
+                      className="absolute top-1/2 right-0 h-4 w-4 -translate-y-1/2 bg-contain bg-no-repeat"
+                      style={{ backgroundImage: CHEVRON }}
+                    />
+                    <select
+                      aria-label="Country code"
+                      name="phone-code"
+                      value={dialCountry}
+                      onChange={(e) => setDialCountry(e.target.value)}
+                      className="absolute inset-0 cursor-pointer appearance-none opacity-0"
+                    >
+                      <CountryOptions withDial />
+                    </select>
+                  </div>
+                  <span aria-hidden className="h-4 w-px shrink-0 bg-cream/30" />
+                  <input
+                    id={`lead-${f.id}`}
+                    name={f.id}
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel-national"
+                    className="min-w-0 flex-1 border-0 bg-transparent p-0 font-sans text-16 text-cream outline-none"
+                  />
+                </div>
+              ) : f.kind === "country" ? (
+                <select
+                  id={`lead-${f.id}`}
+                  name={f.id}
+                  defaultValue=""
+                  className="appearance-none border-0 border-b border-cream/30 bg-transparent
+                             bg-[length:18px_18px] bg-[position:right_2px_center] bg-no-repeat
+                             pb-2 pr-6 font-sans text-16 text-cream outline-none transition-colors
+                             focus:border-cream md:pb-3"
+                  style={{ backgroundImage: CHEVRON }}
+                >
+                  <option value="" disabled className="text-ink">
+                    Select
+                  </option>
+                  <CountryOptions />
+                </select>
+              ) : f.options ? (
                 <select
                   id={`lead-${f.id}`}
                   name={f.id}
@@ -195,5 +259,27 @@ export default function LeadForm() {
 
       <LeadCoin section={root} card={card} hold="#coin-story" landing="#about" />
     </section>
+  );
+}
+
+/**
+ * The country list for both pickers: the priority markets, a rule, then the
+ * rest by name. The dial-code picker keys on the ISO code, since several
+ * countries share a prefix (+1, +7, +39).
+ */
+function CountryOptions({ withDial = false }: { withDial?: boolean }) {
+  const option = (c: (typeof COUNTRIES)[number]) => (
+    <option key={c.code} value={withDial ? c.code : c.name} className="text-ink">
+      {withDial ? `${c.name} (${c.dial})` : c.name}
+    </option>
+  );
+  return (
+    <>
+      {PRIORITY.map(option)}
+      <option disabled className="text-ink">
+        ──────────
+      </option>
+      {REST.map(option)}
+    </>
   );
 }

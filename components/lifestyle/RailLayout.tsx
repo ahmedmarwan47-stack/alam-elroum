@@ -111,16 +111,16 @@ export default function RailLayout() {
                    md:sticky md:top-0 md:h-screen md:overflow-hidden"
       >
         <div
-          // The stage is pinned under a fixed 80px header, so the heading has
+          // The stage is pinned under a fixed 80px header (plus the contact strip), so the heading has
           // to start below it. The floor is a px value and not a vh one on
           // purpose: the header does not get shorter on a short screen, so a
           // purely proportional value would slide back under it on a laptop.
           className="order-1 flex flex-col items-start gap-2 px-6 pt-10
-                     md:px-[clamp(40px,5vw,80px)] md:pt-[clamp(108px,14vh,148px)]"
+                     md:px-[clamp(40px,5vw,80px)] md:pt-[clamp(calc(108px+var(--strip-h)),calc(14vh+var(--strip-h)),calc(148px+var(--strip-h)))]"
         >
           <span className="type-eyebrow text-ink/40">Lifestyle &amp; Experiences</span>
-          <h2 className="type-editorial text-[clamp(26px,3vw,40px)] leading-[1.1] text-ink">
-            Eleven Ways to Live Here
+          <h2 className="type-editorial text-[clamp(22px,3vw,42px)] leading-[1.1] text-ink">
+            Experience Greatness
           </h2>
         </div>
 
