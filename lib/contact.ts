@@ -1,14 +1,17 @@
 /**
  * Contact channels shown in the header's top strip.
- * PLACEHOLDER NUMBERS — replace with the sales line before launch.
+ *
+ * 16922 is an Egyptian short-code hotline, so it is dialled as-is: short
+ * codes do not take the +20 country prefix. WhatsApp wants the full
+ * international number — 01200016922 with the leading 0 swapped for 20.
  */
-export const PHONE_DISPLAY = "16XXX";
-export const PHONE_HREF = "tel:+2016XXX";
-export const WHATSAPP_HREF = "https://wa.me/20XXXXXXXXXX?text=Hi";
+export const PHONE_DISPLAY = "16922";
+export const PHONE_HREF = "tel:16922";
+export const WHATSAPP_HREF = "https://wa.me/201200016922?text=Hi";
 
-/** Social profiles shown in the top strip. PLACEHOLDERS — replace before launch. */
-export const FACEBOOK_HREF = "https://www.facebook.com/";
-export const INSTAGRAM_HREF = "https://www.instagram.com/";
+/** Qatari Diar Egypt's social profiles, shown in the top strip. */
+export const FACEBOOK_HREF = "https://www.facebook.com/qataridiaregypt";
+export const INSTAGRAM_HREF = "https://www.instagram.com/qataridiaregypt/";
 
 import { asset } from "./asset";
 
