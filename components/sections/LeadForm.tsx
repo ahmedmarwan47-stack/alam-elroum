@@ -133,7 +133,7 @@ export default function LeadForm() {
           </p>
           <h2
             data-lead-item
-            className="mt-3 font-serif text-[clamp(22px,2.8vw,40px)] leading-[1.1] text-cream md:mt-6"
+            className="mt-3 font-sans text-[clamp(22px,2.8vw,40px)] leading-[1.1] font-medium tracking-display text-cream md:mt-6"
           >
             Be among the first to discover Alam Al Roum
           </h2>
