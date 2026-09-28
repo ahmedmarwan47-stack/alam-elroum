@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap, ScrollTrigger, EASE_OUT, reducedMotion } from "@/lib/gsap";
 import SweepLink from "@/components/SweepLink";
-import LeadCoin from "@/components/coin/LeadCoin";
 import { COUNTRIES, PRIORITY_CODES, flagOf } from "@/lib/countries";
 
 /**
@@ -256,8 +255,6 @@ export default function LeadForm() {
           </div>
         </form>
       </div>
-
-      <LeadCoin section={root} card={card} hold="#coin-story" landing="#about" />
     </section>
   );
 }

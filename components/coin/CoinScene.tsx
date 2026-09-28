@@ -122,7 +122,7 @@ export default function CoinScene({
 }: {
   pose: MutableRefObject<CoinPose>;
   className?: string;
-  /** False parks the render loop — see the observer in <LeadCoin>. */
+  /** False parks the render loop — see the observer in <StageCoin>. */
   active?: boolean;
 }) {
   // Read once, at mount: this module only ever loads in the browser

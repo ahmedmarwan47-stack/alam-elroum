@@ -3,11 +3,12 @@
 import { useEffect, useRef } from "react";
 import { ScrollTrigger, clamp01, reducedMotion } from "@/lib/gsap";
 import { coinBeats } from "@/lib/coinStory";
+import StageCoin from "@/components/coin/StageCoin";
 
 /**
- * The coin's chapter. A 200vh track pins an ink stage for one viewport of
- * scroll; the coin (owned by <LeadCoin>, positioned in page space) holds the
- * centre while two beats of copy cross-fade around it.
+ * The coin's chapter. A 250vh track pins an ink stage for one and a half
+ * viewports of scroll; the coin (<StageCoin>) sits in the middle of the stage
+ * and turns while three beats of copy cross-fade around it.
  *
  * Desktop: headline left, coin centre, body right.
  * Phone: headline top, coin middle, body bottom, all set flush left on the
@@ -26,15 +27,13 @@ export default function CoinStory() {
     const reduced = reducedMotion();
 
     // `p` runs over the pinned stretch; `arrival` goes 0 → 1 as the stage
-    // comes up and pins, so the copy only appears once the coin has landed.
-    // On phones `departure` takes it back out as the stage unpins, since the
-    // coin's glide to About runs straight down through the stacked copy.
+    // comes up and pins, so the first beat settles in as the stage arrives.
     const phone = window.matchMedia("(max-width: 1023px)");
     // A blur that changes on every scroll frame is re-rendered on every
     // scroll frame, and on a phone that is the difference between the coin
     // chapter scrolling smoothly and not. Phones cross-fade without it.
     const blur = !reduced && !phone.matches;
-    const apply = (p: number, arrival: number, departure: number) => {
+    const apply = (p: number, arrival: number) => {
       beats.forEach((b) => {
         const i = Number(b.dataset.beat);
         const centre = (i + 0.5) / n;
@@ -44,7 +43,7 @@ export default function CoinStory() {
         const win = 0.27 / n;
         let d = Math.abs(p - centre);
         if ((i === 0 && p < centre) || (i === n - 1 && p > centre)) d = 0;
-        const v = clamp01(1 - (d - win) / win) * arrival * (phone.matches ? 1 - departure : 1);
+        const v = clamp01(1 - (d - win) / win) * arrival;
         b.style.opacity = String(v);
         b.style.transform = `translate3d(0, ${((1 - v) * 24 * (p < centre ? 1 : -1)).toFixed(1)}px, 0)`;
         b.style.filter = v < 0.999 && blur ? `blur(${((1 - v) * 8).toFixed(2)}px)` : "";
@@ -58,9 +57,7 @@ export default function CoinStory() {
       const stageH = el.firstElementChild?.getBoundingClientRect().height || window.innerHeight;
       const pinned = clamp01(-r.top / Math.max(1, r.height - stageH));
       const arrival = clamp01((stageH * 0.45 - r.top) / (stageH * 0.45));
-      // 0 while pinned, 1 once the stage has scrolled a third of its height up.
-      const departure = clamp01((-(r.top) - (r.height - stageH)) / (stageH * 0.33));
-      apply(pinned, arrival, departure);
+      apply(pinned, arrival);
     };
     const st = ScrollTrigger.create({
       trigger: el,
@@ -74,15 +71,17 @@ export default function CoinStory() {
   }, []);
 
   return (
-    <section ref={root} id="coin-story" data-dark className="relative h-[calc(var(--stage-h,100vh)*2)] bg-ink">
+    <section ref={root} id="coin-story" data-dark className="relative h-[calc(var(--stage-h,100vh)*2.5)] bg-ink">
       <div className="sticky top-0 h-[var(--stage-h,100vh)] overflow-hidden">
         <div
           className="relative mx-auto grid h-full w-full max-w-[1400px] px-6
                      grid-rows-[1fr_minmax(0,76vw)_1fr] items-center
-                     lg:grid-cols-[minmax(0,30%)_1fr_minmax(0,32%)] lg:grid-rows-1
+                     lg:grid-cols-[minmax(0,32%)_1fr_minmax(0,32%)] lg:grid-rows-1
                      lg:px-[clamp(40px,5vw,80px)]"
         >
-          {/* Headlines — top on phones, left on desktop */}
+          {/* Headlines — top on phones, left on desktop. The desktop size is
+              set here, over .type-section-title, so the longest line
+              ("Defined by Scale", ~9.7em) fits the 32% column on one line. */}
           <div className="relative self-end pb-4 lg:self-center lg:pb-0">
             {coinBeats.map((beat, i) => (
               <h2
@@ -90,7 +89,7 @@ export default function CoinStory() {
                 data-beat={i}
                 className="type-section-title absolute inset-x-0 bottom-0 text-cream
                            will-change-[transform,opacity]
-                           lg:top-1/2 lg:bottom-auto lg:-translate-y-1/2 lg:text-[clamp(32px,3.6vw,56px)]"
+                           lg:top-1/2 lg:bottom-auto lg:-translate-y-1/2 lg:text-[clamp(26px,2.8vw,38px)]!"
               >
                 {beat.title.map((line, l) => (
                   <span key={l} className="block">
@@ -101,8 +100,10 @@ export default function CoinStory() {
             ))}
           </div>
 
-          {/* The coin lives here (rendered by LeadCoin in page space) */}
-          <div aria-hidden className="h-full" />
+          {/* The coin, held in the middle of the stage throughout */}
+          <div aria-hidden className="relative h-full">
+            <StageCoin track={root} />
+          </div>
 
           {/* Bodies — bottom on phones, right on desktop */}
           <div className="relative self-start pt-4 lg:self-center lg:pt-0">

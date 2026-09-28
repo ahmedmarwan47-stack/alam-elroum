@@ -5,8 +5,9 @@ export type CoinBeat = {
 };
 
 /**
- * The two beats that play around the coin while it holds centre stage.
- * PLACEHOLDER COPY in the brand's voice — refine with the client.
+ * The beats that play around the coin while it holds centre stage. The first
+ * two are PLACEHOLDER COPY in the brand's voice — refine with the client; the
+ * third is the About copy, which used to be a section of its own.
  */
 export const coinBeats: CoinBeat[] = [
   {
@@ -16,5 +17,9 @@ export const coinBeats: CoinBeat[] = [
   {
     title: ["Guided by", "the star."],
     body: "For centuries this headland guided sailors home. The star on the reverse still points the way back — to 7.2 kilometres of Mediterranean shoreline, 22 kilometres of lagoon, and a city built not for a season but for a lifetime.",
+  },
+  {
+    title: ["An Icon in the", "North Coast,", "Defined by Scale"],
+    body: "Alam Al Roum unfolds across 7.2 kilometres of Mediterranean shoreline and 22 kilometres of lagoon. A city where coastal living, open water, and urban life meet. Not for a season, but for a lifetime.",
   },
 ];

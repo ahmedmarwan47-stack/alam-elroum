@@ -7,7 +7,7 @@ import { DownloadIcon } from "./icons";
 import { BROCHURE_FILENAME, BROCHURE_HREF } from "@/lib/contact";
 
 const ITEMS = [
-  { n: "01", label: "About", href: "#about" },
+  { n: "01", label: "About", href: "#coin-story" },
   { n: "02", label: "The Vision", href: "#s4-trigger" },
   { n: "03", label: "The Masterplan", href: "#s6" },
   { n: "04", label: "Lifestyle & Experiences", href: "#ls-outer" },

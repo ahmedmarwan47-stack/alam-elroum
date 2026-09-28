@@ -3,7 +3,6 @@ import FloatingSeals from "@/components/FloatingSeals";
 import Hero from "@/components/sections/Hero";
 import LeadForm from "@/components/sections/LeadForm";
 import CoinStory from "@/components/sections/CoinStory";
-import About from "@/components/sections/About";
 import PinnedReveal from "@/components/sections/PinnedReveal";
 import Sequence from "@/components/sections/Sequence";
 import Statement from "@/components/sections/Statement";
@@ -23,7 +22,6 @@ export default function Home() {
       <Hero />
       <LeadForm />
       <CoinStory />
-      <About />
 
       <PinnedReveal
         id="s3-trigger"
