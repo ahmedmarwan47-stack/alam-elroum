@@ -11,7 +11,6 @@ import LifestyleSwitcher from "@/components/lifestyle/LifestyleSwitcher";
 import Connect from "@/components/sections/Connect";
 import Gallery from "@/components/sections/Gallery";
 import Press from "@/components/sections/Press";
-import Legacy from "@/components/sections/Legacy";
 import Footer from "@/components/sections/Footer";
 
 export default function Home() {
@@ -42,7 +41,6 @@ export default function Home() {
       <Gallery />
       <Connect />
       <Press />
-      <Legacy />
       <Footer />
 
       <FloatingSeals />
