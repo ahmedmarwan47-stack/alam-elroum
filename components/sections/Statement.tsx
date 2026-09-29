@@ -1,134 +1,102 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap, EASE_OUT, reducedMotion } from "@/lib/gsap";
-import MasterplanDrawer, { type MasterplanPlace } from "@/components/MasterplanDrawer";
 
-type MasterplanPin = MasterplanPlace & {
+/** The masterplan render's own proportions: the frame keeps them, so nothing is cropped. */
+const PLAN = { src: "/images/masterplan.jpg", width: 1672, height: 941 };
+
+type MasterplanPin = {
+  label: string;
+  /** Where the pin's point lands, in % of the render's width and height. */
   x: number;
   y: number;
+  kind: "usp" | "gate";
 };
 
+const usp = (label: string, x: number, y: number): MasterplanPin => ({ label, x, y, kind: "usp" });
+const gate = (n: number, x: number, y: number): MasterplanPin => ({ label: `Gate ${n}`, x, y, kind: "gate" });
+
+/*
+ * From the client's "Project Masterplan USP's" board: the blue pins are the
+ * USPs, the red ones the gates. Positions were carried over from that board
+ * onto this render, lined up on the gates at the two eastern roundabouts and
+ * along the southern road.
+ */
 const MASTERPLAN_PINS: MasterplanPin[] = [
-  {
-    title: "The Arrival Gateway",
-    category: "First Impression",
-    scenes: [
-      {
-        image: "/images/image-11.jpg",
-        description:
-          "The western gateway marks the transition from the coastal road into Alam Al Roum—a calm, landscaped arrival that reveals the city gradually.",
-      },
-      {
-        image: "/images/ls-smart.jpg",
-        description:
-          "Beyond the arrival, intelligent infrastructure and autonomous mobility connect every district without interrupting the landscape.",
-      },
-      {
-        image: "/images/masterplan-aerial.jpg",
-        description:
-          "From the gateway, the central boulevard becomes the city’s organizing spine, running clearly toward the Mediterranean waterfront.",
-      },
-    ],
-    x: 24,
-    y: 40,
-  },
-  {
-    title: "The Town Centre",
-    category: "Urban Life",
-    scenes: [
-      {
-        image: "/images/ls-town.jpg",
-        description:
-          "A walkable mixed-use heart brings homes, shaded streets, cafés, retail, and public gardens together around the water.",
-      },
-      {
-        image: "/images/ls-canals.jpg",
-        description:
-          "A network of canals draws the water into the centre, lining everyday routes with cafés, promenades, and shaded gathering places.",
-      },
-      {
-        image: "/images/ls-hotel.jpg",
-        description:
-          "Hospitality, residences, and public life meet at an urban scale designed to remain active well beyond the summer season.",
-      },
-    ],
-    x: 51,
-    y: 34,
-  },
-  {
-    title: "The Lighthouse & Marina",
-    category: "The Waterfront",
-    scenes: [
-      {
-        image: "/images/ls-marina.jpg",
-        description:
-          "The defining waterfront destination pairs Alam Al Roum’s new landmark with an international marina and a lively promenade at the end of the central boulevard.",
-      },
-      {
-        image: "/images/image-18.jpg",
-        description:
-          "The Lighthouse rises at the meeting point of boulevard, marina, and sea—a contemporary marker visible across the city and coastline.",
-      },
-      {
-        image: "/images/ls-iconic.jpg",
-        description:
-          "From inland, the city’s main axis frames the landmark and open water, keeping the Mediterranean present throughout the journey.",
-      },
-    ],
-    x: 63,
-    y: 53,
-  },
-  {
-    title: "The Mediterranean Pier",
-    category: "Beachfront Experience",
-    scenes: [
-      {
-        image: "/images/sea-pier.jpg",
-        description:
-          "A sculptural pier reaches into clear Mediterranean water, creating a quiet place for swimming, gathering, and uninterrupted views along the coast.",
-      },
-      {
-        image: "/images/ls-beach.jpg",
-        description:
-          "The pier joins a generous beachfront landscape where gardens, walking paths, and clear water shape the rhythm of the day.",
-      },
-      {
-        image: "/images/s9-sailboat.jpg",
-        description:
-          "Beyond the shore, open-water experiences extend the life of the city into the Mediterranean—from sailing to quiet sunrise crossings.",
-      },
-    ],
-    x: 46,
-    y: 70,
-  },
+  usp("18-Hole Golf Course", 13.3, 41.3),
+  usp("Vibrant Town Center", 27.4, 46.0),
+  usp("Vibrant Town Center", 72.7, 41.1),
+  usp("Open-Sea Lagoon & Continuous Promenade", 38.8, 46.0),
+  usp("Commercial Boulevard", 54.5, 46.3),
+  usp("International & Local Marina", 52.1, 17.6),
+  usp("7km Beach & Promenade", 33.6, 16.8),
+  usp("7km Beach & Promenade", 65.8, 13.0),
+  usp("Neighborhood Swimmable Lagoons", 29.4, 62.2),
+  usp("Neighborhood Swimmable Lagoons", 43.1, 60.2),
+  usp("Neighborhood Swimmable Lagoons", 69.1, 54.6),
+  usp("Freezone", 51.6, 73.2),
+  usp("Polo & Equestrian Club", 46.7, 77.2),
+  usp("Events Center", 48.2, 14.6),
+  usp("Expo Center", 54.8, 57.7),
+  usp("Postgrad University Campus", 80.0, 64.3),
+  gate(1, 17.7, 72.4),
+  gate(2, 40.0, 81.6),
+  gate(3, 53.4, 78.0),
+  gate(4, 63.7, 70.7),
+  gate(5, 75.9, 66.0),
+  gate(6, 87.4, 58.6),
+  gate(7, 83.3, 40.9),
 ];
 
 /**
- * Section 06 — Masterplan statement. A compact heading and the interactive
- * aerial render share a single full-viewport composition.
+ * The board's two pin colours: at rest, and the deeper shade each shifts to
+ * on hover — the way the original purple pin turned rust.
+ */
+const KIND = {
+  usp: { rest: "bg-[#4a7fc7]", on: "bg-[#2c5a9e]", hover: "group-hover:bg-[#2c5a9e]" },
+  gate: { rest: "bg-[#c0121b]", on: "bg-[#8a0a12]", hover: "group-hover:bg-[#8a0a12]" },
+} as const;
+
+/**
+ * Section 06 — Masterplan statement. A compact heading over the aerial
+ * render, shown whole — never cropped, so no pin is ever cut off — with the
+ * USPs and gates pinned on it. Each pin names its place on hover with a
+ * mouse, on tap on a touch screen.
+ *
+ * Desktop: the render runs full width at its own proportions. Phone: at full
+ * width it would be too small to read, so it keeps a readable height and
+ * scrolls sideways, starting from the middle.
  *
  * Mirrors the original `.s6`: the header slides in from the right, the image
  * follows 0.2s later on a longer travel, and the picture itself settles from a
  * slight zoom so the two movements read as one gesture. Inside the header the
- * tag leads with a tiny left-to-right slide and the headline pulls into focus.
+ * tag leads with a tiny left-to-right slide and the headline pulls into focus;
+ * the pins pop in last.
  */
 export default function Statement() {
   const root = useRef<HTMLElement>(null);
-  const [activePin, setActivePin] = useState<number | null>(null);
-  const [shownPin, setShownPin] = useState(0);
+  const scroller = useRef<HTMLDivElement>(null);
+  /** The pin tapped open on a touch screen (a mouse just hovers). */
+  const [tapped, setTapped] = useState<number | null>(null);
 
-  const openPin = (index: number) => {
-    setShownPin(index);
-    setActivePin(index);
-  };
-  const closePin = useCallback(() => setActivePin(null), []);
-  const showAdjacentPin = useCallback((direction: -1 | 1) => {
-    const next = (shownPin + direction + MASTERPLAN_PINS.length) % MASTERPLAN_PINS.length;
-    setShownPin(next);
-    setActivePin(next);
-  }, [shownPin]);
+  // On a phone the render is wider than the screen: open on its middle.
+  useEffect(() => {
+    const el = scroller.current;
+    const plan = el?.firstElementChild as HTMLElement | null;
+    if (el && plan) el.scrollLeft = (plan.offsetWidth - el.clientWidth) / 2;
+  }, []);
+
+  // A tap anywhere off the pins puts the open label away.
+  useEffect(() => {
+    if (tapped === null) return;
+    const close = (event: PointerEvent) => {
+      if (!(event.target as HTMLElement).closest("[data-map-pin]")) setTapped(null);
+    };
+    document.addEventListener("pointerdown", close);
+    return () => document.removeEventListener("pointerdown", close);
+  }, [tapped]);
 
   useEffect(() => {
     if (reducedMotion()) return;
@@ -180,14 +148,10 @@ export default function Statement() {
   }, []);
 
   return (
-    <section
-      ref={root}
-      id="s6"
-      className="relative flex h-[100svh] flex-col overflow-hidden bg-cream"
-    >
+    <section ref={root} id="s6" className="relative overflow-hidden bg-cream">
       <div
         data-s6-header
-        className="flex shrink-0 flex-col items-start gap-2 px-6 pt-15 pb-7
+        className="flex flex-col items-start gap-2 px-6 pt-15 pb-7
                    md:gap-3.5 md:px-20 md:pt-28 md:pb-10"
       >
         <span data-s6-tag className="type-eyebrow whitespace-nowrap text-ink/50">
@@ -196,118 +160,93 @@ export default function Statement() {
         <h2 data-s6-title className="type-section-title max-w-[900px] text-ink">
           A sense of place defined by urban coastal living.
         </h2>
+        <p className="type-meta text-ink/50 md:hidden">Swipe to explore the plan</p>
       </div>
 
       <div
+        ref={scroller}
         data-s6-image
         data-dark
-        className="relative min-h-0 w-full flex-1 overflow-hidden bg-ink"
+        className="w-full overflow-x-auto overflow-y-hidden overscroll-x-contain bg-ink
+                   [scrollbar-width:none] md:overflow-hidden [&::-webkit-scrollbar]:hidden"
       >
-        <Image
-          src="/images/masterplan-aerial.jpg"
-          alt="Aerial render of the Alam Al Roum masterplan"
-          fill
-          sizes="100vw"
-          className="object-cover"
-        />
+        <div
+          className="relative h-[min(62svh,460px)] overflow-hidden md:h-auto md:w-full"
+          style={{ aspectRatio: `${PLAN.width} / ${PLAN.height}` }}
+        >
+          <Image
+            src={PLAN.src}
+            alt="Aerial render of the Alam Al Roum masterplan"
+            fill
+            sizes="(max-width: 768px) 820px, 100vw"
+            className="object-cover"
+            draggable={false}
+          />
 
-        <div aria-hidden className="absolute inset-0 bg-ink/8" />
+          <div aria-hidden className="absolute inset-0 bg-ink/8" />
 
-        {MASTERPLAN_PINS.map((pin, index) => (
-          <button
-            key={pin.title}
-            type="button"
-            data-map-pin
-            aria-label={`Explore ${pin.title}`}
-            aria-pressed={activePin === index}
-            onClick={() => openPin(index)}
-            className="group absolute z-20 h-14 w-12 -translate-x-1/2 -translate-y-full
-                       focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream"
-            style={{ left: `${pin.x}%`, top: `${pin.y}%` }}
-          >
-            <span aria-hidden className="absolute bottom-0 left-1/2 h-2 w-7 -translate-x-1/2 rounded-full bg-ink/35 blur-[3px]" />
-            <span
-              aria-hidden
-              className={`absolute top-0 left-1/2 flex h-11 w-11 -translate-x-1/2
-                         items-center justify-center will-change-transform
-                         transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]
-                         group-hover:-translate-y-2 group-hover:scale-110
-                         ${activePin === index ? "-translate-y-2 scale-110" : ""}`}
-            >
-              <span
-                className={`flex h-full w-full rotate-[-45deg] items-center justify-center
-                           rounded-[50%_50%_50%_0] border-2 border-cream bg-qatar-purple
-                           shadow-[0_8px_22px_rgba(28,43,58,0.4)]
-                           transition-[background-color,box-shadow] duration-500
-                           ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:bg-rust
-                           group-hover:shadow-[0_12px_28px_rgba(28,43,58,0.32)]
-                           ${
-                             activePin === index
-                               ? "bg-rust shadow-[0_12px_28px_rgba(28,43,58,0.32)]"
-                               : ""
-                           }`}
+          {MASTERPLAN_PINS.map((pin, index) => {
+            const open = tapped === index;
+            const kind = KIND[pin.kind];
+            // The original pin, at about 70% of its size.
+            return (
+              <button
+                key={`${pin.label}-${index}`}
+                type="button"
+                data-map-pin
+                aria-label={pin.label}
+                aria-expanded={open}
+                // A mouse hovers; a finger has no hover, so a tap shows the name.
+                onPointerUp={(event) => {
+                  if (event.pointerType !== "mouse") setTapped(open ? null : index);
+                }}
+                className={`group absolute h-10 w-9 -translate-x-1/2 -translate-y-full cursor-default
+                            focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream
+                            ${open ? "z-30" : "z-20 hover:z-30 focus-visible:z-30"}`}
+                style={{ left: `${pin.x}%`, top: `${pin.y}%` }}
               >
-                <span className="h-2.5 w-2.5 rounded-full border-2 border-cream bg-transparent" />
-              </span>
-            </span>
-
-            <span
-              className={`pointer-events-none absolute bottom-[calc(100%+48px)] left-1/2 z-30 flex
-                         -translate-x-1/2 translate-y-5 scale-[0.94] items-end opacity-0
-                         transition-[opacity,transform] delay-0 duration-500
-                         ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0
-                         group-hover:scale-100 group-hover:opacity-100 group-hover:delay-75
-                         group-focus-visible:translate-y-0 group-focus-visible:scale-100
-                         group-focus-visible:opacity-100
-                         ${activePin === index ? "translate-y-0 scale-100 opacity-100 delay-75" : ""}`}
-            >
-              {pin.scenes.slice(0, 2).map((scene, previewIndex) => (
                 <span
-                  key={scene.image}
-                  className={`relative block h-20 w-28 overflow-hidden border-2 border-cream shadow-xl
-                              will-change-transform transition-transform duration-500
-                              ease-[cubic-bezier(0.22,1,0.36,1)]
-                              ${
-                                previewIndex === 0
-                                  ? `z-10 translate-x-2 translate-y-2 rotate-0 group-hover:translate-x-0 group-hover:translate-y-0 group-hover:rotate-[-4deg] ${activePin === index ? "translate-x-0 translate-y-0 rotate-[-4deg]" : ""}`
-                                  : `-ml-5 -translate-x-2 translate-y-4 rotate-0 group-hover:translate-x-0 group-hover:translate-y-2 group-hover:rotate-[4deg] ${activePin === index ? "translate-x-0 translate-y-2 rotate-[4deg]" : ""}`
-                              }`}
+                  aria-hidden
+                  className="absolute bottom-0 left-1/2 h-1.5 w-5 -translate-x-1/2 rounded-full bg-ink/35 blur-[3px]"
+                />
+                <span
+                  aria-hidden
+                  className={`absolute top-0 left-1/2 flex h-8 w-8 -translate-x-1/2
+                              items-center justify-center will-change-transform
+                              transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]
+                              group-hover:-translate-y-2 group-hover:scale-110
+                              ${open ? "-translate-y-2 scale-110" : ""}`}
                 >
-                  <Image
-                    src={scene.image}
-                    alt=""
-                    fill
-                    sizes="112px"
-                    className="object-cover"
-                  />
+                  <span
+                    className={`flex h-full w-full rotate-[-45deg] items-center justify-center
+                                rounded-[50%_50%_50%_0] border-2 border-cream
+                                shadow-[0_8px_22px_rgba(28,43,58,0.4)]
+                                transition-[background-color,box-shadow] duration-500
+                                ease-[cubic-bezier(0.22,1,0.36,1)] ${kind.hover}
+                                group-hover:shadow-[0_12px_28px_rgba(28,43,58,0.32)]
+                                ${open ? `${kind.on} shadow-[0_12px_28px_rgba(28,43,58,0.32)]` : kind.rest}`}
+                  >
+                    <span className="h-2 w-2 rounded-full border-2 border-cream bg-transparent" />
+                  </span>
                 </span>
-              ))}
-            </span>
-            <span
-              className={`pointer-events-none absolute top-[calc(100%+5px)] left-1/2
-                         -translate-x-1/2 translate-y-2 whitespace-nowrap bg-cream px-3 py-2
-                         font-sans text-12 tracking-[0.04em] text-ink opacity-0 shadow-lg
-                         transition-[opacity,transform] delay-0 duration-500
-                         ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0
-                         group-hover:opacity-100 group-hover:delay-75 group-focus-visible:translate-y-0
-                         group-focus-visible:opacity-100
-                         ${activePin === index ? "translate-y-0 opacity-100 delay-75" : ""}`}
-            >
-              {pin.title}
-            </span>
-          </button>
-        ))}
-      </div>
 
-      <MasterplanDrawer
-        place={MASTERPLAN_PINS[shownPin]}
-        open={activePin !== null}
-        onClose={closePin}
-        onPreviousPlace={() => showAdjacentPin(-1)}
-        onNextPlace={() => showAdjacentPin(1)}
-        placeIndex={shownPin}
-        placeCount={MASTERPLAN_PINS.length}
-      />
+                <span
+                  className={`pointer-events-none absolute top-[calc(100%+5px)] left-1/2
+                              -translate-x-1/2 translate-y-2 whitespace-nowrap bg-cream px-3 py-2
+                              font-sans text-12 tracking-[0.04em] text-ink opacity-0 shadow-lg
+                              transition-[opacity,transform] delay-0 duration-500
+                              ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0
+                              group-hover:opacity-100 group-hover:delay-75 group-focus-visible:translate-y-0
+                              group-focus-visible:opacity-100
+                              ${open ? "translate-y-0 opacity-100 delay-75" : ""}`}
+                >
+                  {pin.label}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
     </section>
   );
 }

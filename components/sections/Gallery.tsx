@@ -3,14 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap, EASE_OUT, reducedMotion } from "@/lib/gsap";
 import { galleryItems } from "@/lib/gallery";
-import CoverflowCarousel from "@/components/CoverflowCarousel";
+import GalleryCarousel from "@/components/GalleryCarousel";
 import MediaLightbox from "@/components/MediaLightbox";
 
 /**
- * Media Gallery — one cover-flow of every set (beach, Experience Center, the
- * Prime Minister's visit, the land signing), arranged in lib/gallery.ts and
- * captioned by set. Tapping the centre card opens it full-screen; video
- * cards play there with sound. Placed after Location.
+ * Media Gallery — every set (beach, the land signing, the Experience Center,
+ * the Prime Minister's visit) in one endless row of portrait cards that glides
+ * on by itself, in the order set in lib/gallery.ts and captioned by set.
+ * Tapping the centre card opens it full-screen; video cards play there with
+ * sound.
  */
 export default function Gallery() {
   const root = useRef<HTMLElement>(null);
@@ -37,29 +38,40 @@ export default function Gallery() {
     <section
       ref={root}
       id="gallery"
-      className="overflow-hidden border-t border-ink/12 bg-cream
-                 px-6 pt-10 pb-10 md:px-[clamp(40px,5vw,80px)] md:py-[clamp(60px,8vh,100px)]"
+      data-dark
+      // Exactly one screen: the heading clears the fixed header, and the
+      // carousel takes whatever height is left, sizing its cards to it.
+      className="flex h-[var(--stage-h,100vh)] flex-col overflow-hidden bg-ink px-6
+                 pt-[calc(var(--strip-h)+72px)] pb-[clamp(16px,3vh,32px)]
+                 md:px-[clamp(40px,5vw,80px)] md:pt-[calc(var(--strip-h)+104px)]"
     >
-      <div className="flex flex-col items-start gap-2">
+      <div className="flex shrink-0 flex-col items-start gap-2">
         <span
           data-tag
-          className="type-eyebrow text-ink/40"
+          className="type-eyebrow text-cream/40"
         >
           Gallery
         </span>
         <h2
           data-heading
-          className="type-editorial text-[clamp(22px,3vw,42px)] leading-[1.1] text-ink"
+          className="type-editorial text-[clamp(22px,3vw,42px)] leading-[1.1] text-cream"
         >
           Media Gallery
         </h2>
       </div>
 
-      {/* Full-bleed on mobile: inside the section's `px-6` the neighbouring
-          cards were sliced off square at the padding edge. Let them run to the
-          screen edge instead, so the rake reads as depth rather than a crop. */}
-      <div data-carousel className="mt-4 -mx-6 md:mx-0 md:mt-10">
-        <CoverflowCarousel slides={galleryItems} label="Alam Al Roum media gallery" onOpen={setOpen} />
+      {/* Full-bleed: the row runs to the screen edge on both sides, so the
+          neighbouring cards are cut by the screen, not by the padding. */}
+      <div
+        data-carousel
+        className="mt-[clamp(12px,2.5vh,32px)] -mx-6 flex min-h-0 flex-1 md:-mx-[clamp(40px,5vw,80px)]"
+      >
+        <GalleryCarousel
+          slides={galleryItems}
+          label="Alam Al Roum media gallery"
+          paused={open !== null}
+          onOpen={setOpen}
+        />
       </div>
 
       <MediaLightbox

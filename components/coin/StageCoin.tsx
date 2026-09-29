@@ -1,50 +1,30 @@
 "use client";
 
-import { useEffect, useRef, useState, type RefObject } from "react";
+import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import { ScrollTrigger, clamp01, reducedMotion } from "@/lib/gsap";
+import { reducedMotion } from "@/lib/gsap";
 import { restingPose, type CoinPose } from "./CoinScene";
 
 const CoinScene = dynamic(() => import("./CoinScene"), { ssr: false });
 
-/** The disc at this scale is ~57% of a phone's width. <CoinStory> sizes its middle row to it. */
-const SCALE = 0.85;
+/** The disc at this scale is ~46% of a phone's width. <CoinStory> sizes its middle row to it. */
+const SCALE = 0.68;
 
 /**
- * The coin on the chapter stage. It lives in the stage's middle cell and
- * never leaves it: it scrolls in with the stage, holds while the stage is
- * pinned, and scrolls out with it. Over the pinned stretch it turns through
- * one slow revolution with a gentle tip: the star for the first beat, the
- * name on its other face for the middle one, the star again for the last.
+ * The coin on the chapter stage, turning on a steady loop with a gentle bob.
+ * With reduced motion it rests still, face on.
  *
  * Canvas box: 600px on desktop (44vw on narrower ones, so the disc clears
- * the copy), 90vw (≤ 420px) on phones. With reduced motion it rests still.
+ * the copy), 90vw (≤ 420px) on phones.
  */
-export default function StageCoin({ track }: { track: RefObject<HTMLElement | null> }) {
+export default function StageCoin() {
   const wrap = useRef<HTMLDivElement>(null);
-  const pose = useRef<CoinPose>({ ...restingPose(), spin: 0, bob: 0, scale: SCALE });
+  const pose = useRef<CoinPose>({ ...restingPose(), scale: SCALE });
   const [onScreen, setOnScreen] = useState(false);
 
   useEffect(() => {
-    const el = track.current;
-    if (!el || reducedMotion()) return;
-    const update = () => {
-      const r = el.getBoundingClientRect();
-      const stageH = el.firstElementChild?.getBoundingClientRect().height || window.innerHeight;
-      const p = clamp01(-r.top / Math.max(1, r.height - stageH));
-      pose.current.rotY = p * Math.PI * 2;
-      pose.current.rotX = Math.sin(p * Math.PI) * 0.45;
-    };
-    const st = ScrollTrigger.create({
-      trigger: el,
-      start: "top bottom",
-      end: "bottom top",
-      onUpdate: update,
-      onRefresh: update,
-    });
-    update();
-    return () => st.kill();
-  }, [track]);
+    if (reducedMotion()) Object.assign(pose.current, { spin: 0, bob: 0 });
+  }, []);
 
   // The canvas renders every frame while alive; park it whenever the stage
   // is off screen — on a phone that is the difference between scrolling

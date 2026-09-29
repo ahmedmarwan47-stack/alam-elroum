@@ -4,7 +4,6 @@ export type GalleryItem = {
   alt: string;
   /** Caption under the centre card: which set it comes from. */
   title: string;
-  subtitle: string;
   /** Set on a video card: the film that plays in the lightbox. */
   video?: string;
 };
@@ -12,7 +11,7 @@ export type GalleryItem = {
 const images = (
   dir: string,
   count: number,
-  caption: Pick<GalleryItem, "title" | "subtitle" | "alt">,
+  caption: Pick<GalleryItem, "title" | "alt">,
 ): GalleryItem[] =>
   Array.from({ length: count }, (_, i) => ({
     src: `/gallery/${dir}/${String(i + 1).padStart(2, "0")}.jpg`,
@@ -20,80 +19,64 @@ const images = (
     alt: `${caption.alt} ${i + 1}`,
   }));
 
-const brandFilm: GalleryItem = {
-  src: "/gallery/brand-film-poster.jpg",
-  video: "/gallery/brand-film.mp4",
-  alt: "Alam Al Roum brand film",
-  title: "Alam Al Roum",
-  subtitle: "The brand film",
-};
-
-/** Each set's film sits among its photographs. */
-const beach = images("beach", 9, {
-  alt: "The Alam Al Roum shoreline",
-  title: "The Mediterranean",
-  subtitle: "The Alam Al Roum shoreline",
+const film = (dir: string, caption: Pick<GalleryItem, "title" | "alt">): GalleryItem => ({
+  src: `/gallery/${dir}/film-poster.jpg`,
+  video: `/gallery/${dir}/film.mp4`,
+  ...caption,
 });
-beach.splice(4, 0, {
-  src: "/gallery/beach/film-poster.jpg",
-  video: "/gallery/beach/film.mp4",
-  alt: "The Alam Al Roum shoreline, film",
-  title: "The Mediterranean",
-  subtitle: "Timeless shores",
+
+/*
+ * Captioned by category, one per folder of the Website Content delivery:
+ * Beach Shots, Beach Video, Signing of the Land, Experience Center shots and
+ * video, and the Prime Minister's visit, shots and video.
+ */
+const beach = images("beach", 9, {
+  alt: "Beach shot of the Alam Al Roum shoreline",
+  title: "Beach Shots",
+});
+
+const beachFilm = film("beach", {
+  alt: "Beach video: Timeless Shores",
+  title: "Beach Video",
+});
+
+const landSigning = images("land-signing", 2, {
+  alt: "Signing of the land for Alam Al Roum",
+  title: "Signing of the Land",
 });
 
 const experienceCenter = images("experience-center", 7, {
   alt: "The Alam Al Roum Experience Center",
-  title: "The Experience Center",
-  subtitle: "Alam Al Roum, North Coast",
+  title: "Experience Center",
 });
 
-const landSigning = images("land-signing", 2, {
-  alt: "Signing of the Alam Al Roum partnership agreement",
-  title: "The Land Signing",
-  subtitle: "New Administrative Capital, November 2025",
+const experienceCenterFilm = film("experience-center", {
+  alt: "Experience Center video",
+  title: "Experience Center Video",
 });
 
 const pmVisit = images("pm-visit", 4, {
   alt: "The Prime Minister's visit to Alam Al Roum",
   title: "The Prime Minister's Visit",
-  subtitle: "Phase One launch, August 2026",
 });
-pmVisit.splice(3, 0, {
-  src: "/gallery/pm-visit/film-poster.jpg",
-  video: "/gallery/pm-visit/film.mp4",
-  alt: "The Prime Minister's visit to Alam Al Roum, film",
-  title: "The Prime Minister's Visit",
-  subtitle: "The film, August 2026",
+
+const pmVisitFilm = film("pm-visit", {
+  alt: "Video of the Prime Minister's visit to Alam Al Roum",
+  title: "The Prime Minister's Visit Video",
 });
 
 /**
- * Lays `sets` out so each one is spread evenly along the sequence: an item's
- * place is its fraction of the way through its own set, and `phase` staggers
- * the sets so they take turns rather than arriving together.
+ * Mixed rather than set by set — nine beach shots in a row look like one
+ * picture. Fixed, so it is the same on every visit: no card sits next to one
+ * from its own set (the beach video counts as beach, and so on), including
+ * across the wrap from the last card back to the first; the three films
+ * fall eight cards apart; and each set keeps its own order.
  */
-function spread(sets: { items: GalleryItem[]; phase: number }[]) {
-  return sets
-    .flatMap(({ items, phase }) =>
-      items.map((item, i) => ({ item, at: (i + phase) / items.length })),
-    )
-    .sort((a, b) => a.at - b.at)
-    .map(({ item }) => item);
-}
-
-/**
- * One sequence of everything, arranged rather than shuffled — the same on
- * every visit. It opens on the brand film; after that each set is spread
- * evenly through the rest, keeping its own order, so the rhythm keeps
- * changing and the two signing photographs land roughly a third and
- * two-thirds of the way round.
- */
+const [b, e, p, l] = [beach, experienceCenter, pmVisit, landSigning];
 export const galleryItems: GalleryItem[] = [
-  brandFilm,
-  ...spread([
-    { items: beach, phase: 0 },
-    { items: experienceCenter, phase: 0.3 },
-    { items: pmVisit, phase: 0.55 },
-    { items: landSigning, phase: 0.7 },
-  ]),
+  b[0], l[0], e[0], beachFilm, p[0],
+  b[1], e[1], b[2], p[1], e[2],
+  b[3], experienceCenterFilm, b[4], e[3], l[1],
+  p[2], b[5], e[4], b[6], pmVisitFilm,
+  e[5], b[7], p[3], b[8], e[6],
 ];

@@ -285,133 +285,6 @@ html.scroll-locked [data-fixed-layer] {
   transform: rotateY(180deg);
 }
 
-@keyframes drawer-scene-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.drawer-scene-in {
-  animation: drawer-scene-in 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-/* Gallery cursor -------------------------------------------------------------
-   One layer, one state. A fixed 88px box the script centres on the pointer,
-   with the visible ring inside — sizing the *inner* mark is what lets it grow
-   from its own centre, and it leaves the outer transform free for the script,
-   which rewrites it every frame.
-
-   The ring only appears over `[data-cursor="drag"]` (the gallery coverflow),
-   where the native cursor is hidden to make room for it. Everywhere else the
-   real cursor is left alone. See <Cursor>.
---------------------------------------------------------------------------- */
-.site-cursor-ring {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 99998;
-  display: flex;
-  width: 88px;
-  height: 88px;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  opacity: 0;
-  will-change: transform;
-  transition: opacity 0.3s ease;
-}
-
-/* A real frosted plate with a firm edge and a shadow under it, because this
-   sits over renders where a faint outline reads as nothing. The chevrons rock
-   outward on a slow loop — a cursor quietly doing the gesture it is asking
-   for is far harder to miss than one that only changes size. */
-.site-cursor-circle {
-  position: relative;
-  display: flex;
-  width: 84px;
-  height: 84px;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(28, 43, 58, 0.5);
-  border-radius: 999px;
-  background: rgba(240, 237, 230, 0.3);
-  box-shadow: 0 4px 20px rgba(28, 43, 58, 0.18);
-  backdrop-filter: blur(6px) saturate(1.1);
-  transition:
-    border-color 0.3s ease,
-    background-color 0.3s ease,
-    box-shadow 0.3s ease,
-    transform 0.15s ease;
-}
-
-.site-cursor-chevron {
-  position: absolute;
-  width: 24px;
-  height: 24px;
-  color: var(--color-ink);
-  transition: color 0.3s ease;
-}
-.site-cursor-chevron[data-dir="l"] {
-  left: 7px;
-  animation: cursor-sweep-l 2s ease-in-out infinite;
-}
-.site-cursor-chevron[data-dir="r"] {
-  right: 7px;
-  animation: cursor-sweep-r 2s ease-in-out infinite;
-}
-
-@keyframes cursor-sweep-l {
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-  50% {
-    transform: translateX(-4px);
-  }
-}
-@keyframes cursor-sweep-r {
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-  50% {
-    transform: translateX(4px);
-  }
-}
-
-/* pressed */
-html[data-cursor-down="true"] .site-cursor-circle {
-  transform: scale(0.82);
-}
-
-/* over dark surfaces */
-html[data-cursor-dark="true"] .site-cursor-circle {
-  border-color: rgba(255, 255, 255, 0.65);
-  background: rgba(28, 43, 58, 0.28);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-}
-html[data-cursor-dark="true"] .site-cursor-chevron {
-  color: #ffffff;
-}
-
-/* Only the gallery gives up the native cursor, and only where ours can run. */
-@media (hover: hover) and (pointer: fine) and (min-width: 769px) {
-  html[data-cursor-mode="drag"] [data-cursor="drag"],
-  html[data-cursor-mode="drag"] [data-cursor="drag"] :where(*) {
-    cursor: none;
-  }
-}
-@media (max-width: 768px), (pointer: coarse) {
-  .site-cursor-ring {
-    display: none !important;
-  }
-}
-
 /* Gallery caption swap ------------------------------------------------------ */
 @keyframes caption-in {
   from {
@@ -422,4 +295,40 @@ html[data-cursor-dark="true"] .site-cursor-chevron {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Gallery caption crossfade ------------------------------------------------
+   The outgoing name lifts away and dims while the incoming one rises in
+   behind it, both softened by a light blur, timed to land with the card.
+   See <CaptionSwap> in <GalleryCarousel>. */
+@keyframes caption-swap-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+    filter: blur(4px);
+  }
+}
+@keyframes caption-swap-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+.caption-swap-out {
+  animation: caption-swap-out 0.55s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.caption-swap-in {
+  animation: caption-swap-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--swap-delay, 0.3s);
 }
