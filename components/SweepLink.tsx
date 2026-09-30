@@ -24,10 +24,12 @@ type Props = {
   type?: "button" | "submit";
   onClick?: () => void;
   style?: React.CSSProperties;
+  /** `compact` is 36px tall with tighter padding, for the header bar. */
+  size?: "default" | "compact";
 };
 
 /**
- * The site's one button: 44px tall, outlined or — with `bg` — solid. The
+ * The site's one button: 44px tall (36px `compact`), outlined or — with `bg` — solid. The
  * label matches the live site's CTAs: Neue Haas Grotesk, 12px uppercase,
  * semibold (the live site's 600 resolves to the Bold file, as it does here),
  * 0.16em tracking. On hover a fill rises from the bottom edge and the label changes
@@ -46,9 +48,11 @@ export default function SweepLink({
   type = "button",
   onClick,
   style,
+  size = "default",
 }: Props) {
-  const classes = `group relative inline-flex h-11 w-full cursor-pointer items-center justify-center
-                   overflow-hidden rounded-[2px] border px-5 font-sans text-12 leading-none
+  const sizing = size === "compact" ? "h-9 px-3.5 text-[11px]" : "h-11 px-5 text-12";
+  const classes = `group relative inline-flex w-full cursor-pointer items-center justify-center
+                   overflow-hidden rounded-[2px] border font-sans leading-none ${sizing}
                    font-semibold tracking-nav uppercase
                    whitespace-nowrap md:w-auto
                    transition-[border-color,background-color,opacity,transform] duration-500

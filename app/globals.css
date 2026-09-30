@@ -73,10 +73,11 @@ html {
   scroll-behavior: auto;
 }
 
-/* The contact strip above the header bar (components/Nav.tsx). Sections that
-   clear the fixed header add this to the bar's own height. */
+/* The contact strip that used to sit above the header bar. Its channels now
+   live in the bar itself (components/Nav.tsx), so it has no height; sections
+   that clear the fixed header still add it, and are right either way. */
 :root {
-  --strip-h: 32px;
+  --strip-h: 0px;
 }
 
 body {

@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { gsap, EASE_OUT, reducedMotion } from "@/lib/gsap";
 
 /** The masterplan render's own proportions: the frame keeps them, so nothing is cropped. */
-const PLAN = { src: "/images/masterplan.jpg", width: 1672, height: 941 };
+const PLAN = { src: "/images/masterplan-aerial.jpg", width: 2400, height: 1340 };
 
 type MasterplanPin = {
   label: string;
@@ -20,34 +20,37 @@ const gate = (n: number, x: number, y: number): MasterplanPin => ({ label: `Gate
 
 /*
  * From the client's "Project Masterplan USP's" board: the blue pins are the
- * USPs, the red ones the gates. Positions were carried over from that board
- * onto this render, lined up on the gates at the two eastern roundabouts and
- * along the southern road.
+ * USPs, the red ones the gates. The board is drawn on the flat plan; this is
+ * the angled aerial, seen from over the sea — west (the golf) on the right,
+ * the inland highway along the top — and it is not a true projection of the
+ * plan, so each pin was placed by eye on its landmark: the gates on the
+ * highway and on the road beside the old village, the beaches on the sand,
+ * the marina in its basin, the lagoons and the boulevard on theirs.
  */
 const MASTERPLAN_PINS: MasterplanPin[] = [
-  usp("18-Hole Golf Course", 13.3, 41.3),
-  usp("Vibrant Town Center", 27.4, 46.0),
-  usp("Vibrant Town Center", 72.7, 41.1),
-  usp("Open-Sea Lagoon & Continuous Promenade", 38.8, 46.0),
-  usp("Commercial Boulevard", 54.5, 46.3),
-  usp("International & Local Marina", 52.1, 17.6),
-  usp("7km Beach & Promenade", 33.6, 16.8),
-  usp("7km Beach & Promenade", 65.8, 13.0),
-  usp("Neighborhood Swimmable Lagoons", 29.4, 62.2),
-  usp("Neighborhood Swimmable Lagoons", 43.1, 60.2),
-  usp("Neighborhood Swimmable Lagoons", 69.1, 54.6),
-  usp("Freezone", 51.6, 73.2),
-  usp("Polo & Equestrian Club", 46.7, 77.2),
-  usp("Events Center", 48.2, 14.6),
-  usp("Expo Center", 54.8, 57.7),
-  usp("Postgrad University Campus", 80.0, 64.3),
-  gate(1, 17.7, 72.4),
-  gate(2, 40.0, 81.6),
-  gate(3, 53.4, 78.0),
-  gate(4, 63.7, 70.7),
-  gate(5, 75.9, 66.0),
-  gate(6, 87.4, 58.6),
-  gate(7, 83.3, 40.9),
+  usp("18-Hole Golf Course", 82.5, 22.0),
+  usp("Vibrant Town Center", 72.9, 23.5),
+  usp("Vibrant Town Center", 35.8, 32.1),
+  usp("Open-Sea Lagoon & Continuous Promenade", 68.8, 30.2),
+  usp("Commercial Boulevard", 57.1, 31.3),
+  usp("International & Local Marina", 65.0, 52.2),
+  usp("7km Beach & Promenade", 79.2, 38.4),
+  usp("7km Beach & Promenade", 50.0, 59.3),
+  usp("Neighborhood Swimmable Lagoons", 68.3, 17.9),
+  usp("Neighborhood Swimmable Lagoons", 61.3, 20.1),
+  usp("Neighborhood Swimmable Lagoons", 39.6, 30.6),
+  usp("Freezone", 60.0, 16.0),
+  usp("Polo & Equestrian Club", 64.2, 14.9),
+  usp("Events Center", 67.3, 44.8),
+  usp("Expo Center", 50.0, 28.0),
+  usp("Postgrad University Campus", 30.6, 33.2),
+  gate(1, 81.7, 11.2),
+  gate(2, 67.7, 12.7),
+  gate(3, 59.2, 13.6),
+  gate(4, 48.3, 20.0),
+  gate(5, 35.2, 28.4),
+  gate(6, 22.7, 36.4),
+  gate(7, 25.0, 48.5),
 ];
 
 /**
@@ -178,7 +181,7 @@ export default function Statement() {
             src={PLAN.src}
             alt="Aerial render of the Alam Al Roum masterplan"
             fill
-            sizes="(max-width: 768px) 820px, 100vw"
+            sizes="(max-width: 768px) 830px, 100vw"
             className="object-cover"
             draggable={false}
           />

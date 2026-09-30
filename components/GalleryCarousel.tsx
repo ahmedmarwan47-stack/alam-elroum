@@ -40,12 +40,22 @@ const STEP = 0.9;
 const STAGGER = 0.042;
 /** Seconds the row rests between glides. */
 const HOLD = 1.1;
-/** Space between cards, as a fraction of card width. */
-const GAP = 0.055;
-/** How much larger the centre card is than the rest. */
-const CENTRE_SCALE = 1.12;
-/** A card's height over its width (4:5), grown by the centre card's scale: the row's height per unit of card width. */
-const ROW_FACTOR = 1.25 * CENTRE_SCALE;
+/*
+ * The shapes. Side cards are portrait (4:5). The centre card is a touch taller
+ * and much wider — landscape on a desktop, square on a phone — so a wide
+ * photograph is not cut down to a sliver in the middle of the row. A card
+ * grows into the centre shape as it arrives and gives it up as it leaves.
+ */
+/** Side card width over its height. */
+const SIDE_RATIO = 0.8;
+/** Centre card height over a side card's. */
+const CENTRE_TALL = 1.12;
+/** Centre card width over its own height: desktop, phone. */
+const CENTRE_RATIO = { wide: 1.7, narrow: 1 };
+/** Space between cards, px: desktop, phone. */
+const GAP = { wide: 24, narrow: 14 };
+/** Share of a phone's width the centre card takes. */
+const PHONE_CENTRE = 0.76;
 /** Cards further out than this are off screen and not painted. */
 const REACH = 4;
 
@@ -138,8 +148,8 @@ function CaptionSwap({
 }
 
 /**
- * A flat, endless row of rounded portrait cards: the centre one a touch
- * larger, its neighbours cut off at either edge. Every couple of seconds the
+ * A flat, endless row of rounded cards, three on show on a desktop: the
+ * centre one wide and a touch taller, its portrait neighbours either side. Every couple of seconds the
  * row ripples one card to the left and rests again.
  *
  * The autoplay rests while the pointer is over the row, while it is being
@@ -160,7 +170,8 @@ export default function GalleryCarousel({ slides, label = "Gallery", paused = fa
   const cardPos = React.useRef<number[]>(Array(count).fill(0));
   /** Where the row is headed (or resting): the card index that is centred. */
   const target = React.useRef(0);
-  const widthRef = React.useRef(0);
+  /** The measured geometry: side and centre card sizes and the gap, in px. */
+  const geo = React.useRef<{ sw: number; sh: number; cw: number; ch: number; gap: number } | null>(null);
   const tweenRef = React.useRef<gsap.core.Tween | null>(null);
   const dragRef = React.useRef<{
     id: number;
@@ -193,19 +204,24 @@ export default function GalleryCarousel({ slides, label = "Gallery", paused = fa
   );
 
   const paint = React.useCallback(() => {
-    const width = widthRef.current;
-    if (!width) return;
-    const pitch = width * (1 + GAP);
-    // The centre card's growth, split either side of it: its neighbours step
-    // out by that much so the gaps stay even.
-    const grow = (width * (CENTRE_SCALE - 1)) / 2;
+    const g = geo.current;
+    if (!g) return;
+    // Centre to first neighbour, then neighbour to neighbour. Between the
+    // centre and the first place a card's size and its distance change
+    // together, so the gaps either side of it stay the same throughout.
+    const first = g.cw / 2 + g.gap + g.sw / 2;
+    const step = g.sw + g.gap;
     cardRefs.current.forEach((card, index) => {
       if (!card) return;
       const offset = offsetAt(index, cardPos.current[index]);
-      const near = Math.min(Math.abs(offset), 1);
-      const x = offset * pitch + Math.sign(offset) * grow * near;
-      const scale = 1 + (CENTRE_SCALE - 1) * (1 - near);
-      card.style.transform = `translate3d(calc(-50% + ${x.toFixed(2)}px), -50%, 0) scale(${scale.toFixed(4)})`;
+      const distance = Math.abs(offset);
+      const near = Math.min(distance, 1);
+      const x = Math.sign(offset) * (first * near + step * Math.max(0, distance - 1));
+      const w = g.cw + (g.sw - g.cw) * near;
+      const h = g.ch + (g.sh - g.ch) * near;
+      card.style.width = `${w.toFixed(2)}px`;
+      card.style.height = `${h.toFixed(2)}px`;
+      card.style.transform = `translate3d(calc(-50% + ${x.toFixed(2)}px), -50%, 0)`;
       // Out past REACH nothing is on screen; the wrap from one end of the
       // row to the other happens out there, unseen.
       card.style.visibility = Math.abs(offset) > REACH ? "hidden" : "visible";
@@ -294,9 +310,24 @@ export default function GalleryCarousel({ slides, label = "Gallery", paused = fa
     const frame = frameRef.current;
     if (!frame) return;
     const measure = () => {
-      const card = cardRefs.current[0];
-      if (!card) return;
-      widthRef.current = card.offsetWidth;
+      const W = frame.clientWidth;
+      const H = frame.clientHeight;
+      if (!W || !H) return;
+      const wide = window.matchMedia("(min-width: 768px)").matches;
+      const ratio = wide ? CENTRE_RATIO.wide : CENTRE_RATIO.narrow;
+      const gap = wide ? GAP.wide : GAP.narrow;
+      // Side height `sh` fixes everything: the centre is `CENTRE_TALL × sh`
+      // tall and `ratio` times that wide. A desktop fits exactly three across
+      // — centre, both neighbours, a gap between each and one more at either
+      // screen edge, so no fourth card peeks in; a phone fits the centre to
+      // its share of the width. Both stop where the centre card meets the
+      // row's height.
+      const across = wide
+        ? (W - 4 * gap) / (2 * SIDE_RATIO + CENTRE_TALL * ratio)
+        : (W * PHONE_CENTRE) / (CENTRE_TALL * ratio);
+      const sh = Math.min(across, (H - 8) / CENTRE_TALL);
+      const ch = sh * CENTRE_TALL;
+      geo.current = { sw: sh * SIDE_RATIO, sh, cw: ch * ratio, ch, gap };
       paint();
     };
     measure();
@@ -329,8 +360,10 @@ export default function GalleryCarousel({ slides, label = "Gallery", paused = fa
   const onPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
     const drag = dragRef.current;
     if (!drag || drag.id !== event.pointerId) return;
-    const pitch = widthRef.current * (1 + GAP);
-    if (!pitch) return;
+    const g = geo.current;
+    if (!g) return;
+    // One place along, measured centre to neighbour.
+    const pitch = g.cw / 2 + g.gap + g.sw / 2;
     const now = performance.now();
     const dx = event.clientX - drag.x;
     if (Math.abs(dx) > 4) drag.moved = true;
@@ -368,22 +401,13 @@ export default function GalleryCarousel({ slides, label = "Gallery", paused = fa
 
   return (
     <div role="region" aria-roledescription="carousel" aria-label={label} className="flex w-full flex-col justify-center">
-      {/* The row takes the height its parent leaves it, and the cards are
-          sized to that (`cqh`), so the section fits the screen whatever its
-          shape: capped by width on a phone, by height on a wide one. */}
-      {/* On a phone the width sets the card, so the row stops at the card's
-          height (4:5 × the centre scale) and the spare height is shared
-          above and below rather than left as a gap under the photo. */}
-      <div
-        className="relative min-h-0 flex-1 [container-type:size]
-                   max-md:max-h-[calc(min(66vw,400px)*1.4+8px)]"
-      >
-      <div
-        className="absolute inset-0
-                   [--card:min(66vw,400px,calc((100cqh-8px)/var(--row)))]
-                   md:[--card:min(32vw,520px,calc((100cqh-8px)/var(--row)))]"
-        style={{ ["--row" as string]: ROW_FACTOR }}
-      >
+      {/* The row takes the height its parent leaves it and the cards are
+          sized to it (see `measure`), so the section fits the screen whatever
+          its shape. On a phone the width sets the card, so the row stops at
+          the centre card's height and the spare height is shared above and
+          below rather than left as a gap under the photo. */}
+      <div className="relative min-h-0 flex-1 max-md:max-h-[calc(76vw+8px)]">
+      <div className="absolute inset-0">
         <div
           ref={frameRef}
           tabIndex={0}
@@ -419,16 +443,15 @@ export default function GalleryCarousel({ slides, label = "Gallery", paused = fa
               role="group"
               aria-roledescription="slide"
               aria-label={`${index + 1} of ${count}`}
-              className="absolute top-1/2 left-1/2 aspect-[4/5] overflow-hidden rounded-[clamp(16px,2vw,28px)]
+              className="absolute top-1/2 left-1/2 overflow-hidden rounded-[clamp(16px,2vw,28px)]
                          bg-cream/5 will-change-transform"
-              style={{ width: "var(--card)" }}
             >
               <Image
                 src={slide.src}
                 alt={slide.alt}
                 fill
                 draggable={false}
-                sizes="(max-width: 768px) 75vw, 34vw"
+                sizes="(max-width: 768px) 80vw, 50vw"
                 className="pointer-events-none object-cover select-none"
               />
               {slide.video && (

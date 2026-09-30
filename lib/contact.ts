@@ -1,5 +1,5 @@
 /**
- * Contact channels shown in the header's top strip.
+ * Contact channels shown in the header bar.
  *
  * 16922 is an Egyptian short-code hotline, so it is dialled as-is: short
  * codes do not take the +20 country prefix. WhatsApp wants the full
@@ -9,7 +9,7 @@ export const PHONE_DISPLAY = "16922";
 export const PHONE_HREF = "tel:16922";
 export const WHATSAPP_HREF = "https://wa.me/201200016922?text=Hi";
 
-/** Qatari Diar Egypt's social profiles, shown in the top strip. */
+/** Qatari Diar Egypt's social profiles, shown in the header bar. */
 export const FACEBOOK_HREF = "https://www.facebook.com/qataridiaregypt";
 export const INSTAGRAM_HREF = "https://www.instagram.com/qataridiaregypt/";
 

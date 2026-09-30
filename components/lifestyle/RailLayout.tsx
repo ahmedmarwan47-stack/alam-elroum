@@ -2,20 +2,21 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { ScrollTrigger, clamp01 } from "@/lib/gsap";
 import { lifestyleCards } from "@/lib/lifestyle";
 
 /**
  * Lifestyle, layout C — the horizontal rail.
  *
- * One pinned screen with the eleven cards travelling sideways across it, so
- * the section keeps a signature feel and still costs four viewports instead
- * of twelve. The counter and the progress bar are the important part: the
- * stack never tells you how far in you are, and this does — "03 / 11" with a
- * line filling under it, so the end is always in sight.
+ * An ordinary section in the page's flow: the eleven cards sit on one row
+ * that scrolls sideways on its own — a swipe on a phone, a trackpad swipe,
+ * a drag of the scrollbar-less row or the arrows on a desktop — while the
+ * page itself scrolls straight past it. It used to pin the page for four
+ * screens and turn the vertical scroll into the row's sideways travel;
+ * that forced every visitor through all eleven cards to get past it.
  *
- * On phones it drops the pinning entirely and becomes an ordinary swipeable
- * rail with scroll snapping — pinned horizontal scroll fights the thumb.
+ * The counter and the progress bar are the important part: "03 / 11" with a
+ * line filling under it, so the end is always in sight. They follow the
+ * row's own scroll position.
  *
  * The card here *is* the photograph, so the copy is a caption: the one-line
  * `short` rather than the full body, set small, over a band of scrim at the
@@ -23,110 +24,83 @@ import { lifestyleCards } from "@/lib/lifestyle";
  * to go but on top of it.
  */
 export default function RailLayout() {
-  const outer = useRef<HTMLDivElement>(null);
   const row = useRef<HTMLDivElement>(null);
   const [at, setAt] = useState(0);
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const el = outer.current;
     const rail = row.current;
-    if (!el || !rail) return;
-
-    const desktop = window.matchMedia("(min-width: 768px)");
+    if (!rail) return;
     const n = lifestyleCards.length;
-
-    // How far the row has to travel for its last card to reach the right
-    // edge. Re-measured on refresh, since it depends on the card width, which
-    // is a clamp against the viewport.
-    let travel = 0;
-    const measure = () => {
-      travel = desktop.matches
-        ? Math.max(0, rail.scrollWidth - window.innerWidth)
-        : 0;
-    };
-
-    const apply = (p: number) => {
-      const t = clamp01(p);
+    const update = () => {
+      const max = rail.scrollWidth - rail.clientWidth;
+      const t = max > 0 ? rail.scrollLeft / max : 0;
       setProgress(t);
       setAt(Math.round(t * (n - 1)));
-      rail.style.transform = desktop.matches
-        ? `translate3d(${(-travel * t).toFixed(2)}px, 0, 0)`
-        : "";
     };
-
-    // Phones scroll the rail themselves, so the counter reads its own scroll
-    // position there. The vertical track is desktop-only: on a phone the
-    // outer div is barely taller than the viewport, so its progress runs
-    // 0 → 1 almost at once and the counter would sit on "11 / 11" from the
-    // first frame.
-    const fromRail = () => {
-      const max = rail.scrollWidth - rail.clientWidth;
-      apply(max > 0 ? rail.scrollLeft / max : 0);
-    };
-
-    const sync = (p: number) => {
-      measure();
-      if (desktop.matches) apply(p);
-      else fromRail();
-    };
-
-    const st = ScrollTrigger.create({
-      trigger: el,
-      start: "top top",
-      end: "bottom bottom",
-      onUpdate: (self) => {
-        if (desktop.matches) apply(self.progress);
-      },
-      onRefresh: (self) => sync(self.progress),
-    });
-    sync(st.progress);
-
-    const onScroll = () => {
-      if (!desktop.matches) fromRail();
-    };
-    rail.addEventListener("scroll", onScroll, { passive: true });
-
-    // Crossing the breakpoint swaps which of the two drives the rail; the
-    // transform has to be cleared on the way down or the row stays shunted
-    // sideways while the phone tries to scroll it.
-    const onBreakpoint = () => {
-      rail.style.transform = "";
-      sync(st.progress);
-      ScrollTrigger.refresh();
-    };
-    desktop.addEventListener("change", onBreakpoint);
-
+    update();
+    rail.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
     return () => {
-      st.kill();
-      rail.removeEventListener("scroll", onScroll);
-      desktop.removeEventListener("change", onBreakpoint);
+      rail.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
     };
   }, []);
 
+  /** One card along, either way, for the desktop arrows. */
+  const step = (dir: -1 | 1) => {
+    const rail = row.current;
+    const card = rail?.querySelector("article");
+    if (!rail || !card) return;
+    const gap = parseFloat(getComputedStyle(rail).columnGap) || 0;
+    rail.scrollBy({ left: dir * (card.offsetWidth + gap), behavior: "smooth" });
+  };
+
   return (
-    <div ref={outer} className="relative border-t border-ink/12 md:h-[400vh]">
-      <div
-        className="flex flex-col bg-cream
-                   md:sticky md:top-0 md:h-screen md:overflow-hidden"
-      >
+    <div className="relative border-t border-ink/12">
+      <div className="flex flex-col bg-cream md:pb-[clamp(48px,7vh,88px)]">
         <div
-          // The stage is pinned under a fixed 80px header (plus the contact strip), so the heading has
-          // to start below it. The floor is a px value and not a vh one on
-          // purpose: the header does not get shorter on a short screen, so a
-          // purely proportional value would slide back under it on a laptop.
-          className="order-1 flex flex-col items-start gap-2 px-6 pt-10
-                     md:px-[clamp(40px,5vw,80px)] md:pt-[clamp(calc(108px+var(--strip-h)),calc(14vh+var(--strip-h)),calc(148px+var(--strip-h)))]"
+          className="order-1 flex items-end justify-between gap-6 px-6 pt-10
+                     md:px-[clamp(40px,5vw,80px)] md:pt-[clamp(60px,9vh,100px)]"
         >
-          <span className="type-eyebrow text-ink/40">Lifestyle &amp; Experiences</span>
-          <h2 className="type-editorial text-[clamp(22px,3vw,42px)] leading-[1.1] text-ink">
-            Experience Greatness
-          </h2>
+          <div className="flex flex-col items-start gap-2">
+            <span className="type-eyebrow text-ink/40">Lifestyle &amp; Experiences</span>
+            <h2 className="type-editorial text-[clamp(22px,3vw,42px)] leading-[1.1] text-ink">
+              Experience Greatness
+            </h2>
+          </div>
+          {/* Arrows to step through the rail by mouse — up here beside the
+              heading, clear of the floating seals in the corner. */}
+          <div className="hidden shrink-0 items-center gap-3 md:flex">
+            {([-1, 1] as const).map((dir) => (
+              <button
+                key={dir}
+                type="button"
+                aria-label={dir < 0 ? "Previous experience" : "Next experience"}
+                onClick={() => step(dir)}
+                disabled={dir < 0 ? progress <= 0.001 : progress >= 0.999}
+                className="group flex h-11 w-11 items-center justify-center rounded-full border border-ink/25
+                           text-ink transition-[background-color,border-color,color,opacity] duration-400
+                           hover:border-ink hover:bg-ink hover:text-cream disabled:pointer-events-none disabled:opacity-30"
+              >
+                <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
+                  <path
+                    d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18"
+                    {...(dir > 0 ? { transform: "translate(24 0) scale(-1 1)" } : {})}
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* The rail. Phones scroll it natively with snapping; from md up the
-            scroll position is driven by the pinned track above. */}
-        <div className="order-3 mt-5 md:order-2 md:mt-0 md:flex md:flex-1 md:items-stretch md:overflow-hidden">
+        {/* The rail, scrolled natively and snapping card by card at every
+            width. */}
+        <div className="order-3 mt-5 md:order-2 md:mt-[clamp(20px,3vh,36px)]">
           <div
             ref={row}
             // `scroll-pl-6` matters more than it looks. A snap target aligns
@@ -144,23 +118,19 @@ export default function RailLayout() {
             // sliver of it stranded in the margin.
             className="flex snap-x snap-mandatory gap-6 scroll-pl-6 overflow-x-auto px-6 pb-4
                        [scrollbar-width:none] [&::-webkit-scrollbar]:hidden
-                       md:snap-none md:gap-[clamp(16px,2vw,28px)] md:overflow-x-visible
-                       md:px-[clamp(40px,5vw,80px)] md:py-[clamp(12px,2vh,28px)]
-                       md:will-change-transform"
+                       md:gap-[clamp(16px,2vw,28px)] md:scroll-pl-[clamp(40px,5vw,80px)]
+                       md:px-[clamp(40px,5vw,80px)] md:pb-0"
           >
             {lifestyleCards.map((card) => (
               <article
                 key={card.tag}
                 data-dark
-                // `md:h-auto` — a flex item that stretches. The card is then
-                // as tall as the stage has room for, whatever the heading and
-                // the counter leave behind, at any viewport height.
                 // 84vw on a phone, not 76: the card's own measure is what
                 // decides whether a title like "Entertainment & Culture" can
                 // hold its words together, and at 76vw it could not. The next
                 // card still peeks by a clear 36px.
                 className="group relative h-[60vh] w-[84vw] shrink-0 snap-start overflow-hidden
-                           bg-ink/10 md:h-auto md:w-[clamp(360px,40vw,580px)]"
+                           bg-ink/10 md:h-[min(64vh,600px)] md:w-[clamp(360px,40vw,580px)]"
               >
                 <Image
                   src={card.image}
@@ -188,19 +158,12 @@ export default function RailLayout() {
           </div>
         </div>
 
-        {/* Where you are, and how much is left — the thing the stack never
-            says. On a phone it leads, directly under the heading: at the foot
-            it was buried behind the toggle and the floating seals, and it is
-            the only thing telling you the rail moves sideways at all. On a
-            desktop it trails, high enough to clear the toggle — on its own
-            the extra air reads as a margin, not a gap. */}
+        {/* Where you are, and how much is left. On a phone it leads,
+            directly under the heading — it is the only thing telling you the
+            rail moves sideways at all. On a desktop it trails the rail. */}
         <div
-          // `pb-0` on a phone: here the counter sits *between* the heading and
-          // the rail, so the desktop floor padding would open a void right
-          // under the title. It only earns that padding at `md`, where it
-          // trails the rail instead.
-          className="order-2 mt-4 flex items-center gap-4 px-6 pb-0
-                     md:order-3 md:mt-0 md:px-[clamp(40px,5vw,80px)] md:pb-[clamp(64px,9vh,104px)]"
+          className="order-2 mt-4 flex items-center gap-4 px-6
+                     md:order-3 md:mt-[clamp(20px,3vh,32px)] md:px-[clamp(40px,5vw,80px)]"
         >
           <span className="font-sans text-12 tabular-nums text-ink md:text-16">
             {lifestyleCards[at]?.tag}

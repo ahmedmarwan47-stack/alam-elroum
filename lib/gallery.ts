@@ -66,17 +66,15 @@ const pmVisitFilm = film("pm-visit", {
 });
 
 /**
- * Mixed rather than set by set — nine beach shots in a row look like one
- * picture. Fixed, so it is the same on every visit: no card sits next to one
- * from its own set (the beach video counts as beach, and so on), including
- * across the wrap from the last card back to the first; the three films
- * fall eight cards apart; and each set keeps its own order.
+ * Set by set, each set's film after its photographs, so the caption holds
+ * while a set runs and changes as the next begins.
  */
-const [b, e, p, l] = [beach, experienceCenter, pmVisit, landSigning];
 export const galleryItems: GalleryItem[] = [
-  b[0], l[0], e[0], beachFilm, p[0],
-  b[1], e[1], b[2], p[1], e[2],
-  b[3], experienceCenterFilm, b[4], e[3], l[1],
-  p[2], b[5], e[4], b[6], pmVisitFilm,
-  e[5], b[7], p[3], b[8], e[6],
+  ...beach,
+  beachFilm,
+  ...landSigning,
+  ...experienceCenter,
+  experienceCenterFilm,
+  ...pmVisit,
+  pmVisitFilm,
 ];

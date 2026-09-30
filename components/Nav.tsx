@@ -20,15 +20,17 @@ type Props = {
 };
 
 /**
- * Fixed header.
+ * Fixed header: one translucent cream bar with ink marks — the wordmark, the
+ * Qatari Diar seal in the middle, and on the right the direct channels (the
+ * hotline, then WhatsApp, Facebook and Instagram as bare icons), the two
+ * calls to action and the menu. It holds from the top of the page to the
+ * bottom, hero included, so nothing flips as sections change.
  *
- * A thin ink strip carrying the direct channels — phone and WhatsApp, then
- * Facebook and Instagram; split to either end on phones, all on the right
- * from md up — over a translucent cream bar
- * with ink marks. Both hold from the top of the page to the bottom, hero
- * included, so nothing flips as sections change. The strip's height is
- * `--strip-h` (globals.css), which sections that clear the header add to the
- * bar's own height. Presentational: menu state is owned by <SiteChrome>.
+ * The channels used to ride in a thin ink strip above the bar; they moved
+ * into it, and the buttons went compact to make the room. Below `lg` the
+ * buttons live in the menu and the hotline drops its number, leaving four
+ * icons beside the burger. Presentational: menu state is owned by
+ * <SiteChrome>.
  */
 export default function Nav({ menuOpen, onToggleMenu }: Props) {
   const [entered, setEntered] = useState(false);
@@ -39,7 +41,7 @@ export default function Nav({ menuOpen, onToggleMenu }: Props) {
     return () => window.removeEventListener("preloader:burst", onBurst);
   }, []);
 
-  const stripLink = `flex items-center gap-2 text-cream/80 transition-colors duration-300 hover:text-cream`;
+  const channel = "flex items-center gap-2 text-ink/75 transition-colors duration-300 hover:text-ink";
 
   return (
     <header
@@ -47,31 +49,6 @@ export default function Nav({ menuOpen, onToggleMenu }: Props) {
       className={`fixed inset-x-0 top-0 z-1000 transition-[transform,opacity] duration-500 ease-out
                   ${entered ? "translate-y-0 opacity-100 delay-[600ms]" : "-translate-y-3 opacity-0"}`}
     >
-      <div
-        className="flex h-[var(--strip-h)] items-center justify-between bg-ink px-4
-                   font-sans text-[11px] leading-none tracking-link uppercase
-                   md:justify-end md:gap-5 md:px-15"
-      >
-        <div className="flex items-center gap-5">
-          <a href={PHONE_HREF} aria-label={`Call ${PHONE_DISPLAY}`} className={stripLink}>
-            <CallIcon className="h-[14px] w-[14px]" />
-            <span>{PHONE_DISPLAY}</span>
-          </a>
-          <a href={WHATSAPP_HREF} target="_blank" rel="noopener noreferrer" className={stripLink}>
-            <WhatsAppIcon className="h-[14px] w-[14px]" />
-            <span>WhatsApp</span>
-          </a>
-        </div>
-        <div className="flex items-center gap-4">
-          <a href={FACEBOOK_HREF} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className={stripLink}>
-            <FacebookIcon className="h-[14px] w-[14px]" />
-          </a>
-          <a href={INSTAGRAM_HREF} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className={stripLink}>
-            <InstagramIcon className="h-[14px] w-[14px]" />
-          </a>
-        </div>
-      </div>
-
       <nav className="relative isolate flex items-center justify-between px-4 py-3 md:px-15 md:py-[18px]">
         {/* The cream bar, as its own layer rather than the nav's background,
             so the menu can deepen it without touching the nav's own stacking. */}
@@ -102,22 +79,43 @@ export default function Nav({ menuOpen, onToggleMenu }: Props) {
                      rounded-[2px] object-contain md:h-12 md:w-12"
         />
 
-        <div className="flex items-center gap-2 md:gap-4">
+        <div className="flex items-center gap-2 md:gap-3">
+          {/* The direct channels. Right of the seal there is room for the
+              hotline's number only on a wide screen; below that its icon
+              still dials it. */}
+          <div className="flex items-center gap-2.5 font-sans text-[11px] leading-none tracking-link uppercase md:gap-3.5">
+            <a href={PHONE_HREF} aria-label={`Call ${PHONE_DISPLAY}`} className={channel}>
+              <CallIcon className="h-4 w-4" />
+              <span className="hidden min-[1440px]:inline">{PHONE_DISPLAY}</span>
+            </a>
+            <a href={WHATSAPP_HREF} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className={channel}>
+              <WhatsAppIcon className="h-4 w-4" />
+            </a>
+            <a href={FACEBOOK_HREF} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className={channel}>
+              <FacebookIcon className="h-4 w-4" />
+            </a>
+            <a href={INSTAGRAM_HREF} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className={channel}>
+              <InstagramIcon className="h-4 w-4" />
+            </a>
+          </div>
+          <span aria-hidden className="hidden h-6 w-px bg-ink/15 lg:block" />
+
           {/* Two calls to action — the brochure outlined, Register Interest
-              solid so the pair reads as secondary and primary. Two equal grid
-              columns hold them to the same width (the wider label's). The menu
-              carries both wherever the bar cannot. */}
-          <div className="hidden gap-3 lg:grid xl:grid-cols-[1fr_1fr]">
-            <div className="hidden xl:grid">
+              solid so the pair reads as secondary and primary. Compact, and
+              each only as wide as its label, so the channels fit beside them.
+              The menu carries both wherever the bar cannot. */}
+          <div className="hidden items-center gap-2 lg:flex">
+            <div className="hidden xl:flex">
               <SweepLink
                 href={BROCHURE_HREF}
                 download={BROCHURE_FILENAME}
                 label={
-                  <span className="inline-flex items-center gap-2">
-                    <DownloadIcon className="h-[18px] w-[18px]" />
-                    Download Brochure
+                  <span className="inline-flex items-center gap-1.5">
+                    <DownloadIcon className="h-4 w-4" />
+                    Brochure
                   </span>
                 }
+                size="compact"
                 className="border-ink text-ink"
                 fill="bg-ink"
                 hoverText="group-hover:text-cream"
@@ -126,6 +124,7 @@ export default function Nav({ menuOpen, onToggleMenu }: Props) {
             <SweepLink
               href="#lead"
               label="Register Interest"
+              size="compact"
               bg="bg-ink"
               className="border-ink text-cream"
               fill="bg-cream"
@@ -143,7 +142,7 @@ export default function Nav({ menuOpen, onToggleMenu }: Props) {
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
             onClick={onToggleMenu}
-            className="relative ml-1 flex h-9 w-9 shrink-0 items-center justify-center"
+            className="relative flex h-9 w-9 shrink-0 items-center justify-center md:ml-1"
           >
             <span className="relative block h-6 w-6">
               {[0, 1].map((i) => (
