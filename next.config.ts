@@ -12,6 +12,9 @@ const nextConfig: NextConfig = {
   basePath,
   assetPrefix: basePath || undefined,
   trailingSlash: true,
+  // The dev-only "N" badge sat in the bottom-left corner, over the back-to-top
+  // button. Compile and runtime errors still surface without it.
+  devIndicators: false,
   images: {
     // GitHub Pages has no image optimiser; ship the source files as-is,
     // under the base path.

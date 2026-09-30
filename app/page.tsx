@@ -1,5 +1,6 @@
 import SiteChrome from "@/components/SiteChrome";
 import FloatingSeals from "@/components/FloatingSeals";
+import BackToTop from "@/components/BackToTop";
 import Hero from "@/components/sections/Hero";
 import LeadForm from "@/components/sections/LeadForm";
 import CoinStory from "@/components/sections/CoinStory";
@@ -44,6 +45,7 @@ export default function Home() {
       <Footer />
 
       <FloatingSeals />
+      <BackToTop />
     </main>
   );
 }

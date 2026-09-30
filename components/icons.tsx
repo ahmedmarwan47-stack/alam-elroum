@@ -1,33 +1,37 @@
 /** Line icons supplied by the client, recoloured through currentColor. */
 
-type IconProps = { className?: string };
+type IconProps = {
+  className?: string;
+  /** Stroke weight in the 24-unit grid; 1.5 is the supplied weight. */
+  weight?: number;
+};
 
-export function CallIcon({ className = "h-5 w-5" }: IconProps) {
+export function CallIcon({ className = "h-5 w-5", weight = 1.5 }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
       <path
         d="M3.77762 11.9424C2.8296 10.2893 2.37185 8.93948 2.09584 7.57121C1.68762 5.54758 2.62181 3.57081 4.16938 2.30947C4.82345 1.77638 5.57323 1.95852 5.96 2.6524L6.83318 4.21891C7.52529 5.46057 7.87134 6.08139 7.8027 6.73959C7.73407 7.39779 7.26737 7.93386 6.33397 9.00601L3.77762 11.9424ZM3.77762 11.9424C5.69651 15.2883 8.70784 18.3013 12.0576 20.2224M12.0576 20.2224C13.7107 21.1704 15.0605 21.6282 16.4288 21.9042C18.4524 22.3124 20.4292 21.3782 21.6905 19.8306C22.2236 19.1766 22.0415 18.4268 21.3476 18.04L19.7811 17.1668C18.5394 16.4747 17.9186 16.1287 17.2604 16.1973C16.6022 16.2659 16.0661 16.7326 14.994 17.666L12.0576 20.2224Z"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth={weight}
         strokeLinejoin="round"
       />
     </svg>
   );
 }
 
-export function WhatsAppIcon({ className = "h-5 w-5" }: IconProps) {
+export function WhatsAppIcon({ className = "h-5 w-5", weight = 1.5 }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
       <path
         d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 13.3789 2.27907 14.6926 2.78382 15.8877C3.06278 16.5481 3.20226 16.8784 3.21953 17.128C3.2368 17.3776 3.16334 17.6521 3.01642 18.2012L2 22L5.79877 20.9836C6.34788 20.8367 6.62244 20.7632 6.87202 20.7805C7.12161 20.7977 7.45185 20.9372 8.11235 21.2162C9.30745 21.7209 10.6211 22 12 22Z"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth={weight}
         strokeLinejoin="round"
       />
       <path
         d="M8.58815 12.3773L9.45909 11.2956C9.82616 10.8397 10.2799 10.4153 10.3155 9.80826C10.3244 9.65494 10.2166 8.96657 10.0008 7.58986C9.91601 7.04881 9.41086 7 8.97332 7C8.40314 7 8.11805 7 7.83495 7.12931C7.47714 7.29275 7.10979 7.75231 7.02917 8.13733C6.96539 8.44196 7.01279 8.65187 7.10759 9.07169C7.51023 10.8548 8.45481 12.6158 9.91948 14.0805C11.3842 15.5452 13.1452 16.4898 14.9283 16.8924C15.3481 16.9872 15.558 17.0346 15.8627 16.9708C16.2477 16.8902 16.7072 16.5229 16.8707 16.165C17 15.8819 17 15.5969 17 15.0267C17 14.5891 16.9512 14.084 16.4101 13.9992C15.0334 13.7834 14.3451 13.6756 14.1917 13.6845C13.5847 13.7201 13.1603 14.1738 12.7044 14.5409L11.6227 15.4118"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth={weight}
       />
     </svg>
   );
@@ -68,7 +72,7 @@ export function DownloadIcon({ className = "h-5 w-5" }: IconProps) {
   );
 }
 
-export function FacebookIcon({ className = "h-5 w-5" }: IconProps) {
+export function FacebookIcon({ className = "h-5 w-5", weight = 1.5 }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
       <path
@@ -76,31 +80,31 @@ export function FacebookIcon({ className = "h-5 w-5" }: IconProps) {
         clipRule="evenodd"
         d="M6.18182 10.3333C5.20406 10.3333 5 10.5252 5 11.4444V13.1111C5 14.0304 5.20406 14.2222 6.18182 14.2222H8.54545V20.8889C8.54545 21.8081 8.74951 22 9.72727 22H12.0909C13.0687 22 13.2727 21.8081 13.2727 20.8889V14.2222H15.9267C16.6683 14.2222 16.8594 14.0867 17.0631 13.4164L17.5696 11.7497C17.9185 10.6014 17.7035 10.3333 16.4332 10.3333H13.2727V7.55556C13.2727 6.94191 13.8018 6.44444 14.4545 6.44444H17.8182C18.7959 6.44444 19 6.25259 19 5.33333V3.11111C19 2.19185 18.7959 2 17.8182 2H14.4545C11.191 2 8.54545 4.48731 8.54545 7.55556V10.3333H6.18182Z"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth={weight}
         strokeLinejoin="round"
       />
     </svg>
   );
 }
 
-export function InstagramIcon({ className = "h-5 w-5" }: IconProps) {
+export function InstagramIcon({ className = "h-5 w-5", weight = 1.5 }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
       <path
         d="M2.5 12C2.5 7.52166 2.5 5.28249 3.89124 3.89124C5.28249 2.5 7.52166 2.5 12 2.5C16.4783 2.5 18.7175 2.5 20.1088 3.89124C21.5 5.28249 21.5 7.52166 21.5 12C21.5 16.4783 21.5 18.7175 20.1088 20.1088C18.7175 21.5 16.4783 21.5 12 21.5C7.52166 21.5 5.28249 21.5 3.89124 20.1088C2.5 18.7175 2.5 16.4783 2.5 12Z"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth={weight}
         strokeLinejoin="round"
       />
       <path
         d="M16.5 12C16.5 14.4853 14.4853 16.5 12 16.5C9.51472 16.5 7.5 14.4853 7.5 12C7.5 9.51472 9.51472 7.5 12 7.5C14.4853 7.5 16.5 9.51472 16.5 12Z"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth={weight}
       />
       <path
         d="M17.5078 6.5L17.4988 6.5"
         stroke="currentColor"
-        strokeWidth="2"
+        strokeWidth={weight + 0.5}
         strokeLinecap="round"
         strokeLinejoin="round"
       />

@@ -65,7 +65,7 @@ export default function Nav({ menuOpen, onToggleMenu }: Props) {
             width={187}
             height={17}
             priority
-            className="h-3 w-auto md:h-[17px]"
+            className="h-[13px] w-auto md:h-5"
           />
         </a>
 
@@ -85,27 +85,27 @@ export default function Nav({ menuOpen, onToggleMenu }: Props) {
               still dials it. */}
           <div className="flex items-center gap-2.5 font-sans text-[11px] leading-none tracking-link uppercase md:gap-3.5">
             <a href={PHONE_HREF} aria-label={`Call ${PHONE_DISPLAY}`} className={channel}>
-              <CallIcon className="h-4 w-4" />
+              <CallIcon className="h-4 w-4" weight={2} />
               <span className="hidden min-[1440px]:inline">{PHONE_DISPLAY}</span>
             </a>
             <a href={WHATSAPP_HREF} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className={channel}>
-              <WhatsAppIcon className="h-4 w-4" />
+              <WhatsAppIcon className="h-4 w-4" weight={2} />
             </a>
             <a href={FACEBOOK_HREF} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className={channel}>
-              <FacebookIcon className="h-4 w-4" />
+              <FacebookIcon className="h-4 w-4" weight={2} />
             </a>
             <a href={INSTAGRAM_HREF} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className={channel}>
-              <InstagramIcon className="h-4 w-4" />
+              <InstagramIcon className="h-4 w-4" weight={2} />
             </a>
           </div>
-          <span aria-hidden className="hidden h-6 w-px bg-ink/15 lg:block" />
 
           {/* Two calls to action — the brochure outlined, Register Interest
-              solid so the pair reads as secondary and primary. Compact, and
-              each only as wide as its label, so the channels fit beside them.
-              The menu carries both wherever the bar cannot. */}
-          <div className="hidden items-center gap-2 lg:flex">
-            <div className="hidden xl:flex">
+              solid so the pair reads as secondary and primary. Two equal grid
+              columns hold them to the same width (the wider label's), compact
+              so the channels fit beside them. The menu carries both wherever
+              the bar cannot. */}
+          <div className="hidden gap-2 lg:grid xl:grid-cols-[1fr_1fr]">
+            <div className="hidden xl:grid">
               <SweepLink
                 href={BROCHURE_HREF}
                 download={BROCHURE_FILENAME}

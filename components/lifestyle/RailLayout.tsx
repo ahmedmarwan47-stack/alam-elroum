@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { gsap, EASE_OUT } from "@/lib/gsap";
 import { lifestyleCards } from "@/lib/lifestyle";
 
 /**
@@ -47,13 +48,85 @@ export default function RailLayout() {
     };
   }, []);
 
+  /*
+   * Drag to scroll, for a mouse — touch already swipes the row natively.
+   * A press that barely moves stays a click. On release the row carries the
+   * drag's momentum and eases to a stop on the nearest card over most of a
+   * second, rather than snapping there: from md up the browser's own snap
+   * is off for exactly that reason (phones keep it, under the thumb).
+   */
+  const drag = useRef<{ x: number; left: number; moved: boolean; v: number; t: number; last: number } | null>(null);
+  const glide = useRef<gsap.core.Tween | null>(null);
+  const [dragging, setDragging] = useState(false);
+
+  useEffect(() => () => void glide.current?.kill(), []);
+
+  /** The scroll position of the card edge nearest `left`. */
+  const nearestCard = (rail: HTMLDivElement, left: number) => {
+    const card = rail.querySelector("article");
+    if (!card) return left;
+    const step = card.offsetWidth + (parseFloat(getComputedStyle(rail).columnGap) || 0);
+    const max = rail.scrollWidth - rail.clientWidth;
+    return Math.max(0, Math.min(max, Math.round(left / step) * step));
+  };
+
+  const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType !== "mouse" || event.button !== 0) return;
+    const rail = row.current;
+    if (!rail) return;
+    glide.current?.kill();
+    drag.current = {
+      x: event.clientX,
+      left: rail.scrollLeft,
+      moved: false,
+      v: 0,
+      t: performance.now(),
+      last: rail.scrollLeft,
+    };
+  };
+
+  const onPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    const d = drag.current;
+    const rail = row.current;
+    if (!d || !rail) return;
+    const dx = event.clientX - d.x;
+    if (!d.moved) {
+      if (Math.abs(dx) < 5) return;
+      d.moved = true;
+      rail.setPointerCapture(event.pointerId);
+      setDragging(true);
+    }
+    rail.scrollLeft = d.left - dx;
+    // Velocity in px/ms, smoothed so the last jittery frame does not decide it.
+    const now = performance.now();
+    const v = (rail.scrollLeft - d.last) / Math.max(now - d.t, 1);
+    d.v = d.v * 0.6 + v * 0.4;
+    d.last = rail.scrollLeft;
+    d.t = now;
+  };
+
+  const endDrag = (event: React.PointerEvent<HTMLDivElement>) => {
+    const d = drag.current;
+    drag.current = null;
+    const rail = row.current;
+    if (!d?.moved || !rail) return;
+    rail.releasePointerCapture(event.pointerId);
+    setDragging(false);
+    // Carry on the way it was going — about a third of a second's worth of
+    // the release speed — then come to rest on the nearest card.
+    const to = nearestCard(rail, rail.scrollLeft + d.v * 320);
+    glide.current = gsap.to(rail, { scrollLeft: to, duration: 0.9, ease: EASE_OUT });
+  };
+
   /** One card along, either way, for the desktop arrows. */
   const step = (dir: -1 | 1) => {
     const rail = row.current;
     const card = rail?.querySelector("article");
     if (!rail || !card) return;
     const gap = parseFloat(getComputedStyle(rail).columnGap) || 0;
-    rail.scrollBy({ left: dir * (card.offsetWidth + gap), behavior: "smooth" });
+    glide.current?.kill();
+    const to = nearestCard(rail, rail.scrollLeft + dir * (card.offsetWidth + gap));
+    glide.current = gsap.to(rail, { scrollLeft: to, duration: 0.9, ease: EASE_OUT });
   };
 
   return (
@@ -98,11 +171,17 @@ export default function RailLayout() {
           </div>
         </div>
 
-        {/* The rail, scrolled natively and snapping card by card at every
-            width. */}
+        {/* The rail, scrolled natively: snapping card by card under a thumb,
+            free from md up, where a drag or the arrows glide it to a card. */}
         <div className="order-3 mt-5 md:order-2 md:mt-[clamp(20px,3vh,36px)]">
           <div
             ref={row}
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={endDrag}
+            onPointerCancel={endDrag}
+            // Held, the row follows the mouse exactly, with no snapping.
+            style={dragging ? { scrollSnapType: "none", scrollBehavior: "auto" } : undefined}
             // `scroll-pl-6` matters more than it looks. A snap target aligns
             // to the *snapport*, which is the scrollport minus its scroll
             // padding — not the padding box. Without it, mandatory snapping
@@ -117,8 +196,9 @@ export default function RailLayout() {
             // the card you just left stops short of the screen edge, leaving a
             // sliver of it stranded in the margin.
             className="flex snap-x snap-mandatory gap-6 scroll-pl-6 overflow-x-auto px-6 pb-4
+                       select-none md:cursor-grab md:active:cursor-grabbing
                        [scrollbar-width:none] [&::-webkit-scrollbar]:hidden
-                       md:gap-[clamp(16px,2vw,28px)] md:scroll-pl-[clamp(40px,5vw,80px)]
+                       md:snap-none md:gap-[clamp(16px,2vw,28px)] md:scroll-pl-[clamp(40px,5vw,80px)]
                        md:px-[clamp(40px,5vw,80px)] md:pb-0"
           >
             {lifestyleCards.map((card) => (
@@ -136,6 +216,7 @@ export default function RailLayout() {
                   src={card.image}
                   alt={card.alt}
                   fill
+                  draggable={false}
                   sizes="(max-width: 768px) 76vw, 40vw"
                   className="object-cover transition-transform duration-[900ms]
                              ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
